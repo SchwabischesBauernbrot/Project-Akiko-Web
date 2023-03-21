@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
 export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
-const [characterName, setCharacterName] = useState('');
-const [characterDescription, setCharacterDescription] = useState('');
-const [characterScenario, setCharacterScenario] = useState('');
-const [characterGreeting, setCharacterGreeting] = useState('');
-const [characterExamples, setCharacterExamples] = useState('');
+  const [characterName, setCharacterName] = useState('');
+  const [characterPersonality, setcharacterPersonality] = useState('');
+  const [characterDescription, setCharacterDescription] = useState('');
+  const [characterScenario, setCharacterScenario] = useState('');
+  const [characterGreeting, setCharacterGreeting] = useState('');
+  const [characterExamples, setCharacterExamples] = useState('');
 const [characterAvatar, setCharacterAvatar] = useState(null);
 const [imageUrl, setImageUrl] = useState(null);
 
@@ -14,11 +15,12 @@ function handleSubmit(event) {
 
     const newCharacter = {
     char_id: Date.now(),
-    char_name: characterName || "Default Name",
-    char_persona: characterDescription || "",
-    world_scenario: characterScenario || "",
-    char_greeting: characterGreeting || "",
-    example_dialogue: characterExamples || "",
+    name: characterName || "Default Name",
+    personality: characterPersonality || "",
+    description: characterDescription || "",
+    scenario: characterScenario || "",
+    first_mes: characterGreeting || "",
+    mes_example: characterExamples || "",
     avatar: characterAvatar,
     // Other form input values
     };
@@ -26,6 +28,7 @@ function handleSubmit(event) {
     // Reset form input values
     setCharacterName('');
     setCharacterDescription('');
+    setcharacterPersonality('');
     setCharacterScenario('');
     setCharacterGreeting('');
     setCharacterExamples('');
@@ -55,6 +58,12 @@ function handleSubmit(event) {
               value={characterName}
               onChange={(event) => setCharacterName(event.target.value)}
               required
+            />
+            <label htmlFor="characterDescription"><b>Summary:</b></label>
+            <textarea
+              id="character-field"
+              value={characterPersonality}
+              onChange={(event) => setcharacterPersonality(event.target.value)}
             />
             <label htmlFor="characterDescription"><b>Description:</b></label>
             <textarea

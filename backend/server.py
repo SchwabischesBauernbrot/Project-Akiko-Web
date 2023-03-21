@@ -1,8 +1,7 @@
 from functools import wraps
+import io
 from flask import Flask, jsonify, request, render_template_string, abort, send_from_directory
 from flask_cors import CORS
-from flask_socketio import SocketIO, emit
-import markdown
 import argparse
 from transformers import AutoTokenizer, AutoProcessor, pipeline
 from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
@@ -13,9 +12,10 @@ import time
 from glob import glob
 import json
 import os
-from PIL import Image
+from PIL import Image, PngImagePlugin
 import base64
 from io import BytesIO
+from pathlib import Path
 from random import randint
 from colorama import Fore, Style, init as colorama_init
 from werkzeug.utils import secure_filename
@@ -144,6 +144,7 @@ app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
 app.config['CONVERSATIONS_FOLDER'] = '../frontend/src/shared_data/conversations/'
 app.config['CHARACTER_FOLDER'] = '../frontend/src/shared_data/character_info/'
 app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_images/'
+app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 
@@ -151,6 +152,50 @@ app.config['PROPAGATE_EXCEPTIONS'] = False
 extensions = []
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def import_tavern_character(img, char_id):
+    _img = Image.open(io.BytesIO(img))
+    _img.getexif()
+    decoded_string = base64.b64decode(_img.info['chara'])
+    _json = json.loads(decoded_string)
+    print(_json)
+    outfile_name = f'{str(char_id)}'
+    _json = {"char_id": char_id, "name": _json['name'], "description": _json['description'], 'personality': _json['personality'], "first_mes": _json["first_mes"], "mes_example": _json["mes_example"], "scenario": _json["scenario"], "avatar": f'{outfile_name}.png'}
+    with open(os.path.join(app.config['CHARACTER_FOLDER'],f'{outfile_name}.json'), 'w') as f:
+        f.write(json.dumps(_json))
+    return _json
+
+def export_tavern_character(char_id):
+    outfile_name = f'{str(char_id)}'
+    with open(os.path.join(app.config['CHARACTER_FOLDER'], f'{outfile_name}.json'), 'r') as f:
+        character_info = json.load(f)
+
+    # Create a dictionary containing the character information to export
+    reverted_char_data = {
+        'name': character_info['name'],
+        'description': character_info['description'],
+        'personality': character_info['personality'],
+        'scenario': character_info["scenario"],
+        'first_mes': character_info["first_mes"],
+        'mes_example': character_info["mes_example"]
+    }
+
+    # Load the image in any format
+    image = Image.open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], f'{outfile_name}.png')).convert('RGBA')
+
+    # Convert the dictionary to a JSON string and then encode as base64
+    json_data = json.dumps(reverted_char_data)
+    base64_encoded_data = base64.b64encode(json_data.encode('utf8')).decode('utf8')
+
+    # Add the encoded data to the image metadata
+    img_info = PngImagePlugin.PngInfo()
+    img_info.add_text('chara', base64_encoded_data)
+
+    # Save the modified image to the target location
+    with open(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{outfile_name}.png'), 'wb') as f:
+        image.save(f, format='PNG', pnginfo=img_info)
+
+    return
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -282,13 +327,6 @@ def after_request(response):
     response.headers['X-Request-Duration'] = str(duration)
     return response
 
-
-@app.route('/', methods=['GET'])
-def index():
-    with open('./README.md', 'r') as f:
-        content = f.read()
-    return render_template_string(markdown.markdown(content, extensions=['tables']))
-
 @app.errorhandler(400)
 def handle_bad_request(e):
     return jsonify(error=str(e)), 400
@@ -371,6 +409,16 @@ def api_text():
     results = {'results': [generate_text(prompt, settings)]}
     return jsonify(results)
 
+@app.route('/api/settings', methods=['GET'])
+def get_settings():
+    settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
+    try:
+        with open(settings_path) as f:
+            settngs_data = json.load(f)
+    except FileNotFoundError:
+        return jsonify({'error': 'Settings not found'}), 404
+    return jsonify(settngs_data)
+
 @app.route('/api/characters', methods=['GET'])
 def get_characters():
     characters = []
@@ -386,32 +434,33 @@ def get_characters():
 @app.route('/api/characters', methods=['POST'])
 def add_character():
     # Get the character information from the request
-    char_id = request.form.get('char_id')
-    name = request.form.get('char_name')
-    description = request.form.get('char_persona')
-    scenario = request.form.get('world_scenario')
-    greeting = request.form.get('char_greeting')
-    examples = request.form.get('example_dialogue')
+    fields = {
+        'char_id': 'char_id',
+        'name': 'name',
+        'personality': 'personality',
+        'description': 'description',
+        'scenario': 'scenario',
+        'first_mes': 'first_mes',
+        'mes_example': 'mes_example'
+    }
+    
     avatar = request.files['avatar']
+
     # Check if a file was uploaded and if it's allowed
     if avatar and allowed_file(avatar.filename):
         # Save the file with a secure filename
-        filename = secure_filename(str(char_id) + '.png')
+        filename = secure_filename(str(request.form.get('char_id')) + '.png')
         avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
         # Add the file path to the character information
         avatar = filename
+
     # Save the character information to a JSON file
-    character = {
-        'char_id': char_id,
-        'char_name': name,
-        'char_persona': description,
-        'world_scenario': scenario,
-        'char_greeting': greeting,
-        'example_dialogue': examples,
-        'avatar': avatar
-    }
-    with open(app.config['CHARACTER_FOLDER']+str(char_id)+'.json', 'a') as f:
+    character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
+    character['avatar'] = avatar
+
+    with open(os.path.join(app.config['CHARACTER_FOLDER'], f"{character['char_id']}.json"), 'a') as f:
         f.write(json.dumps(character))
+
     return jsonify({'message': 'Character added successfully', 'avatar': avatar})
 
 @app.route('/api/characters/<int:char_id>', methods=['GET'])
@@ -423,16 +472,6 @@ def get_character(char_id):
     except FileNotFoundError:
         return jsonify({'error': 'Character not found'}), 404
     return jsonify(character_data)
-
-@app.route('/api/settings', methods=['GET'])
-def get_settings():
-    settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
-    try:
-        with open(settings_path) as f:
-            settngs_data = json.load(f)
-    except FileNotFoundError:
-        return jsonify({'error': 'Settings not found'}), 404
-    return jsonify(settngs_data)
 
 @app.route('/api/characters/<int:char_id>', methods=['DELETE'])
 def delete_character(char_id):
@@ -449,12 +488,17 @@ def delete_character(char_id):
 @app.route('/api/characters/<int:char_id>', methods=['PUT'])
 def update_character(char_id):
     # Get the character information from the request
-    name = request.form.get('char_name')
-    description = request.form.get('char_persona')
-    scenario = request.form.get('world_scenario')
-    greeting = request.form.get('char_greeting')
-    examples = request.form.get('example_dialogue')
+    fields = {
+        'name': 'name',
+        'personality': 'personality',
+        'description': 'description',
+        'scenario': 'scenario',
+        'first_mes': 'first_mes',
+        'mes_example': 'mes_example'
+    }
+    
     avatar = request.files.get('avatar')
+    
     # Check if a file was uploaded and if it's allowed
     if avatar and allowed_file(avatar.filename):
         # Save the file with a secure filename
@@ -462,24 +506,28 @@ def update_character(char_id):
         avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
         # Add the file path to the character information
         avatar = filename
+
     # Load the existing character information from the JSON file
-    character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
+    character_path = os.path.join(app.config['CHARACTER_FOLDER'], f'{char_id}.json')
+
     try:
         with open(character_path, 'r') as f:
             character = json.load(f)
     except FileNotFoundError:
         return jsonify({'error': 'Character not found'}), 404
+
     # Update the character information
-    character['char_name'] = name
-    character['char_persona'] = description
-    character['world_scenario'] = scenario
-    character['char_greeting'] = greeting
-    character['example_dialogue'] = examples
+    for field_key, field_value in fields.items():
+        if request.form.get(field_key):
+            character[field_value] = request.form.get(field_key)
+
     if avatar:
         character['avatar'] = avatar
+
     # Save the updated character information to the JSON file
     with open(character_path, 'w') as f:
         json.dump(character, f)
+
     return jsonify({'message': 'Character updated successfully', 'avatar': avatar})
 
 @app.route('/api/conversation', methods=['POST'])
@@ -491,8 +539,8 @@ def save_conversation():
     char_name = conversation_data['messages'][0]['conversationName']
     
     # Create the 'conversations' directory if it doesn't exist
-    if not os.path.exists(app.config['SETTINGS_FOLDER'] +'conversations'):
-        os.makedirs('conversations')
+    if not os.path.exists(app.config['CONVERSATIONS_FOLDER']):
+        os.makedirs(app.config['CONVERSATIONS_FOLDER'])
     file_path = app.config['CONVERSATIONS_FOLDER'] + str(char_name) + '.json'
     try:
         with open(file_path, 'w') as file:
@@ -513,16 +561,56 @@ def get_conversation_names():
     return jsonify({"conversations": conversation_names})
 
 
-@app.route('/api/conversation/<conversation_name>', methods=['GET'])
-def get_conversation(conversation_name):
+@app.route('/api/conversation/<conversation_name>', methods=['GET', 'DELETE'])
+def conversation(conversation_name):
     convo_path = os.path.join(app.config['CONVERSATIONS_FOLDER'], f'{conversation_name}.json')
+
+    if request.method == 'DELETE':
+        try:
+            os.remove(convo_path)
+            return jsonify({'message': 'Conversation deleted successfully'})
+        except FileNotFoundError:
+            return jsonify({'error': 'Conversation not found'}), 404
+
     try:
         with open(convo_path) as f:
             convo_data = json.load(f)
+        return jsonify(convo_data)
     except FileNotFoundError:
         return jsonify({'error': 'Conversation not found'}), 404
-    return jsonify(convo_data)
 
+@app.route('/api/tavern-character', methods=['POST'])
+def upload_tavern_character():
+    char_id = request.form.get('char_id')
+    avatar = request.files['image']
+    # Check if a file was uploaded and if it's allowed
+    if avatar and allowed_file(avatar.filename):
+        # Save the file with a secure filename
+        filename = secure_filename(str(char_id) + '.png')
+        avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
+        # Add the file path to the character information
+        avatar = filename
+    try:
+        if avatar.endswith('.png'):
+            with open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], avatar), 'rb') as read_file:
+                img = read_file.read()
+                _json = import_tavern_character(img, char_id)
+            read_file.close()
+    except Exception as e:
+        print(f"Error saving character: {str(e)}")
+        return jsonify({'error': 'Character card failed to import'}), 500
+    return jsonify(_json)
+
+@app.route('/api/tavern-character/<int:char_id>', methods=['GET'])
+def download_tavern_character(char_id):
+    if(os.path.exists(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{char_id}.png'))):
+        return jsonify({'success': 'Character already exported'})
+    try:
+        export_tavern_character(char_id)
+    except Exception as e:
+        print(f"Error saving character: {str(e)}")
+        return jsonify({'error': 'Character card failed to export'}), 500
+    return jsonify({'success': 'Character card exported'})
 
 if args.share:
     from flask_cloudflared import _run_cloudflared

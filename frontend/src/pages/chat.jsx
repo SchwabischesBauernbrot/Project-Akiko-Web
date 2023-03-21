@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
-import Chatbox from '../assets/components/Chatbox'
-import Avatar from '../assets/components/Avatar'
-import ConversationSelector from '../assets/components/ConversationSelector'
+import Chatbox from '../assets/components/Chatbox';
+import Avatar from '../assets/components/Avatar';
+import ConversationSelector from '../assets/components/ConversationSelector';
+import DeleteChatButton from '../assets/components/DeleteChatButton';
 import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
+import "../assets/css/chat.css";
+
 const defaultChar = 1678727433070
 const Chat = () => {
 const [selectedCharacter, setSelectedCharacter] = useState(null);
 const [settings, setSettings] = useState(null);
 const [characterAvatar, setCharacterAvatar] = useState(null);
 const [selectedConversation, setSelectedConversation] = useState('');
+const [configuredEndpoint, setconfiguredEndpoint] = useState('localhost:5100/');
 
 const handleConversationSelect = (conversationName) => {
   setSelectedConversation(conversationName);
@@ -16,6 +20,7 @@ const handleConversationSelect = (conversationName) => {
 
 useEffect(() => {
     const fetchData = async () => {
+        setconfiguredEndpoint(localStorage.getItem('endpoint'));
         var selectedChar = localStorage.getItem('selectedCharacterId');
         setSettings(fetchSettings())
         if (selectedChar) {
@@ -37,12 +42,25 @@ useEffect(() => {
     }
     fetchData();
 }, []);
-  
+
+const handleDelete = () => {
+    setSelectedConversation('')
+    window.location.reload();
+}
+
 return (
 	<div>
 		<Avatar/>
-        <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter}/>
-		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={"endpoint"} convoName={selectedConversation}/>
+        <div className="chat-selection-menu">
+        <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
+        {selectedConversation && (
+            <DeleteChatButton
+                conversationName={selectedConversation}
+                onDelete={handleDelete}
+            />
+        )};
+        </div>
+		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} convoName={selectedConversation}/>
 	</div>
 );
 };

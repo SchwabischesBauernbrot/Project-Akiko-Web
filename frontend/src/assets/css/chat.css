@@ -1,0 +1,165 @@
+.message-box {
+height: 70vh;
+overflow-x: hidden;
+max-width: 750px;
+margin: 0 auto;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+padding: 10px;
+background-color: rgba(18, 18, 18, 0.737);
+border-radius: 10px;
+box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+backdrop-filter: blur(10px);
+margin-right: auto;
+margin-left: 0;
+margin-top: 30px;
+}
+
+.chat-select {
+width: min-content;
+background-color: rgba(11, 11, 11, 0.636);
+border-radius: 10px;
+box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+backdrop-filter: blur(10px);
+padding: 15px;
+color: white;
+overflow-y: scroll;
+flex-shrink: 0;
+}
+
+.chatbox-input-container {
+width: 100%;
+}
+
+.incoming-message,
+.outgoing-message {
+    min-width: 80px;
+    display: inline-flex;
+    color: rgb(255, 255, 255) !important;
+    text-align: left;
+}
+
+.incoming-avatar,
+.outgoing-avatar {
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	margin-right: 10px;
+	margin-top: 15px;
+	overflow: hidden;
+	flex-shrink: 0;
+	display: inline-flex;
+	object-fit: cover;
+}
+
+.incoming-avatar img,
+.outgoing-avatar img {
+height: 100%;
+width: 100%;
+object-fit: cover;
+}
+
+.message-info {
+display: flex;
+flex-direction: column;
+}
+
+.sender-name {
+margin: 0;
+display: inline-flex;
+align-items: end;
+font-weight: bold;
+margin: 15px 0 0 0;
+}
+
+.message-text {
+margin: 5px 0 0px 0;
+padding: 2px 0px;
+border-radius: 10px;
+position: left;
+word-break: break-word;
+}
+
+.message-text i {
+	font-style: italic; 
+	color: rgb(211, 211, 211);
+}
+
+.inputBox {
+overflow-x: hidden;
+max-width: 750px;
+margin: 0 auto;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+padding: 10px;
+background-color: rgba(11, 11, 11, 0.737);
+border-radius: 10px;
+box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+backdrop-filter: blur(10px);
+margin-right: auto;
+margin-left: 0;
+margin-top: 15px;
+}
+
+.send-input {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+
+#FiMenu:hover,
+#FiSend:hover,
+#FiSliders:hover{
+position: flex;
+flex-direction: row;
+width: 40px;
+cursor: pointer;
+color: rgb(255, 255, 255);
+font-size: 21px;
+}
+
+#input {
+box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+background-color: transparent;
+backdrop-filter: blur(10px);
+border-radius: 10px;
+padding: 10px;
+border: none;
+outline: none;
+color: white;
+word-wrap: normal;
+overflow-wrap: break-word;
+justify-content: flex-start;
+height: 50px;
+margin-left: 10px;
+}
+
+#input {
+width: 600px;
+cursor:text;
+}
+
+.chat-selection-menu{
+	display: flex;
+	gap: 20px; 
+}
+
+.chat-delete {
+	background-color: rgba(11, 11, 11, 0.636);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	padding: 10px;
+	border: none;
+	outline: none;
+	color: white;
+	word-wrap: normal;
+	justify-content: center;
+	cursor: pointer;
+}
+.chat-delete:hover {
+    background-color: rgba(179, 6, 6, 0.636);
+}

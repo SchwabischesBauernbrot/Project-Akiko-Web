@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FiUsers, FiSliders } from 'react-icons/fi';
 import { HiOutlinePaperAirplane } from 'react-icons/hi2';
-import AvatarChatPreview from './menucomponents/AvatarChatPreview';
 import Modal from './menucomponents/Modal'
 
 
@@ -14,7 +13,7 @@ const ChatboxInput = ({ onSend }) => {
   };
 
   const handleSendClick = () => {
-    onSend('You', text);
+    onSend(text);
     setText('');
   };
 
@@ -30,15 +29,15 @@ const ChatboxInput = ({ onSend }) => {
 
   return (
     <div>
-      <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen}>
-      This is Modal Content!
-    </Modal>
+      <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen} />
     <div className='inputBox'>
       <div className="send-input">
         <div id='FiMenu' onClick={() => setIsOpen(true)}>
           <FiUsers />
         </div>
-        <div id='FiSliders'><FiSliders/></div>
+        <div id='FiSliders' onClick={() => setIsOpen(true)}>
+          <FiSliders/>
+          </div>
         <input
           type="text"
           id='input' 
@@ -52,7 +51,7 @@ const ChatboxInput = ({ onSend }) => {
             }
           }}
         />
-        <div onClick={handleSendClick} id='send'><HiOutlinePaperAirplane/></div>
+        <div onClick={handleSendClick} id='FiSend'><HiOutlinePaperAirplane/></div>
       </div>
     </div>
     </div>

@@ -1,33 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { fetchConversations } from "./api";
+import Select from 'react-select';
+import {chatSelect} from './selectStyles.js'
 
 function ConversationSelector({ onConversationSelect, characterName, charAvatar }) {
   const [conversationNames, setConversationNames] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     const fetchConversationNames = async () => {
       const data = await fetchConversations(characterName);
-      setConversationNames(data);
+      setConversationNames(data.map((name, index) => ({ value: name, label: name, image: charAvatar })));
     };
     fetchConversationNames();
-  }, [characterName]);
+  }, [characterName, charAvatar]);
 
-  const handleChange = (event) => {
-    onConversationSelect(event.target.value);
+  const handleChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    onConversationSelect(selectedOption.value);
   };
+
+  const options = [
+    { value: '', label: 'New Chat', image: charAvatar },
+    ...conversationNames,
+  ];
 
   return (
     <div>
-      <select className='chat-select' onChange={handleChange}>
-      <option value="">New Chat</option>
-      {conversationNames.map((name, index) => (
-        <option key={index} value={name}>
-          {name}
-        </option>
-      ))}
-    </select>
+      <Select
+        options={options}
+        onChange={handleChange}
+        styles={chatSelect}
+        placeholder="Select a chat"
+        value={selectedOption}
+      />
     </div>
-
   );
 }
 
