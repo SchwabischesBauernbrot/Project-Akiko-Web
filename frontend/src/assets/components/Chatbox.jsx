@@ -34,7 +34,7 @@ function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
           const defaultMessage = {
             conversationName: newName,
             sender: selectedCharacter.name,
-            text: selectedCharacter.char_greeting.replace('<USER>', configuredName),
+            text: selectedCharacter.first_mes.replace('<USER>', configuredName),
             avatar: characterAvatar,
             isIncoming: true,
             timestamp: Date.now(),

@@ -2,24 +2,26 @@ import React from "react";
 import "../css/nav.css";
 import { HomeIcon, WrenchScrewdriverIcon, UserGroupIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { RxDiscordLogo } from 'react-icons/rx';
+import { Link } from 'react-router-dom';
+
 const Navbar = () => {
 return (
 	<div className="nav-buttons">
-		<button title='Home' id={'nav-button'} onClick={() => window.location.href = '/'}>
+		<Link  title='Home' id={'nav-button'} to='/'>
 			<HomeIcon/>
-		</button>
-		<button title='Chat' id={'nav-button'} onClick={() => window.location.href = '/chat'}>
+		</Link >
+		<Link  title='Chat' id={'nav-button'} to='/chat'>
 			<ChatBubbleLeftRightIcon/>
-		</button>
-		<button title='Characters' id={'nav-button'} onClick={() => window.location.href = '/characters'}>
+		</Link >
+		<Link  title='Characters' id={'nav-button'} to='/characters'>
 			<UserGroupIcon/>
-		</button>
-		<button title='Discord Bot' id={'nav-button'} onClick={() => window.location.href = '/discordbot'}>
+		</Link >
+		<Link  title='Discord Bot' id={'nav-button'} to='/discordbot'>
 			<RxDiscordLogo size={45}/>
-		</button>
-		<button title='Settings' id={'nav-button'} onClick={() => window.location.href = '/settings'}>
+		</Link >
+		<Link  title='Settings' id={'nav-button'} to='/settings'>
 			<WrenchScrewdriverIcon/>
-		</button>
+		</Link >
 	</div>
 );
 };

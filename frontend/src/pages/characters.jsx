@@ -4,6 +4,7 @@ import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter
 import { CharacterForm } from "../assets/components/CharacterForm";
 import { UpdateCharacterForm } from "../assets/components/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
+import { redirect } from 'react-router-dom';
 
 const Characters = () => {
   const [characters, setCharacters] = useState([]);
@@ -46,15 +47,15 @@ const Characters = () => {
       console.log("Selected Character set to:", item);
       window.location.href = '/chat';
     }
-  }
+  };
 
   const openModal = (character) => {
     setSelectedCharacter(character);
-  }
+  };
 
   const closeModal = () => {
     setSelectedCharacter(null);
-  }
+  };
 
   function addCharacter(newCharacter) {
     createCharacter(newCharacter)
@@ -65,7 +66,7 @@ const Characters = () => {
         console.error(error);
         //window.location.href = '/error';
       });
-  }
+  };
 
   function editCharacter(updatedCharacter) {
     updateCharacter(updatedCharacter)
@@ -80,7 +81,7 @@ const Characters = () => {
         console.error(error);
         //window.location.href = '/error';
       });
-  }  
+  }; 
 
   const delCharacter = async (character) => {
     setCharacterToDelete(character);
@@ -99,7 +100,8 @@ const Characters = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+
   const refresh = async () => {
     try {
       fetchAndSetCharacters();
@@ -107,18 +109,18 @@ const Characters = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
 return (
   <div>
     <div className="character-buttons">
-      <button id="character-button" onClick={refresh} alt="Refresh Character List">
+      <button id="character-button" onClick={refresh} title="Refresh Character List">
         <ArrowPathIcon className="w-6 h-6"/>
       </button>
-      <button id="character-button" onClick={() => setShowForm(true)} alt="Create Character">
+      <button id="character-button" onClick={() => setShowForm(true)} title="Create Character">
         <PlusCircleIcon className="w-6 h-6"/>
       </button>
-      <label htmlFor="character-image-input" id="character-button" alt="Import Character Card" style={{ cursor: 'pointer' }}>
+      <label htmlFor="character-image-input" id="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
         <ArrowUpTrayIcon className="w-6 h-6"/>
       </label>
       <input
@@ -141,22 +143,22 @@ return (
           <h2><b>{character.name}</b></h2>
           <img
             src={getCharacterImageUrl(character.avatar)}
-            alt={character.name}
+            title={character.name}
             id="character-avatar"
             onClick={() => openModal(character)}
           />
-          <button id="character-close" onClick={() => delCharacter(character)} alt="Delete Character">
+          <button id="character-close" onClick={() => delCharacter(character)} title="Delete Character">
             <TrashIcon className="w-6 h-6"/>
           </button>
           <button
               id="character-select"
               onClick={() => selectCharacter(character)}
-              alt="Select Character"
+              title="Select Character"
             >
               {/* ... SVG for the select character button */}
               <b>Select Character</b>
           </button>
-          <button id="character-submit" onClick={() => openModal(character)} alt="View Character Details">
+          <button id="character-submit" onClick={() => openModal(character)} title="View Character Details">
             <InformationCircleIcon className="w-6 h-6"/>
           </button> 
         </div>
