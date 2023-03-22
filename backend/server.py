@@ -628,11 +628,10 @@ def get_modules():
 
 @app.route('/api/advanced-character/<char_id>', methods=['GET'])
 def get_advanced_default(char_id):
-    try:
-        if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', 'default.png'))):
-            imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', 'default.png')
-            return jsonify({'success': 'Character card exported', 'path': imagePath})
-    except Exception as e:
+    if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', 'default.png'))):
+        imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', 'default.png')
+        return jsonify({'success': 'Character card exported', 'path': imagePath})
+    else:
         return jsonify({'failure': 'Character does not have an default emotion image.'})
     
 
