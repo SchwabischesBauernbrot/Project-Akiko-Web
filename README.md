@@ -3,6 +3,7 @@
 ## Quick Links:
 - Suggestions Form: https://forms.gle/pahKwy73D6DzCaJV8
 - Trello Board: https://trello.com/b/muwhUyM9/main-app
+- Discord Server: https://discord.gg/Pdhd7dEqHp
 # Planned Features:
 ## Backend Features:
 - Connect to Kobold, Ooba, horde, or use Akiko's own backend. With Pygmalion and LLaMA support.
