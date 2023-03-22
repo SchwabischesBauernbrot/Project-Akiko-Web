@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Chatbox from '../assets/components/Chatbox';
+import Chatbox from '../assets/components/ChatBox';
 import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
-import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
+import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/Api";
 import "../assets/css/chat.css";
 
 const defaultChar = 'Vapor'
@@ -48,7 +48,7 @@ const handleDelete = () => {
 }
 
 return (
-	<div>
+	<div className="container">
         <div className="chat-selection-menu">
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (

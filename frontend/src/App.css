@@ -1,12 +1,11 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   text-align: center;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 4em;
+  padding: 1em;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -17,15 +16,6 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
@@ -33,7 +23,9 @@
 }
 
 .card {
-  padding: 2em;
+  max-width: 80%;
+  padding: 1em;
+  margin: 0 auto;
 }
 
 .read-the-docs {
@@ -41,7 +33,7 @@
 }
 
 .mainframe {
-  height: calc(90vh);
+  height: calc(80vh);
   overflow-x: hidden;
   max-width: 800px;
   margin: 0 auto;
@@ -57,5 +49,5 @@
   flex-direction: column;
   padding: 10px;
   margin-right: auto;
-  margin-left: 0;
+  margin-left: auto;
 }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FiSave, FiImage } from 'react-icons/fi';
 
 export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
   const [characterName, setCharacterName] = useState('');
@@ -40,21 +41,34 @@ function handleSubmit(event) {
   function handleImageChange(event) {
     const file = event.target.files[0];
     if (file) {
+      const imageUrl = URL.createObjectURL(file);
       setCharacterAvatar(file);
-      setImageUrl(URL.createObjectURL(file));
+      setImageUrl(imageUrl);
+    } else {
+      setCharacterAvatar(null);
+      setImageUrl(null);
     }
   }
+  
   return (
     <div className="modal-overlay">
       <div className="character-form">
         <span className="close" onClick={onClose}>&times;</span>
         <h2>Create New Character</h2>
         <form onSubmit={handleSubmit}>
+        <label htmlFor="avatar-field">{!imageUrl && <FiImage id="avatar-default"/>} {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar"/>}</label>
+        <input
+          id="avatar-field"
+          type="file"
+          name="characterAvatar"
+          accept="image/*"
+          onChange={handleImageChange}
+          required
+        />
           <div className="character-input">
-            {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar"/>}
             <label htmlFor="characterName"><b>Name:</b></label>
             <textarea
-              id="character-field"
+              className="character-field"
               value={characterName}
               type="text"
               onChange={(event) => setCharacterName(event.target.value)}
@@ -62,50 +76,43 @@ function handleSubmit(event) {
             />
             <label htmlFor="characterDescription"><b>Summary:</b></label>
             <textarea
-              id="character-field"
+              className="character-field"
               value={characterPersonality}
               onChange={(event) => setcharacterPersonality(event.target.value)}
             />
             <label htmlFor="characterDescription"><b>Description:</b></label>
             <textarea
-              id="character-field"
+              className="character-field"
               value={characterDescription}
               type="text"
               onChange={(event) => setCharacterDescription(event.target.value)}
             />
             <label htmlFor="characterScenario"><b>Scenario:</b></label>
             <textarea
-              id="character-field"
+              className="character-field"
               value={characterScenario}
               type="text"
               onChange={(event) => setCharacterScenario(event.target.value)}
             />
             <label htmlFor="characterGreeting"><b>Greeting:</b></label>
             <textarea
-              id="character-field"
+              className="character-field"
               value={characterGreeting}
               type="text"
               onChange={(event) => setCharacterGreeting(event.target.value)}
             />
             <label htmlFor="characterExamples"><b>Dialogue Examples:</b></label>
             <textarea
-              id="character-field"
+              className="character-field"
               value={characterExamples}
               type="text"
               onChange={(event) => setCharacterExamples(event.target.value)}
             />
-            <label htmlFor="characterAvatar"><b>Avatar:</b></label>
-            <input
-              id="character-field"
-              type="file"
-              name="characterAvatar"
-              accept="image/*"
-              onChange={handleImageChange}
-              required
-            />
+            <div className="form-bottom-buttons">
             <button type="submit" id="character-submit">
-              <b>Create</b>
+              <FiSave size={35}/>
             </button>
+            </div>
           </div>
         </form>
       </div>

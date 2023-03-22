@@ -149,9 +149,6 @@ app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 
-
-extensions = []
-
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 def import_tavern_character(img, char_id):
@@ -211,17 +208,6 @@ def require_module(name):
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
-
-def load_extensions():
-    for match in glob("./extensions/*/"):
-        manifest_path = os.path.join(match, 'manifest.json')
-        if os.path.exists(manifest_path):
-            name = os.path.basename(os.path.normpath(match))
-            with open(manifest_path, 'r', encoding='utf8') as f:
-                manifest_content = f.read()
-            manifest = json.loads(manifest_content)
-            if set(manifest['requires']).issubset(set(modules)):
-                extensions.append({'name': name, 'metadata': manifest})
 
 
 # AI stuff
@@ -314,6 +300,12 @@ def generate_text(prompt: str, settings: dict) -> str:
         return results
     else:
         return {'text': "This is an empty message. Something went wrong. Please check your code!"}
+
+
+################################
+##### START OF CORE ROUTES #####
+################################
+
 
 @app.before_request
 # Request time measuring
@@ -410,15 +402,14 @@ def api_text():
     return jsonify(results)
 
 
-@app.route('/api/settings', methods=['GET'])
-def get_settings():
-    settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
-    try:
-        with open(settings_path) as f:
-            settngs_data = json.load(f)
-    except FileNotFoundError:
-        return jsonify({'error': 'Settings not found'}), 404
-    return jsonify(settngs_data)
+##############################
+##### END OF CORE ROUTES #####
+##############################
+
+
+##################################
+##### BASIC CHARACTER ROUTES #####
+##################################
 
 
 @app.route('/api/characters', methods=['GET'])
@@ -537,6 +528,15 @@ def update_character(char_id):
     return jsonify({'message': 'Character updated successfully', 'avatar': avatar})
 
 
+#########################################
+##### END OF BASIC CHARACTER ROUTES #####
+#########################################
+
+
+############################
+#### COVERSATION ROUTES ####
+############################
+
 @app.route('/api/conversation', methods=['POST'])
 def save_conversation():
     conversation_data = request.get_json()
@@ -586,6 +586,16 @@ def conversation(conversation_name):
         return jsonify(convo_data)
     except FileNotFoundError:
         return jsonify({'error': 'Conversation not found'}), 404
+    
+
+###################################
+#### END OF COVERSATION ROUTES ####
+###################################
+
+
+###############################
+#### CHARACTER CARD ROUTES ####
+###############################
 
 
 @app.route('/api/tavern-character', methods=['POST'])
@@ -622,18 +632,46 @@ def download_tavern_character(char_id):
         return jsonify({'error': 'Character card failed to export'}), 500
     return jsonify({'success': 'Character card exported'})
 
+
+######################################
+#### END OF CHARACTER CARD ROUTES ####
+######################################
+
+
+###################################
+#### ADVANCED CHARACTER ROUTES ####
+###################################
+
+
+@app.route('/api/advanced-character/<char_id>/<emotion>', methods=['GET'])
+def get_advanced_emotion(char_id, emotion):
+    if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'{emotion}.png'))):
+        imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion}.png')
+        return jsonify({'success': 'Character emotion found', 'path': imagePath})
+    else:
+        return jsonify({'failure': 'Character does not have an image for this emotion.'})
+    
+
+##########################################
+#### END OF ADVANCED CHARACTER ROUTES ####
+##########################################
+
+
 @app.route('/api/modules', methods=['GET'])
 def get_modules():
     return jsonify({'modules': modules})
 
-@app.route('/api/advanced-character/<char_id>', methods=['GET'])
-def get_advanced_default(char_id):
-    if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', 'default.png'))):
-        imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', 'default.png')
-        return jsonify({'success': 'Character card exported', 'path': imagePath})
-    else:
-        return jsonify({'failure': 'Character does not have an default emotion image.'})
-    
+@app.route('/api/settings', methods=['GET'])
+def get_settings():
+    settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
+    try:
+        with open(settings_path) as f:
+            settngs_data = json.load(f)
+    except FileNotFoundError:
+        return jsonify({'error': 'Settings not found'}), 404
+    return jsonify(settngs_data)
+
+
 
 if args.share:
     from flask_cloudflared import _run_cloudflared
@@ -647,5 +685,4 @@ if args.share:
         cloudflare = _run_cloudflared(port)
     print("Running on", cloudflare)
 
-load_extensions()
 app.run(host=host, port=port)

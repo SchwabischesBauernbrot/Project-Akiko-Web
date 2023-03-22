@@ -1,4 +1,4 @@
-#character-field {
+.character-field {
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	background-color: rgb(48, 46, 46);
 	backdrop-filter: blur(10px);
@@ -16,7 +16,7 @@
 	flex-direction: column;
   }
   
-  #character-field textarea {
+  .character-field textarea {
 	width: 100%;
 	height: fit-content;
 	min-height: 50px;
@@ -29,7 +29,7 @@
 	resize: none;
   }
   
-  #character-field textarea:focus {
+  .character-field textarea:focus {
 	outline: none;
 	box-shadow: none;
   }
@@ -47,13 +47,35 @@
 	margin-bottom: 15px;
 }
 
+#character-info {
+	background-color: rgba(11, 11, 11, 0.636);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	padding: 10px;
+	width: 15%;
+	border: none;
+	outline: none;
+	color: white;
+	word-wrap: normal;
+	justify-content: center;
+	height: auto;
+	cursor: pointer;
+	bottom: 20px;
+	right: 20px;
+	position: absolute;
+}
+#character-info:hover {
+    background-color: rgb(6, 136, 168);
+}
+
 #character-submit {
 	background-color: rgba(11, 11, 11, 0.636);
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	border-radius: 10px;
 	padding: 10px;
-	width: 15%;
+	width: 7%;
 	border: none;
 	outline: none;
 	color: white;
@@ -98,6 +120,7 @@
 	backdrop-filter: blur(10px);
 	padding: 10px;
 	width: 15%;
+	height: 15%;
 	border: none;
 	outline: none;
 	color: white;
@@ -161,6 +184,29 @@
 	object-fit: cover;
 }
 
+#avatar-default {
+	padding: 10px;
+	word-wrap:break-word;
+	height: 350px;
+	width: 350px;
+	cursor: pointer;
+	border-radius: 10%;
+	overflow: hidden;
+	margin-right: auto;
+	margin-left: auto;
+	background-color: rgba(11, 11, 11, 0.636);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+#avatar-field {
+	position: absolute;
+	clip: rect(0,0,0,0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+  }
+
 .character-display {
 	padding-top: 20px;
 	display: grid;
@@ -190,9 +236,13 @@
 }
 
 .character-buttons {
+	justify-content: center;
+	margin-right: auto;
+	margin-left: auto;
 	display: flex;
-	margin-top: 30px;
-	gap: 20px; 
+	flex-direction: row;
+	margin-top: 2%;
+	gap: 5%; 
 }
 
 #character-button {

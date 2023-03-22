@@ -14,6 +14,7 @@ const ChatboxInput = ({ onSend }) => {
   const handleSendClick = () => {
     onSend(text, messageImage);
     setText('');
+    setMessageImage(null);
   };
 
   const handleImageUpload = async (file) => {
@@ -32,7 +33,7 @@ const ChatboxInput = ({ onSend }) => {
   return (
     <div>
       <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen} />
-    <div className='inputBox'>
+    <div className='input-box'>
       <div className="send-input">
         <div id='FiMenu' onClick={() => setIsOpen(true)}>
           <FiUsers />

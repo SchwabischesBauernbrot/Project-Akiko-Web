@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { fetchAdvancedCharacterDefault } from "./api";
+import { fetchAdvancedCharacterEmotion } from "./Api";
 function Avatar ({selectedCharacter, emotion}){
   const [currentAvatarImage, setCurrentAvatarImage] = useState(null)
   useEffect(() => {
     const findAvatar = async () =>{
-      const data = await fetchAdvancedCharacterDefault(selectedCharacter);
+      const data = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion);
       console.log(data)
       if(data !== null){
         setCurrentAvatarImage(data);
       }
     }    
     findAvatar();
-  }, [selectedCharacter]);
+  }, [selectedCharacter, emotion]);
 
   return (
     <div>

@@ -9,21 +9,22 @@ function Settings() {
   useEffect(() => {
     var localOption = localStorage.getItem('endpointType');
     if (localOption != null){
-      setSelectedOption(localOption);
+      setSelectedOption({value: localOption, label: localOption});
       setInputValue(localStorage.getItem('endpoint'));
     }
   }, []);
 
   return (
-    <div>
-      <div className="endpoint-select">
+    <div className='settings-panel'>
+      <h1>Settings</h1>
+      <div className="settings-box" id='endpoint'>
+        <h2>Endpoint Selection</h2>
         <EndpointSelector
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           inputValue={inputValue}
           setInputValue={setInputValue}
         />
-        {/* The rest of the elements */}
       </div>
     </div>
   );

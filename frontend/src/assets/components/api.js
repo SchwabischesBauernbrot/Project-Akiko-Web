@@ -137,7 +137,7 @@ export async function exportTavernCharacter(charId) {
 }
 
 
-export async function fetchAdvancedCharacterDefault(character) {
-  const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}`);
+export async function fetchAdvancedCharacterEmotion(character, emotion) {
+  const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
   return response.data['path'];
 }

@@ -167,3 +167,12 @@ body {
 .close:hover {
     color: rgba(179, 6, 6, 0.636);
 }
+
+.container {
+ margin-left: 15%;
+ margin-right: 15%;
+}
+
+.form-bottom-buttons {
+	margin-top: 5%;
+}

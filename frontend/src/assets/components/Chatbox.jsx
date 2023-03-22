@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
-import { saveConversation, fetchConversation } from "./api";
-import { characterTextGen } from "./chatapi";
+import { saveConversation, fetchConversation } from "./Api";
+import { characterTextGen } from "./ChatApi";
 import { getBase64 } from "./miscfunctions";
 
 function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
   const [characterAvatar, setCharacterAvatar] = useState(null);
-  const [conversationName, setConversationName] = useState('')
-  const [configuredName, setconfiguredName] = useState('You')
-  const [invalidActionPopup, setInvalidActionPopup] = useState(false)
-  
+  const [conversationName, setConversationName] = useState('');
+  const [configuredName, setconfiguredName] = useState('You');
+  const [invalidActionPopup, setInvalidActionPopup] = useState(false);
+  const [currentEmotion, setCurrentEmotion] = useState('default');
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
 
   useEffect(() => {
@@ -115,7 +115,7 @@ function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
   return (
     <>
     {selectedCharacter && (
-      <Avatar selectedCharacter={selectedCharacter}/>
+      <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
     <div className="chatbox-wrapper">
       <div className="message-box">
@@ -135,9 +135,7 @@ function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
       ))}
       <div ref={messagesEndRef}></div>
       </div>
-      <div className="chatbox-input-container">
-        <ChatboxInput onSend={handleUserMessage} />
-      </div>
+      <ChatboxInput onSend={handleUserMessage} />
       {invalidActionPopup && (
         <div className="modal-overlay">
           <div className="modal-small-box">

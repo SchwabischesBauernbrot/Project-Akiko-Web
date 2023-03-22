@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../assets/css/character.css";
-import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter, updateCharacter, uploadTavernCharacter } from "../assets/components/api";
+import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter, updateCharacter, uploadTavernCharacter } from "../assets/components/Api";
 import { CharacterForm } from "../assets/components/CharacterForm";
 import { UpdateCharacterForm } from "../assets/components/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
@@ -19,6 +19,8 @@ const Characters = () => {
 
   const fetchAndSetCharacters = async () => {
     try {
+      const storedCharacters = localStorage.getItem('characters');
+      setCharacters(JSON.parse(storedCharacters));
       const data = await fetchCharacters();
       setCharacters(data);
       localStorage.setItem('characters', JSON.stringify(data));
@@ -109,7 +111,7 @@ const Characters = () => {
   };
 
 return (
-  <div>
+  <div className="container">
     <div className="character-buttons">
       <button id="character-button" onClick={refresh} title="Refresh Character List">
         <ArrowPathIcon className="w-6 h-6"/>
@@ -152,10 +154,9 @@ return (
               onClick={() => selectCharacter(character)}
               title="Select Character"
             >
-              {/* ... SVG for the select character button */}
               <b>Select Character</b>
           </button>
-          <button id="character-submit" onClick={() => openModal(character)} title="View Character Details">
+          <button id="character-info" onClick={() => openModal(character)} title="View Character Details">
             <InformationCircleIcon className="w-6 h-6"/>
           </button> 
         </div>

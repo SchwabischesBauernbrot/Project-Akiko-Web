@@ -11,10 +11,13 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
     const handleConnectClick = () => {
         localStorage.setItem('endpointType', selectedOption.value);
         localStorage.setItem('endpoint', inputValue);
+        setSelectedOption(localStorage.getItem('endpointType', inputValue));
       };
+
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
       };
+    
     const getDefaultInputValue = (option) => {
         switch (option) {
           case 'Kobold':
@@ -22,17 +25,15 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
           case 'OobaTextUI':
             return 'https://localhost:7861/';
           case 'AkikoBackend':
-            return 'https://localhost:5100/';
-          default:
-            return '';
+            return 'https://localhost:5100/' ;
         }
       };
-  
+    
     const options = [
         { value: 'Kobold', label: 'Kobold' },
         { value: 'OobaTextUI', label: 'OobaTextUI' },
         { value: 'AkikoBackend', label: 'AkikoBackend' },
-      ];
+    ];
   
     return (
         <div>
@@ -42,7 +43,7 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
         value={selectedOption}
         onChange={handleOptionChange}
         styles={endpointSelect}
-        placeholder="Click to select a Text Generation Source"
+        placeholder={selectedOption}
         />
         {selectedOption && (
             <input
