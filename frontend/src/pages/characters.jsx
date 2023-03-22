@@ -144,6 +144,7 @@ return (
         onClose={() => setShowForm(false)}
       />
     )}
+    {characters &&
     <div className="character-display">
       {characters.map((character) => (
         <div key={character.char_id} className="character-info-box">
@@ -170,6 +171,7 @@ return (
         </div>
       ))}
     </div>
+    }
     {selectedCharacter && (
       <UpdateCharacterForm
             character={selectedCharacter}
