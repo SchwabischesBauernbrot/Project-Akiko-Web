@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Chatbox from '../assets/components/Chatbox';
-import Avatar from '../assets/components/Avatar';
 import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
 import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
 import "../assets/css/chat.css";
 
-const defaultChar = 1678727433070
+const defaultChar = 'Vapor'
 const Chat = () => {
 const [selectedCharacter, setSelectedCharacter] = useState(null);
 const [settings, setSettings] = useState(null);
@@ -15,13 +14,13 @@ const [selectedConversation, setSelectedConversation] = useState('');
 const [configuredEndpoint, setconfiguredEndpoint] = useState('localhost:5100/');
 
 const handleConversationSelect = (conversationName) => {
-  setSelectedConversation(conversationName);
+  setSelectedConversation(conversationName || null); // Set to null if conversationName is empty
 };
 
 useEffect(() => {
     const fetchData = async () => {
         setconfiguredEndpoint(localStorage.getItem('endpoint'));
-        var selectedChar = localStorage.getItem('selectedCharacterId');
+        var selectedChar = localStorage.getItem('selectedCharacter');
         setSettings(fetchSettings())
         if (selectedChar) {
             selectedChar = await fetchCharacter(selectedChar);
@@ -50,7 +49,6 @@ const handleDelete = () => {
 
 return (
 	<div>
-		<Avatar/>
         <div className="chat-selection-menu">
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (

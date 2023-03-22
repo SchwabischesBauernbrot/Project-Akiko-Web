@@ -12,7 +12,7 @@ const DeleteChatButton = ({ conversationName, onDelete }) => {
   };
 
   return (
-    <button className='chat-delete' onClick={handleClick}>Delete Chat</button>
+    <button className='chat-delete' onClick={handleClick}>Delete Selected Chat</button>
   );
 };
 

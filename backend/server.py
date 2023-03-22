@@ -1,7 +1,7 @@
 from functools import wraps
 import io
 from flask import Flask, jsonify, request, render_template_string, abort, send_from_directory
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import argparse
 from transformers import AutoTokenizer, AutoProcessor, pipeline
 from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
@@ -145,6 +145,7 @@ app.config['CONVERSATIONS_FOLDER'] = '../frontend/src/shared_data/conversations/
 app.config['CHARACTER_FOLDER'] = '../frontend/src/shared_data/character_info/'
 app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_images/'
 app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
+app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 
@@ -211,13 +212,12 @@ def require_module(name):
         return decorated_view
     return wrapper
 
-
 def load_extensions():
     for match in glob("./extensions/*/"):
         manifest_path = os.path.join(match, 'manifest.json')
         if os.path.exists(manifest_path):
             name = os.path.basename(os.path.normpath(match))
-            with open(manifest_path, 'r') as f:
+            with open(manifest_path, 'r', encoding='utf8') as f:
                 manifest_content = f.read()
             manifest = json.loads(manifest_content)
             if set(manifest['requires']).issubset(set(modules)):
@@ -409,6 +409,7 @@ def api_text():
     results = {'results': [generate_text(prompt, settings)]}
     return jsonify(results)
 
+
 @app.route('/api/settings', methods=['GET'])
 def get_settings():
     settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
@@ -418,6 +419,7 @@ def get_settings():
     except FileNotFoundError:
         return jsonify({'error': 'Settings not found'}), 404
     return jsonify(settngs_data)
+
 
 @app.route('/api/characters', methods=['GET'])
 def get_characters():
@@ -431,7 +433,9 @@ def get_characters():
     # return the list of characters as a JSON response
     return jsonify(characters)
 
+
 @app.route('/api/characters', methods=['POST'])
+@cross_origin()
 def add_character():
     # Get the character information from the request
     fields = {
@@ -463,7 +467,8 @@ def add_character():
 
     return jsonify({'message': 'Character added successfully', 'avatar': avatar})
 
-@app.route('/api/characters/<int:char_id>', methods=['GET'])
+
+@app.route('/api/characters/<char_id>', methods=['GET'])
 def get_character(char_id):
     character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
     try:
@@ -473,7 +478,8 @@ def get_character(char_id):
         return jsonify({'error': 'Character not found'}), 404
     return jsonify(character_data)
 
-@app.route('/api/characters/<int:char_id>', methods=['DELETE'])
+
+@app.route('/api/characters/<char_id>', methods=['DELETE'])
 def delete_character(char_id):
     character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
     image_path = app.config['CHARACTER_IMAGES_FOLDER'] + str(char_id) + '.png'
@@ -485,7 +491,7 @@ def delete_character(char_id):
     return jsonify({'message': 'Character deleted successfully'})
 
 
-@app.route('/api/characters/<int:char_id>', methods=['PUT'])
+@app.route('/api/characters/<char_id>', methods=['PUT'])
 def update_character(char_id):
     # Get the character information from the request
     fields = {
@@ -530,6 +536,7 @@ def update_character(char_id):
 
     return jsonify({'message': 'Character updated successfully', 'avatar': avatar})
 
+
 @app.route('/api/conversation', methods=['POST'])
 def save_conversation():
     conversation_data = request.get_json()
@@ -549,6 +556,7 @@ def save_conversation():
     except Exception as e:
         print(f"Error saving conversation: {str(e)}")
         return jsonify({'status': 'error', 'message': 'An error occurred while saving the conversation.'}), 500
+
 
 @app.route('/api/conversations', methods=['GET'])
 def get_conversation_names():
@@ -579,6 +587,7 @@ def conversation(conversation_name):
     except FileNotFoundError:
         return jsonify({'error': 'Conversation not found'}), 404
 
+
 @app.route('/api/tavern-character', methods=['POST'])
 def upload_tavern_character():
     char_id = request.form.get('char_id')
@@ -601,7 +610,8 @@ def upload_tavern_character():
         return jsonify({'error': 'Character card failed to import'}), 500
     return jsonify(_json)
 
-@app.route('/api/tavern-character/<int:char_id>', methods=['GET'])
+
+@app.route('/api/tavern-character/<char_id>', methods=['GET'])
 def download_tavern_character(char_id):
     if(os.path.exists(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{char_id}.png'))):
         return jsonify({'success': 'Character already exported'})
@@ -611,6 +621,20 @@ def download_tavern_character(char_id):
         print(f"Error saving character: {str(e)}")
         return jsonify({'error': 'Character card failed to export'}), 500
     return jsonify({'success': 'Character card exported'})
+
+@app.route('/api/modules', methods=['GET'])
+def get_modules():
+    return jsonify({'modules': modules})
+
+@app.route('/api/advanced-character/<char_id>', methods=['GET'])
+def get_advanced_default(char_id):
+    try:
+        if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', 'default.png'))):
+            imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', 'default.png')
+            return jsonify({'success': 'Character card exported', 'path': imagePath})
+    except Exception as e:
+        return jsonify({'failure': 'Character does not have an default emotion image.'})
+    
 
 if args.share:
     from flask_cloudflared import _run_cloudflared

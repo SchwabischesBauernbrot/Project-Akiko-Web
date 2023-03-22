@@ -9,6 +9,7 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
   const [characterGreeting, setCharacterGreeting] = useState(character.first_mes);
   const [characterExamples, setCharacterExamples] = useState(character.mes_example);
   const [characterAvatar, setCharacterAvatar] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
     setCharacterName(character.name);
@@ -17,6 +18,7 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
     setCharacterScenario(character.scenario);
     setCharacterGreeting(character.first_mes);
     setCharacterExamples(character.mes_example);
+    setImageUrl(null);
   }, [character]);
 
   function handleSubmit(event) {
@@ -37,7 +39,14 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
     onUpdateCharacter(updatedCharacter);
     onClose();
   };
-
+  function handleImageChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+      setCharacterAvatar(file);
+      setImageUrl(URL.createObjectURL(file));
+    }
+  }
+  
   return (
     <div className="modal-overlay">
     <div className="character-form">
@@ -46,12 +55,19 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
       <form onSubmit={handleSubmit}>
         <div className="character-input">
           {character.avatar && (
-          <img src={getCharacterImageUrl(character.avatar)} alt="Current avatar" id="character-avatar"/>
+          <>
+            {imageUrl !== null ? (
+              <img src={imageUrl} alt="New avatar" id="character-avatar" />
+            ) : (
+              <img src={getCharacterImageUrl(character.avatar)} title="Current avatar" id="character-avatar" />
+            )}
+          </>
           )}
           <label htmlFor="characterName"><b>Name:</b></label>
           <textarea
             id="character-field"
             value={characterName}
+            type="text"
             onChange={(event) => setCharacterName(event.target.value)}
             required
           />
@@ -59,30 +75,35 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
           <textarea
             id="character-field"
             value={characterPersonality}
+            type="text"
             onChange={(event) => setcharacterPersonality(event.target.value)}
           />
           <label htmlFor="characterDescription"><b>Description:</b></label>
           <textarea
             id="character-field"
             value={characterDescription}
+            type="text"
             onChange={(event) => setCharacterDescription(event.target.value)}
           />
           <label htmlFor="characterScenario"><b>Scenario:</b></label>
           <textarea
             id="character-field"
             value={characterScenario}
+            type="text"
             onChange={(event) => setCharacterScenario(event.target.value)}
           />
           <label htmlFor="characterGreeting"><b>Greeting:</b></label>
           <textarea
             id="character-field"
             value={characterGreeting}
+            type="text"
             onChange={(event) => setCharacterGreeting(event.target.value)}
           />
           <label htmlFor="characterExamples"><b>Dialogue Examples:</b></label>
           <textarea
             id="character-field"
             value={characterExamples}
+            type="text"
             onChange={(event) => setCharacterExamples(event.target.value)}
           />
           <label htmlFor="characterAvatar"><b>Avatar:</b></label>
@@ -91,7 +112,7 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
           type="file"
           name="characterAvatar"
           accept="image/*"
-          onChange={(event) => setCharacterAvatar(event.target.files[0])}
+          onChange={handleImageChange}
           />
           <div className="character-buttons">            
             <button type="submit" id="character-submit">

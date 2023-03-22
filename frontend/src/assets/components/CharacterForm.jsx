@@ -56,6 +56,7 @@ function handleSubmit(event) {
             <textarea
               id="character-field"
               value={characterName}
+              type="text"
               onChange={(event) => setCharacterName(event.target.value)}
               required
             />
@@ -69,24 +70,28 @@ function handleSubmit(event) {
             <textarea
               id="character-field"
               value={characterDescription}
+              type="text"
               onChange={(event) => setCharacterDescription(event.target.value)}
             />
             <label htmlFor="characterScenario"><b>Scenario:</b></label>
             <textarea
               id="character-field"
               value={characterScenario}
+              type="text"
               onChange={(event) => setCharacterScenario(event.target.value)}
             />
             <label htmlFor="characterGreeting"><b>Greeting:</b></label>
             <textarea
               id="character-field"
               value={characterGreeting}
+              type="text"
               onChange={(event) => setCharacterGreeting(event.target.value)}
             />
             <label htmlFor="characterExamples"><b>Dialogue Examples:</b></label>
             <textarea
               id="character-field"
               value={characterExamples}
+              type="text"
               onChange={(event) => setCharacterExamples(event.target.value)}
             />
             <label htmlFor="characterAvatar"><b>Avatar:</b></label>

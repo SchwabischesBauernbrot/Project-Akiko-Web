@@ -6,16 +6,18 @@ import Home from './pages'
 import Chat from './pages/chat'
 import Characters from './pages/characters'
 import Settings from './pages/settings'
+import DiscordBot from './pages/discordbot'
 function App() {
 
   return (
       <Router>
       <FrontNav />
       <Routes>
-        <Route exact path='/' element={<Home />} />
+        <Route exact path='/' element={<Home/>} />
         <Route path='/chat' element={<Chat/>} />
         <Route path='/characters' element={<Characters/>} />
         <Route path='/settings' element={<Settings/>} />
+        <Route path='/discordbot' element={<DiscordBot/>} />
       </Routes>
       </Router>
   )

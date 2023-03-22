@@ -5,7 +5,7 @@ import { Live2DModel } from 'pixi-live2d-display';
 // reference window.PIXI.Ticker to automatically update Live2D models
 window.PIXI = PIXI;
 
-(async function Model {
+(async function Model({selectedCharacter, emotion}) {
     const app = new PIXI.Application({
         view: document.getElementById('canvas'),
     });

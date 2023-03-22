@@ -12,6 +12,7 @@ function ConversationSelector({ onConversationSelect, characterName, charAvatar 
       const data = await fetchConversations(characterName);
       setConversationNames(data.map((name, index) => ({ value: name, label: name, image: charAvatar })));
     };
+    handleChange({ value: '', label: 'New Chat', image: charAvatar })
     fetchConversationNames();
   }, [characterName, charAvatar]);
 

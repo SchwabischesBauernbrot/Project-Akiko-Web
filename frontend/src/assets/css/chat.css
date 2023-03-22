@@ -109,7 +109,7 @@ justify-content: space-between;
 align-items: center;
 }
 
-
+#FiImage:hover,
 #FiMenu:hover,
 #FiSend:hover,
 #FiSliders:hover{
@@ -148,6 +148,7 @@ cursor:text;
 }
 
 .chat-delete {
+	margin-top: 10px;
 	background-color: rgba(11, 11, 11, 0.636);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
@@ -162,4 +163,52 @@ cursor:text;
 }
 .chat-delete:hover {
     background-color: rgba(179, 6, 6, 0.636);
+}
+
+.chat-create {
+	margin-top: 10px;
+	background-color: rgba(11, 11, 11, 0.636);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	padding: 10px;
+	border: none;
+	outline: none;
+	color: white;
+	word-wrap: normal;
+	justify-content: center;
+	cursor: pointer;
+}
+.chat-create:hover {
+    background-color: rgb(6, 136, 168);
+}
+
+.sent-image {
+	padding: 10px;
+	word-wrap:break-word;
+	cursor: pointer;
+	height: 350px;
+	border-radius: 10%;
+	overflow: hidden;
+	margin-right: auto;
+	margin-left: auto;
+	object-fit: cover;
+}
+
+.select-button {
+	background-color: rgba(6, 136, 168, 0.308);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	border-radius: 10px;
+	padding: 15px;
+	border: none;
+	outline: none;
+	color: white;
+	word-wrap: normal;
+	justify-content: center;
+	cursor: pointer;
+}
+.select-button:hover {
+    background-color: rgb(6, 136, 168);
 }

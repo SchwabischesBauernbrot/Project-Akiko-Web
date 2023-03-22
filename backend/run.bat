@@ -1,2 +1,2 @@
-python server.py
+python server.py --enable-modules=caption
 pause

@@ -30,7 +30,6 @@ rem Activate the virtual environment
 call venv\Scripts\activate
 
 rem Install the required packages
-pip install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt
 rem clear console
 cls

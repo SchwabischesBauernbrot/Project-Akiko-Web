@@ -4,7 +4,6 @@ import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter
 import { CharacterForm } from "../assets/components/CharacterForm";
 import { UpdateCharacterForm } from "../assets/components/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
-import { redirect } from 'react-router-dom';
 
 const Characters = () => {
   const [characters, setCharacters] = useState([]);
@@ -39,8 +38,8 @@ const Characters = () => {
   const selectCharacter = async (character) => {
     const charId = character.char_id;
     // Save char_id to localStorage
-    localStorage.setItem("selectedCharacterId", charId);
-    const item = localStorage.getItem("selectedCharacterId");
+    localStorage.setItem("selectedCharacter", charId);
+    const item = localStorage.getItem("selectedCharacter");
     if (item === null) {
       console.log("Character selection failed.");
     } else {
@@ -68,13 +67,11 @@ const Characters = () => {
       });
   };
 
-  function editCharacter(updatedCharacter) {
+  const editCharacter = async (updatedCharacter) => {
     updateCharacter(updatedCharacter)
       .then(() => {
         const updatedCharacters = characters.map((c) => c.char_id === updatedCharacter.char_id ? updatedCharacter : c);
         setCharacters(updatedCharacters);
-        closeModal();
-        fetchAndSetCharacters();
         window.location.reload();
       })
       .catch(error => {
@@ -173,15 +170,15 @@ return (
     )}
     {showDeleteModal && (
     <div className="modal-overlay">
-    <div className="modal-small-box">
-    <h2>Delete Character</h2>
-    <p>Are you sure you want to delete {characterToDelete.name}?</p>
-    <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-    <button className="cancel-button" onClick={handleDelete}>Delete</button>
+      <div className="modal-small-box">
+        <h2>Delete Character</h2>
+        <p>Are you sure you want to delete {characterToDelete.name}?</p>
+        <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+        <button className="cancel-button" onClick={handleDelete}>Delete</button>
+      </div>
     </div>
+   )}
   </div>
-  )}
-</div>
 );
 };
 

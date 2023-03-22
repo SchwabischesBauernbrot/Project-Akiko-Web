@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { FiUsers, FiSliders } from 'react-icons/fi';
+import { FiUsers, FiSliders, FiImage } from 'react-icons/fi';
 import { HiOutlinePaperAirplane } from 'react-icons/hi2';
 import Modal from './menucomponents/Modal'
-
 
 const ChatboxInput = ({ onSend }) => {
   const [text, setText] = useState('');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
+  const [messageImage, setMessageImage] = useState(null)
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
 
   const handleSendClick = () => {
-    onSend(text);
+    onSend(text, messageImage);
     setText('');
   };
 
+  const handleImageUpload = async (file) => {
+    setMessageImage(file);
+  }
   const handleProfileClose = () => {
     setIsProfileOpen(false);
   };
@@ -37,7 +39,11 @@ const ChatboxInput = ({ onSend }) => {
         </div>
         <div id='FiSliders' onClick={() => setIsOpen(true)}>
           <FiSliders/>
-          </div>
+        </div>
+        <label htmlFor='image-upload'>
+          <FiImage id='FiImage'/>
+        </label>
+        <input id="image-upload" title="Upload Image" type="file" accept="image/" onChange={(e) => handleImageUpload(e.target.files[0])} style={{ display: 'none' }}/>
         <input
           type="text"
           id='input' 
