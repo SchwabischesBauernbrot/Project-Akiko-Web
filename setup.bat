@@ -3,4 +3,4 @@
 git pull
 
 start cmd /k "cd frontend && npm i && npm run dev"
-start cmd /k "cd backend && pip install -r requirements.txt && python server.py --enable-modules=caption"
+start cmd /k "cd backend && pip install -r requirements.txt && python server.py"
