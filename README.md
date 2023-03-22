@@ -45,8 +45,9 @@ This feature and it's components will be optional.
 - Custom Chat Settings are also available on the discord bot.
 # Current State of the UI (Obviously WIP submit suggestions to the form above):
 ## Character Page:
-![Screenshot 2023-03-21 015337](https://user-images.githubusercontent.com/26259870/226623736-89d098db-7011-413a-901c-460c588e0d91.png)
-![image3](https://user-images.githubusercontent.com/26259870/226003595-9aa603c6-823d-4427-8ed9-0607a4923322.png)
+![CharacterInProgress](https://user-images.githubusercontent.com/26259870/227011566-218b32c5-1560-449a-8730-369b5795357c.png)
+![EditCharacter](https://user-images.githubusercontent.com/26259870/227012186-af8086eb-ac14-4fc4-a545-f64a7fe56793.png)
+![CharacterCreation](https://user-images.githubusercontent.com/26259870/227012171-2fbd333b-27b4-469b-9377-bdbefe5f447b.png)
 ![image5](https://user-images.githubusercontent.com/26259870/226003654-17564e32-9177-4d9d-9dad-b21a79f90c5b.png)
 ## Chat Page: 
 ![Image7](https://user-images.githubusercontent.com/26259870/226624977-41d4179e-1d42-4558-8fb9-01fa4f4c1b5b.png)
