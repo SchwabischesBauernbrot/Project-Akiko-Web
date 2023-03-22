@@ -19,16 +19,24 @@ const Characters = () => {
 
   const fetchAndSetCharacters = async () => {
     try {
-      const storedCharacters = localStorage.getItem('characters');
-      setCharacters(JSON.parse(storedCharacters));
+      try {
+        const storedCharacters = localStorage.getItem('characters');
+        setCharacters(JSON.parse(storedCharacters));
+      } catch {
+        console.log("No characters in local storage.");
+      }
       const data = await fetchCharacters();
       setCharacters(data);
       localStorage.setItem('characters', JSON.stringify(data));
     } catch (error) {
       console.error(error);
-      //window.location.href = '/error';
-      const storedCharacters = localStorage.getItem('characters');
-      setCharacters(JSON.parse(storedCharacters));
+      if(localStorage.getItem('characters') === null) {
+        console.log("No characters in local storage.");
+      }else{
+        console.log("Characters loaded from local storage.");
+        const storedCharacters = localStorage.getItem('characters');
+        setCharacters(JSON.parse(storedCharacters));
+      }
     }
   };
 
