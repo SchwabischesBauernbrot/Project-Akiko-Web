@@ -50,4 +50,6 @@ This feature and it's components will be optional.
 ![CharacterCreation](https://user-images.githubusercontent.com/26259870/227012171-2fbd333b-27b4-469b-9377-bdbefe5f447b.png)
 ![image5](https://user-images.githubusercontent.com/26259870/226003654-17564e32-9177-4d9d-9dad-b21a79f90c5b.png)
 ## Chat Page: 
-![Image7](https://user-images.githubusercontent.com/26259870/226624977-41d4179e-1d42-4558-8fb9-01fa4f4c1b5b.png)
+![ChatPage](https://user-images.githubusercontent.com/26259870/227012749-82832b93-c213-4f9f-bfde-6442a9a78ad3.png)
+![ImageSending](https://user-images.githubusercontent.com/26259870/227012765-b5efb063-5355-4368-b7f0-df25f4fe048a.png)
+
