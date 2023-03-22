@@ -11,6 +11,10 @@
 - Long-term and Short Term memory summarization.
 - Image captioning.
 - Stable Diffusion (probably).
+## Full Guide to Language Model Config, Character Creation, and more:
+- Character Creation
+- Character Card Import/Export
+- Guide Page full of info for creating characters in every available style, AliChat, W++, and more.
 ## Chat with Characters:
 - Character creation and character management with exports to Character Cards (TavernCardPNG).
 - Chat with your favorite Character through a polished UI. 
