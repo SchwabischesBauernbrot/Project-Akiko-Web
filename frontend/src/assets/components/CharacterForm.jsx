@@ -108,10 +108,10 @@ function handleSubmit(event) {
               type="text"
               onChange={(event) => setCharacterExamples(event.target.value)}
             />
-            <div className="form-bottom-buttons">
-            <button type="submit" id="character-submit">
-              <FiSave className="react-icon"/>
-            </button>
+            <div className="form-bottom-buttons"> 
+              <button className="character-button" type="submit" id="character-submit">
+                <FiSave className="react-icon"/>
+              </button>
             </div>
           </div>
         </form>

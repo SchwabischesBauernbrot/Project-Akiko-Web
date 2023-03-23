@@ -126,10 +126,10 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
             onChange={(event) => setCharacterExamples(event.target.value)}
           />
           <div className="form-bottom-buttons">            
-            <button type="submit" id="character-submit">
+            <button className="character-button" type="submit" id="character-submit">
               <FiSave className="react-icon"/>
             </button>
-            <button id="character-download" alt="Download Character" onClick={handleDownload}>
+            <button className="character-button" id="character-download" alt="Download Character" onClick={handleDownload}>
               <FiDownload className="react-icon"/>
             </button>
           </div>

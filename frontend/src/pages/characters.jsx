@@ -4,6 +4,7 @@ import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter
 import { CharacterForm } from "../assets/components/CharacterForm";
 import { UpdateCharacterForm } from "../assets/components/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
+import CharacterInfoBox from "../assets/components/CharacterInfoBox";
 
 const Characters = () => {
   const [characters, setCharacters] = useState([]);
@@ -121,13 +122,13 @@ const Characters = () => {
 return (
   <div className="container">
     <div className="character-buttons">
-      <button id="character-button" onClick={refresh} title="Refresh Character List">
+      <button className="character-button" onClick={refresh} title="Refresh Character List">
         <ArrowPathIcon className="heroIcon"/>
       </button>
-      <button id="character-button" onClick={() => setShowForm(true)} title="Create Character">
+      <button className="character-button" onClick={() => setShowForm(true)} title="Create Character">
         <PlusCircleIcon className="heroIcon"/>
       </button>
-      <label htmlFor="character-image-input" id="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
+      <label htmlFor="character-image-input" className="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
         <ArrowUpTrayIcon className="heroIcon"/>
       </label>
       <input
@@ -147,28 +148,7 @@ return (
     {characters &&
     <div className="character-display">
       {characters.map((character) => (
-        <div key={character.char_id} className="character-info-box">
-          <h2><b>{character.name}</b></h2>
-          <img
-            src={getCharacterImageUrl(character.avatar)}
-            title={character.name}
-            id="character-avatar"
-            onClick={() => openModal(character)}
-          />
-          <button id="character-close" onClick={() => delCharacter(character)} title="Delete Character">
-            <TrashIcon className="w-6 h-6"/>
-          </button>
-          <button
-              id="character-select"
-              onClick={() => selectCharacter(character)}
-              title="Select Character"
-            >
-              <b>Select Character</b>
-          </button>
-          <button id="character-info" onClick={() => openModal(character)} title="View Character Details">
-            <InformationCircleIcon className="w-6 h-6"/>
-          </button> 
-        </div>
+        <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
       ))}
     </div>
     }
