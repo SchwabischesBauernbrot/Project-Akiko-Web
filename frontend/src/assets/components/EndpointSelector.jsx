@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { endpointSelect } from './selectStyles.js';
 
 const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setInputValue }) => {
     const handleOptionChange = (selectedOption) => {
@@ -14,18 +13,31 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
         setSelectedOption(localStorage.getItem('endpointType', inputValue));
       };
 
+    function ensureUrlFormat(str) {
+        let url;
+        try {
+          url = new URL(str);
+        } catch (error) {
+          // If the provided string is not a valid URL, create a new URL
+          url = new URL(`http://${str}/`);
+        }
+      
+        return url.href;
+      }
+    
     const handleInputChange = (e) => {
-        setInputValue(e.target.value);
+        const url = ensureUrlFormat(e.target.value)
+        setInputValue(url);
       };
     
     const getDefaultInputValue = (option) => {
         switch (option) {
           case 'Kobold':
-            return 'https://localhost:5000/';
+            return 'http://localhost:5000/';
           case 'OobaTextUI':
-            return 'https://localhost:7861/';
+            return 'http://localhost:7861/';
           case 'AkikoBackend':
-            return 'https://localhost:5100/' ;
+            return 'http://localhost:5100/' ;
         }
       };
     
@@ -42,7 +54,6 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
         options={options}
         value={selectedOption}
         onChange={handleOptionChange}
-        styles={endpointSelect}
         placeholder={selectedOption}
         />
         {selectedOption && (

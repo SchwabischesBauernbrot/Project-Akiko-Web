@@ -8,19 +8,19 @@ const Navbar = () => {
 return (
 	<div className="nav">
 		<Link  title='Home' id={'nav-button'} to='/'>
-			<HomeIcon/>
+			<HomeIcon className="heroicon"/>
 		</Link >
 		<Link  title='Chat' id={'nav-button'} to='/chat'>
-			<ChatBubbleLeftRightIcon/>
+			<ChatBubbleLeftRightIcon className="heroicon"/>
 		</Link >
 		<Link  title='Characters' id={'nav-button'} to='/characters'>
-			<UserGroupIcon/>
+			<UserGroupIcon className="heroicon"/>
 		</Link >
 		<Link  title='Discord Bot' id={'nav-button'} to='/discordbot'>
-			<RxDiscordLogo size={45}/>
+			<RxDiscordLogo className="react-icon"/>
 		</Link >
 		<Link  title='Settings' id={'nav-button'} to='/settings'>
-			<WrenchScrewdriverIcon/>
+			<WrenchScrewdriverIcon className="heroicon"/>
 		</Link >
 	</div>
 );

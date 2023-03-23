@@ -175,8 +175,8 @@
 	padding: 10px;
 	word-wrap:break-word;
 	cursor: pointer;
-	height: 350px;
-	width: 350px;
+	height: 21.875em;
+	width: 21.875em;
 	border-radius: 10%;
 	overflow: hidden;
 	margin-right: auto;
@@ -187,8 +187,8 @@
 #avatar-default {
 	padding: 10px;
 	word-wrap:break-word;
-	height: 350px;
-	width: 350px;
+	height: 21.875em;
+	width: 21.875em;
 	cursor: pointer;
 	border-radius: 10%;
 	overflow: hidden;
@@ -241,7 +241,7 @@
 	margin-left: auto;
 	display: flex;
 	flex-direction: row;
-	margin-top: 2%;
+	margin-top: .6rem;
 	gap: 5%; 
 }
 
@@ -250,9 +250,8 @@
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
-	border-radius: 10px;
-	padding: 15px;
-	width: 5%;
+	padding: .7em;
+	width: 4rem;
 	border: none;
 	outline: none;
 	color: white;
@@ -262,4 +261,51 @@
 }
 #character-button:hover {
     background-color: rgb(6, 136, 168);
+}
+
+/* For tablets and smaller devices */
+@media only screen and (min-width: 401px) and (max-width: 896px) {
+	.character-display {
+		padding-top: 1rem;
+		gap: 1rem; /* set the gap between the columns */
+	  }
+	.character-info-box h2{
+		font-size: 20px;
+	}
+	#avatar-default {
+		padding: 10px;
+		height: 15rem;
+		width: 15rem;
+	}
+	.character-form {
+		margin-top: 0;
+		margin-right: 0;
+		margin-left: 0;
+		width: 100%;
+		padding: .5em;
+	}
+}
+
+/* For mobile devices */
+@media only screen and (max-width: 400px) {
+	.character-display {
+		padding-top: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr)); /* set the column width and make them flexible */
+		gap: 1rem; /* set the gap between the columns */
+	  }
+	.character-info-box h2{
+		font-size: 20px;
+	}
+	#avatar-default {
+		padding: 10px;
+		height: 15rem;
+		width: 15rem;
+	}
+	.character-form {
+		margin-top: 0;
+		margin-right: 0;
+		margin-left: 0;
+		width: 100%;
+		padding: .5em;
+	}
 }

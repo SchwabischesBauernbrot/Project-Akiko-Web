@@ -49,7 +49,6 @@ const handleDelete = () => {
 
 return (
 	<div className="container">
-        <div className="chat-selection-menu">
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (
             <DeleteChatButton
@@ -57,7 +56,6 @@ return (
                 onDelete={handleDelete}
             />
         )};
-        </div>
 		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} convoName={selectedConversation}/>
 	</div>
 );

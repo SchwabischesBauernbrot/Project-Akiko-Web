@@ -65,3 +65,39 @@
 .connect-button:hover {
     background-color: rgb(6, 136, 168);
 }
+
+/* For tablets and smaller devices */
+@media only screen and (min-width: 401px) and (max-width: 896px) {
+	.settings-panel {
+		flex-direction: row;
+		margin-top: 3%;
+		border-radius: 0;
+		padding: 1%;
+		margin-left: 0;
+		margin-right: 0;
+	  }
+	  .settings-box {
+		margin-top: 5rem;
+		border-radius: 10px;
+		padding: 1%;
+		width: 100%;
+	  }
+}
+
+/* For mobile devices */
+@media only screen and (max-width: 400px) {
+	.settings-panel {
+		flex-direction: row;
+		margin-top: 3%;
+		border-radius: 0;
+		padding: 1%;
+		margin-left: 0;
+		margin-right: 0;
+	  }
+	  .settings-box {
+		margin-top: 5rem;
+		border-radius: 10px;
+		padding: 1%;
+		width: 100%;
+	  }
+}

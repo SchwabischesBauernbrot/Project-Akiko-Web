@@ -110,7 +110,7 @@ function handleSubmit(event) {
             />
             <div className="form-bottom-buttons">
             <button type="submit" id="character-submit">
-              <FiSave size={35}/>
+              <FiSave className="react-icon"/>
             </button>
             </div>
           </div>

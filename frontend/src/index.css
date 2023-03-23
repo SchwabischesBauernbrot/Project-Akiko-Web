@@ -48,10 +48,17 @@ body {
   background-attachment: fixed;
   background-size: cover;
 	font-family: "Noto Sans", "Noto Color Emoji", sans-serif; 
-	font-size:15px; /*1rem*/
+	font-size:16px; /*1rem*/
 	color: var(--ivory);
 	
 }
+@media (max-width: 900px) {
+	html { font-size: 16px; }
+  }
+  
+  @media (max-width: 400px) {
+	html { font-size: 12px; }
+  }
 
 @media screen and (max-width: 450px) {	
     body {
@@ -60,6 +67,12 @@ body {
 	 overflow-x: hidden; 
     }
 }
+
+@media only screen and (min-width: 480px) and (max-width: 768px) {
+    .content {
+        width: 100%;
+    }
+ }
 
 ::-webkit-scrollbar {
     width: 0.6em;   
@@ -88,11 +101,12 @@ body {
 }
 
 .modal-small-box {
-	margin-top: 30px;
 	margin-right: auto;
 	margin-left: auto;
-	width: 25%;
-	height: 15%;
+	width: 90%; /* use % */
+	max-width: 25rem; /* set a maximum width */
+	height: auto; /* use auto to maintain aspect ratio */
+	min-height: 10rem;
 	background-color: rgba(11, 11, 11, 0.636);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
@@ -105,7 +119,7 @@ body {
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 10px;
-	width: 15%;
+	width: auto;
 	border: none;
 	outline: none;
 	color: white;
@@ -127,7 +141,7 @@ body {
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 10px;
-	width: 15%;
+	width: auto;
 	border: none;
 	outline: none;
 	color: white;
@@ -159,7 +173,7 @@ body {
 
 .close {
 	color: #aaaaaa;
-	margin-top: 5%;
+	margin-top: 5rem;
 	float: right;
 	font-size: 28px;
 	font-weight: bold;
@@ -169,10 +183,29 @@ body {
 }
 
 .container {
- margin-left: 15%;
- margin-right: 15%;
+	margin-left: 15rem; /* converted from 15% */
+	margin-right: 15rem; /* converted from 15% */
 }
 
 .form-bottom-buttons {
-	margin-top: 5%;
+	margin-top: 7rem; /* converted from 5% */
+}
+
+.react-icon,
+.heroicon {
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (min-width: 281px) and (max-width: 896px) {
+	.container {
+		margin-left: 0;
+		margin-right: 0; 
+	}
+}
+@media only screen and (max-width: 280px) {
+	.container {
+		margin-left: 0;
+		margin-right: 0; 
+	}
 }

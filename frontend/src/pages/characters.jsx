@@ -122,13 +122,13 @@ return (
   <div className="container">
     <div className="character-buttons">
       <button id="character-button" onClick={refresh} title="Refresh Character List">
-        <ArrowPathIcon className="w-6 h-6"/>
+        <ArrowPathIcon className="heroIcon"/>
       </button>
       <button id="character-button" onClick={() => setShowForm(true)} title="Create Character">
-        <PlusCircleIcon className="w-6 h-6"/>
+        <PlusCircleIcon className="heroIcon"/>
       </button>
       <label htmlFor="character-image-input" id="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
-        <ArrowUpTrayIcon className="w-6 h-6"/>
+        <ArrowUpTrayIcon className="heroIcon"/>
       </label>
       <input
         type="file"

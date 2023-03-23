@@ -127,10 +127,10 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
           />
           <div className="form-bottom-buttons">            
             <button type="submit" id="character-submit">
-              <FiSave size={35}/>
+              <FiSave className="react-icon"/>
             </button>
             <button id="character-download" alt="Download Character" onClick={handleDownload}>
-              <FiDownload size={35}/>
+              <FiDownload className="react-icon"/>
             </button>
           </div>
         </div>

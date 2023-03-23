@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchConversations } from "./Api";
 import Select from 'react-select';
-import {chatSelect} from './selectStyles.js'
-import { PlusCircleIcon } from '@heroicons/react/24/outline'
 
 function ConversationSelector({ onConversationSelect, characterName, charAvatar }) {
   const [conversationNames, setConversationNames] = useState([]);
@@ -32,7 +30,6 @@ function ConversationSelector({ onConversationSelect, characterName, charAvatar 
     <Select
       options={options}
       onChange={handleChange}
-      styles={chatSelect}
       placeholder="Select a chat"
       value={selectedOption}
     />

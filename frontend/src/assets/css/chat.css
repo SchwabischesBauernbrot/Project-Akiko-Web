@@ -17,23 +17,23 @@ margin-top: 30px;
 }
 
 .input-box {
-	overflow-x: hidden;
-	max-width: 750px;
-	margin: 0 auto;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	padding: 10px;
-	background-color: rgba(11, 11, 11, 0.737);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(10px);
-	margin-right: auto;
-	margin-left: 0;
-	margin-top: 15px;
+overflow-x: hidden;
+max-width: 750px;
+margin: 0 auto;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+padding: 10px;
+background-color: rgba(11, 11, 11, 0.737);
+border-radius: 10px;
+box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+backdrop-filter: blur(10px);
+margin-right: auto;
+margin-left: 0;
+margin-top: 15px;
 }
 
-.chat-select {
+.chat-selection-menu {
 width: min-content;
 background-color: rgba(11, 11, 11, 0.636);
 border-radius: 10px;
@@ -138,11 +138,6 @@ width: 600px;
 cursor:text;
 }
 
-.chat-selection-menu{
-	display: flex;
-	gap: 20px; 
-}
-
 .chat-delete {
 	margin-top: 10px;
 	background-color: rgba(11, 11, 11, 0.636);
@@ -213,4 +208,50 @@ cursor:text;
 }
 .select-button:hover {
     background-color: rgb(6, 136, 168);
+}
+
+/* For tablets and smaller devices */
+@media only screen and (min-width: 417px) and (max-width: 896px) {
+	.message-box {
+		width: 100%;
+		padding: .5rem;
+		margin-right: auto;
+		margin-left: auto;
+	}
+	.input-box {
+		width: 100%;
+		padding: .5rem;
+		margin-right: auto;
+		margin-left: auto;
+		position: relative;
+		box-sizing: border-box;
+	}
+}
+
+/* For mobile devices */
+@media only screen and (max-width: 416px) {
+	.input-box {
+		width: 100%;
+		margin: 0;
+		margin-right: 0;
+		margin-left: 0;
+		margin-top: 0;
+		position: fixed; 
+		bottom: 0; 
+		left: 0;
+		box-sizing: border-box;
+		border-radius: 0;
+		backdrop-filter: none;
+	}
+	.message-box {
+		width: 100%;
+		margin: 0;
+		padding: .5rem;
+		margin-right: 0;
+		margin-left: 0;
+		margin-top: 0;
+		padding-bottom: calc(.5rem + 56px);
+		border-radius: 0;
+		backdrop-filter: none;
+	}
 }
