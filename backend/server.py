@@ -137,7 +137,7 @@ if 'text' in modules:
 
 # Flask init
 app = Flask(__name__)
-CORS(app) # allow cross-domain requests
+cors = CORS(app, resources={r"/*": {"origins": "*"}}) # allow cross-domain requests
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
 app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
