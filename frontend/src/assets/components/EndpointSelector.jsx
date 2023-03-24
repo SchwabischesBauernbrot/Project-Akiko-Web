@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
+import "../css/settings.css";
 
-const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setInputValue }) => {
+const EndpointSelector = () => {
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [inputValue, setInputValue] = useState('');
+
+    useEffect(() => {
+      var localOption = localStorage.getItem('endpointType');
+      if (localOption != null){
+        setSelectedOption({value: localOption, label: localOption});
+        setInputValue(localStorage.getItem('endpoint'));
+      }
+    }, []);
+
     const handleOptionChange = (selectedOption) => {
       setSelectedOption(selectedOption);
       setInputValue(getDefaultInputValue(selectedOption.value));
@@ -27,10 +39,6 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
         return url.href;
       }
     
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-      };
-    
     const getDefaultInputValue = (option) => {
         switch (option) {
           case 'Kobold':
@@ -40,7 +48,7 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
           case 'AkikoBackend':
             return 'http://localhost:5100/' ;
           default:
-            return '';
+            return 'http://localhost:5100/';
         }
       };
     
@@ -51,7 +59,10 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
     ];
   
     return (
-        <div>
+        <div className="settings-box" id='endpoint'>
+          <h2>Endpoint Selection</h2>
+          <div id='endpoint-container'>
+        <form onSubmit={handleConnectClick}>
         <Select
         id="options"
         options={options}
@@ -64,13 +75,15 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
             id="inputValue"
             type="text"
             value={inputValue}
-            onChange={handleInputChange}
+            onChange={(event) => setInputValue(event.target.value)}
             placeholder={getDefaultInputValue(selectedOption.value)}
             />
         )}
         {selectedOption && (
-            <button className="connect-button" onClick={handleConnectClick}>Connect</button>
+            <button className="connect-button" type="submit">Connect</button>
         )}
+        </form>
+        </div>
         </div>
     );
   };
