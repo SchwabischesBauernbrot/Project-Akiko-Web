@@ -12,7 +12,7 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
         setInputValue(url);
         localStorage.setItem('endpointType', selectedOption.value);
         localStorage.setItem('endpoint', inputValue);
-        setSelectedOption(localStorage.getItem('endpointType', inputValue));
+        setSelectedOption(localStorage.getItem('endpointType'), localStorage.getItem('endpoint'));
       };
 
     function ensureUrlFormat(str) {
