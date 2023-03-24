@@ -212,6 +212,11 @@ cursor:text;
 
 /* For tablets and smaller devices */
 @media only screen and (min-width: 417px) and (max-width: 896px) {
+	#input {
+		width: 60rem;
+		cursor:text;
+		font-size: 20px;
+	}
 	.message-box {
 		width: 100%;
 		padding: .5rem;
@@ -225,11 +230,17 @@ cursor:text;
 		margin-left: auto;
 		position: relative;
 		box-sizing: border-box;
+		font-size: 20px;
 	}
 }
 
 /* For mobile devices */
 @media only screen and (max-width: 416px) {
+	#input {
+		width: 60rem;
+		cursor:text;
+		font-size: 20px;
+	}
 	.input-box {
 		width: 100%;
 		margin: 0;
@@ -242,6 +253,7 @@ cursor:text;
 		box-sizing: border-box;
 		border-radius: 0;
 		backdrop-filter: none;
+		font-size: 20px;
 	}
 	.message-box {
 		width: 100%;

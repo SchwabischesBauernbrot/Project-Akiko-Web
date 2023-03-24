@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5100/api';
+const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
 
@@ -95,7 +95,6 @@ export const saveConversation = async (selectedCharacter, updatedMessages) => {
     console.error('Error saving conversation:', error);
   }
 }
-
 
 export async function fetchConversations(character) {
   const response = await axios.get(`${API_URL}/conversations`);

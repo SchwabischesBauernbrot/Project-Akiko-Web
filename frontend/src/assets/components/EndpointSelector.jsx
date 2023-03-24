@@ -8,6 +8,8 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
     };
     
     const handleConnectClick = () => {
+        const url = ensureUrlFormat(inputValue)
+        setInputValue(url);
         localStorage.setItem('endpointType', selectedOption.value);
         localStorage.setItem('endpoint', inputValue);
         setSelectedOption(localStorage.getItem('endpointType', inputValue));
@@ -26,8 +28,7 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
       }
     
     const handleInputChange = (e) => {
-        const url = ensureUrlFormat(e.target.value)
-        setInputValue(url);
+        setInputValue(e.target.value);
       };
     
     const getDefaultInputValue = (option) => {
@@ -38,6 +39,8 @@ const EndpointSelector = ({ selectedOption, setSelectedOption, inputValue, setIn
             return 'http://localhost:7861/';
           case 'AkikoBackend':
             return 'http://localhost:5100/' ;
+          default:
+            return '';
         }
       };
     

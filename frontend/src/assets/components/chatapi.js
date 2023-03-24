@@ -1,14 +1,40 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5100/api';
-const AVATARS_FOLDER = 'src/shared_data/character_images';
-const EXPORTS_FOLDER = 'src/shared_data/exports';
+const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
+
+const kobold_defaults = {
+  'max_new_tokens': 200,
+  'do_sample': true,
+  'temperature': 0.6,
+  'top_p': 0.9,
+  'typical_p': 1,
+  'repetition_penalty': 1.05,
+  'top_k': 40,
+  'min_length': 10,
+  'no_repeat_ngram_size': 0,
+  'num_beams': 1,
+  'penalty_alpha': 0,
+  'length_penalty': 1,
+  'early_stopping': false,
+}
 
 function parseTextEnd(text) {
     return text.split("\n").map(line => line.trim());
   }
   
-  export async function characterTextGen(character, history, endpoint, image, configuredName) {
+  export async function characterTextGen(character, history, endpoint, endpointType, image, configuredName) {
+    let customSettings = null;
+    try{
+      customSettings = localStorage.getItem('customSettings');
+      if(customSettings){
+        const parsedSettings = JSON.parse(customSettings);
+        Object.keys(parsedSettings).forEach(key => {
+          kobold_defaults[key] = parsedSettings[key];
+        })
+      }
+    } catch (error) {
+      console.log(error);
+    }
     let imgText = null;
     if(image !== null){
       imgText = await handleImageSend(image, configuredName)
@@ -16,8 +42,7 @@ function parseTextEnd(text) {
     const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\n Example Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
     const convo = 'Current Conversation:\n' + history + (imgText ? imgText : '') +'\n';
     const createdPrompt = basePrompt + convo + character.name + ':';
-    const kobold = endpoint + 'api/v1/generate/';
-    const response = await axios.post(kobold, { prompt: createdPrompt });
+    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings === null ? kobold_defaults : customSettings });
   
     const generatedText = response.data.results[0];
     const parsedText = parseTextEnd(generatedText.text);

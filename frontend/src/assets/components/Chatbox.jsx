@@ -5,7 +5,7 @@ import { saveConversation, fetchConversation } from "./Api";
 import { characterTextGen } from "./ChatApi";
 import { getBase64 } from "./miscfunctions";
 
-function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
+function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
   const [characterAvatar, setCharacterAvatar] = useState(null);
   const [conversationName, setConversationName] = useState('');
@@ -95,7 +95,7 @@ function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
     .join('\n');
 
     // Make API call
-    const generatedText = await characterTextGen(selectedCharacter, history, endpoint, image, configuredName);
+    const generatedText = await characterTextGen(selectedCharacter, history, endpoint, endpointType, image, configuredName);
 
     // Add new incoming message to state
     const now = new Date();
@@ -128,7 +128,7 @@ function Chatbox({ selectedCharacter, endpoint, convoName, charAvatar}) {
             <p className="sender-name">{message.sender}</p>
             <p className="message-text" dangerouslySetInnerHTML={{__html: message.text.replace(/\*(.*?)\*/g, '<i>$1</i>')}}></p>
             {message.image && (
-              <img className="sent-image" src={message.image} alt="User image" />
+              <img className="sent-image" src={message.image} alt="User image"/>
             )}
           </div>
         </div>

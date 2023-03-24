@@ -3,6 +3,7 @@ import io
 from flask import Flask, jsonify, request, render_template_string, abort, send_from_directory
 from flask_cors import CORS, cross_origin
 import argparse
+import requests
 from transformers import AutoTokenizer, AutoProcessor, pipeline
 from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
 from transformers import BlipForConditionalGeneration, GPT2Tokenizer
@@ -385,26 +386,35 @@ def api_keywords():
     return jsonify({'keywords': keywords})
 
 
-@app.route('/api/text', methods=['POST'])
-@require_module('text')
-def api_text():
-    data = request.get_json()
-    if 'prompt' not in data or not isinstance(data['prompt'], str):
-        abort(400, '"prompt" is required')
-
-    settings = DEFAULT_TEXT_PARAMS.copy()
-
-    if 'settings' in data and isinstance(data['settings'], dict):
-        settings.update(data['settings'])
-    
-    prompt = data['prompt']
-    results = {'results': [generate_text(prompt, settings)]}
-    return jsonify(results)
-
-
 ##############################
 ##### END OF CORE ROUTES #####
 ##############################
+
+#################################
+##### TEXT GEN API HANDLING #####
+#################################
+
+@app.route('/api/textgen/<endpointType>', methods=['POST'])
+@cross_origin()
+def textgen(endpointType):
+    data = request.get_json()
+    endpoint = data['endpoint']
+    requests.put(f"{endpoint}/config", json=data['settings'])
+    if(endpointType == 'Kobold'):
+        response = requests.post(f"{endpoint}/api/v1/generate", json={'prompt': data['prompt']})
+        if response.status_code == 200:
+            # Get the results from the response
+            results = response.json()
+            return jsonify(results)
+    elif(endpointType == 'Ooba'):
+        requests.put(f"{endpoint}/config", json={data})
+    elif(endpointType == 'AkikoBackend'):
+        results = {'results': [generate_text(data['prompt'], data['settings'])]}
+
+
+##############################################
+##### END OF TXT GEN API HANDLING ROUTES #####
+##############################################
 
 
 ##################################
@@ -537,6 +547,7 @@ def update_character(char_id):
 #### COVERSATION ROUTES ####
 ############################
 
+
 @app.route('/api/conversation', methods=['POST'])
 def save_conversation():
     conversation_data = request.get_json()
@@ -623,8 +634,6 @@ def upload_tavern_character():
 
 @app.route('/api/tavern-character/<char_id>', methods=['GET'])
 def download_tavern_character(char_id):
-    if(os.path.exists(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{char_id}.png'))):
-        return jsonify({'success': 'Character already exported'})
     try:
         export_tavern_character(char_id)
     except Exception as e:

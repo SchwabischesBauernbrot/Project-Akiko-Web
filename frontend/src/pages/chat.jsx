@@ -11,7 +11,8 @@ const [selectedCharacter, setSelectedCharacter] = useState(null);
 const [settings, setSettings] = useState(null);
 const [characterAvatar, setCharacterAvatar] = useState(null);
 const [selectedConversation, setSelectedConversation] = useState('');
-const [configuredEndpoint, setconfiguredEndpoint] = useState('localhost:5100/');
+const [configuredEndpoint, setconfiguredEndpoint] = useState('http://localhost:5100/');
+const [configuredEndpointType, setconfiguredEndpointType] = useState('AkikoBackend');
 
 const handleConversationSelect = (conversationName) => {
   setSelectedConversation(conversationName || null); // Set to null if conversationName is empty
@@ -20,6 +21,7 @@ const handleConversationSelect = (conversationName) => {
 useEffect(() => {
     const fetchData = async () => {
         setconfiguredEndpoint(localStorage.getItem('endpoint'));
+        setconfiguredEndpointType(localStorage.getItem('endpointType'));
         var selectedChar = localStorage.getItem('selectedCharacter');
         setSettings(fetchSettings())
         if (selectedChar) {
@@ -56,7 +58,7 @@ return (
                 onDelete={handleDelete}
             />
         )};
-		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} convoName={selectedConversation}/>
+		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} endpointType={configuredEndpointType} convoName={selectedConversation}/>
 	</div>
 );
 };
