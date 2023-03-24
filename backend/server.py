@@ -399,6 +399,7 @@ def api_keywords():
 def textgen(endpointType):
     data = request.get_json()
     endpoint = data['endpoint']
+    if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
     requests.put(f"{endpoint}/config", json=data['settings'])
     if(endpointType == 'Kobold'):
         response = requests.post(f"{endpoint}/api/v1/generate", json={'prompt': data['prompt']})
