@@ -15,18 +15,22 @@ function Settings() {
   }, []);
 
   return (
-    <div className='settings-panel'>
-      <h1>Settings</h1>
-      <div className="settings-box" id='endpoint'>
-        <h2>Endpoint Selection</h2>
-        <EndpointSelector
-          selectedOption={selectedOption}
-          setSelectedOption={setSelectedOption}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-        />
+    <>
+      <h1 className='settings-panel-header'>Settings</h1>
+      <div className='settings-panel'>
+        <div className="settings-box" id='endpoint'>
+          <h2>Endpoint Selection</h2>
+          <div id='endpoint-container'>
+          <EndpointSelector
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+          />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

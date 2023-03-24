@@ -140,3 +140,12 @@ export async function fetchAdvancedCharacterEmotion(character, emotion) {
   const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
   return response.data['path'];
 }
+export async function updateAdvancedCharacter(advancedCharacter) {
+  const formData = new FormData();
+  formData.append('char_id', character.char_id);
+  formData.append('name', character.name);
+
+  const response = await axios.put(`${API_URL}/advanced-character/${character.char_id}`, formData);
+
+  return response.data;
+}

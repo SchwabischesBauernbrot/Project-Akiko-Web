@@ -7,6 +7,7 @@ import Chat from './pages/chat'
 import Characters from './pages/characters'
 import Settings from './pages/settings'
 import DiscordBot from './pages/discordbot'
+import AdvancedCharacter from './pages/advancedcharacter'
 function App() {
 
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/characters' element={<Characters/>} />
         <Route path='/settings' element={<Settings/>} />
         <Route path='/discordbot' element={<DiscordBot/>} />
+        <Route path='/advcharacter' element={<AdvancedCharacter/>} />
       </Routes>
       </Router>
   )

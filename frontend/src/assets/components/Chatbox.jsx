@@ -21,7 +21,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       }
       if (selectedCharacter && selectedCharacter.avatar) {
         setCharacterAvatar(charAvatar);
-        console.log(selectedCharacter.name, "is selected.");
       }else{
         return;
       }
@@ -53,7 +52,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     // scroll to last message when messages state updates
     if (messagesEndRef.current !== null) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log("scrolling to last message...");
     }
   }, [messages]);
 

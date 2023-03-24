@@ -11,6 +11,19 @@
 	margin-right: 5%;
   }
 
+#endpoint-container {
+	color: black;
+}
+.settings-panel-header {
+	width: fit-content;
+	margin: 2% auto;
+	background-color: rgba(11, 11, 11, 0.636);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	padding: 1%;
+	color: white;
+}
 .settings-panel h1{
 	position: absolute; /* add position property */
 	z-index: 2; /* add z-index property */

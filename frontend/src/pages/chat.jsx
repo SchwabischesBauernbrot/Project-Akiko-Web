@@ -51,6 +51,7 @@ const handleDelete = () => {
 
 return (
 	<div className="container">
+        <div id='dropdown'>
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (
             <DeleteChatButton
@@ -58,8 +59,10 @@ return (
                 onDelete={handleDelete}
             />
         )};
+        </div>
 		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} endpointType={configuredEndpointType} convoName={selectedConversation}/>
-	</div>
+    
+    </div>
 );
 };
 
