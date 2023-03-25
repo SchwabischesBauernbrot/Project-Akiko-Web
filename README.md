@@ -1,9 +1,20 @@
 # Project Akiko
  Making an Open Source Twitch VTuber with TTS and Language Model processing, and creating a universal Chat Platform for LLMs like Pygmalion, LLaMA and others.
+# Credit to other repos/creators:
+- SillyLossy (Cohee) and his gracious sharing of his code for https://github.com/SillyLossy/TavernAI-extras
+- henk717 and his creation of the start runtime for Project Akiko.
 ## Quick Links:
 - Suggestions Form: https://forms.gle/pahKwy73D6DzCaJV8
 - Trello Board (Check here for what's being worked on): https://trello.com/b/muwhUyM9/main-app
 - Discord Server: https://discord.gg/Pdhd7dEqHp
+# Basic Usage Guide (no image gen or emotion classification):
+1. Clone the repo to your local machine.
+2. Click the 'start.bat' file.
+2.5 Wait for the batch file to complete setting up your enviornment.
+3. Navigate to the link displayed on the Node CMD. usually it is 'http://localhost:5173/'.
+4. Go to the 'Settings' tab and configure your Textgen Endpoint. 
+5. Start chatting!
+
 # Planned Features:
 ## Backend Features:
 - Connect to Kobold, Ooba, horde, or use Akiko's own backend. With Pygmalion and LLaMA support.
