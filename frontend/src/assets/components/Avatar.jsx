@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { fetchAdvancedCharacterEmotion } from "./Api";
+import { fetchAdvancedCharacterEmotion } from "./api";
 
 function Avatar({ selectedCharacter, emotion }) {
   const [currentAvatarImage, setCurrentAvatarImage] = useState(null);

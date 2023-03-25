@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchConversations } from "./Api";
+import { fetchConversations } from "./api";
 import Select from 'react-select';
 
 function ConversationSelector({ onConversationSelect, characterName }) {

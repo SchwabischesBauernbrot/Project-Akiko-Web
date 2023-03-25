@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
-import { saveConversation, fetchConversation } from "./Api";
+import { saveConversation, fetchConversation } from "./api";
 import { characterTextGen } from "./ChatApi";
 import { getBase64 } from "./miscfunctions";
 
@@ -64,6 +64,34 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   }
   
   const handleUserMessage = async (text, image, avatar) => {
+    if(text.startsWith('/')){
+      if (text === '/clear'){
+        setMessages([]);
+        localStorage.removeItem('convoName');
+        window.location.href = '/characters';
+      }else if (text === '/name'){
+        setconfiguredName(prompt("Enter your name:"));
+        localStorage.setItem('configuredName', configuredName);
+      }else if (text === '/help'){
+        alert("Available commands:")
+      }else if (text === '/emotions'){
+        alert("Available emotions:")
+      }else if(text.startsWith('/emotion')){
+        const emotion = text.split(' ')[1];
+        if (emotion === 'default'){
+          setCurrentEmotion('default');
+        }else{
+          const emotionExists = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion);
+          if (emotionExists){
+            setCurrentEmotion(emotion);
+          }else{
+            alert("Invalid emotion.");
+          }
+        }
+      
+      }
+      return;
+    }
     if (!selectedCharacter){
       setInvalidActionPopup(true)
       return;

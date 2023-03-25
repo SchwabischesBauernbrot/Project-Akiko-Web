@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Chatbox from '../assets/components/ChatBox';
 import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
-import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/Api";
+import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
 import "../assets/css/chat.css";
 
 const defaultChar = 'Vapor'

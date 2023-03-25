@@ -1,5 +1,5 @@
 import React from 'react';
-import { deleteConversation } from './Api';
+import { deleteConversation } from './api';
 
 const DeleteChatButton = ({ conversationName, onDelete }) => {
   const handleClick = async () => {

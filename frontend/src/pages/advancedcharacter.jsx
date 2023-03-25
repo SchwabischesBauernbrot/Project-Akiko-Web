@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "../assets/css/character.css";
-import { getCharacterImageUrl, fetchCharacter, updateAdvancedCharacter, fetchAdvancedCharacterEmotion } from "../assets/components/Api";
+import { getCharacterImageUrl, fetchCharacter, updateAdvancedCharacter, fetchAdvancedCharacterEmotion } from "../assets/components/api";
 
 const AdvancedCharacter = () => {
     const [character, setCharacter] = useState(null);
