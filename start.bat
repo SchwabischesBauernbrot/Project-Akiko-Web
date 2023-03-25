@@ -1,6 +1,6 @@
 @echo off
 
-git pull
+call runtime git pull
 
-start cmd /k "cd frontend && npx vite"
-start cmd /k "cd backend && python server.py"
+start runtime cmd /k "cd frontend && npx vite"
+start runtime cmd /k "cd backend && python server.py"
