@@ -1,13 +1,27 @@
-.nav {
-    width: 40rem;
+#nav-container {
+    max-width: 100%;
     background-color: rgba(11, 11, 11, 0.636);
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.529);
+    backdrop-filter: blur(11px);
+    margin: auto;
+}
+
+.nav {
+    width: 40%;
     justify-content: center;
     margin: auto;
     display: flex;
+    flex-direction: row;
     gap: 10%;   
+}
+
+#chevronmenu {
+    display: flex;
+    position: absolute;
 }
 
 #nav-button {
@@ -15,6 +29,8 @@
     border-radius: 10px;
     padding: 15px;
     width: 30rem;
+    margin-right: auto;
+    margin-left: auto;
     border: none;
     outline: none;
     color: white;

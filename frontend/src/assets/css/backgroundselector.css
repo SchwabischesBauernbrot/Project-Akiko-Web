@@ -1,0 +1,10 @@
+img {
+    width: 150px;
+    height: auto;
+    border-radius: 10px;
+}
+
+#bgdropdown {
+    width: 11rem;
+    transform: translate(-13rem, -1.2rem);
+}

@@ -412,6 +412,22 @@ def textgen(endpointType):
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
 
+@app.route('/api/textgen/status', methods=['POST'])
+@cross_origin()
+def textgen_status():
+    data = request.get_json()
+    endpoint = data['endpoint']
+    endpointType = data['endpointType']
+    if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
+    if(endpointType == 'Kobold'):
+        response = requests.get(f"{endpoint}/api/v1/model")
+        if response.status_code == 200:
+            results = response.json()
+            return jsonify(results)
+    elif(endpointType == 'Ooba'):
+        requests.put(f"{endpoint}/config", json={data})
+    elif(endpointType == 'AkikoBackend'):
+        results = {'results': text_model}
 
 ##############################################
 ##### END OF TXT GEN API HANDLING ROUTES #####

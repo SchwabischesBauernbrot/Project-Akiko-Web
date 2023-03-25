@@ -60,7 +60,7 @@ const EndpointSelector = () => {
   
     return (
         <div className="settings-box" id='endpoint'>
-          <h2>Endpoint Selection</h2>
+          <h2>Text Generation Endpoint</h2>
           <div id='endpoint-container'>
         <form onSubmit={handleConnectClick}>
         <Select

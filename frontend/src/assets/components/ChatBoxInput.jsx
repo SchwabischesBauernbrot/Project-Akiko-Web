@@ -1,67 +1,80 @@
-import React, { useState } from 'react';
-import { FiUsers, FiSliders, FiImage } from 'react-icons/fi';
-import { HiOutlinePaperAirplane } from 'react-icons/hi2';
-import Modal from './menucomponents/Modal'
+import React, { useState, useEffect, useRef } from "react";
+import { FiUsers, FiSliders, FiImage } from "react-icons/fi";
+import { HiOutlinePaperAirplane } from "react-icons/hi2";
+import GenSettingsMenu from "./GenSettingsMenu";
 
-const ChatboxInput = ({ onSend }) => {
-  const [text, setText] = useState('');
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [messageImage, setMessageImage] = useState(null)
+function ChatboxInput({ onSend }) {
+  const [messageImage, setMessageImage] = useState(null);
+  const [text, setText] = useState("");
+  const textAreaRef = useRef(null);
+  const [GenSettingsMenuIsOpen, setGenSettingsMenuIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      // Auto-scroll to the bottom of the textarea
+      textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
+    }
+  });
+
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
 
   const handleSendClick = () => {
     onSend(text, messageImage);
-    setText('');
+    setText("");
     setMessageImage(null);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendClick();
+    }
   };
 
   const handleImageUpload = async (file) => {
     setMessageImage(file);
-  }
-  const handleProfileClose = () => {
-    setIsProfileOpen(false);
   };
-
-  const handleProfileOpen = () => {
-    setIsProfileOpen(true);
-  };
-
-  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
-      <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen} />
-    <div className='input-box'>
+    <>
+    {GenSettingsMenuIsOpen && (
+      <GenSettingsMenu onClose={() => setGenSettingsMenuIsOpen(false)}/>
+    )}
+    <div className="input-box">
       <div className="send-input">
-        <div id='FiMenu' onClick={() => setIsOpen(true)}>
+        <div id="FiMenu" onClick={() => setIsOpen(true)}>
           <FiUsers />
         </div>
-        <div id='FiSliders' onClick={() => setIsOpen(true)}>
-          <FiSliders/>
+        <div id="FiSliders" onClick={() => setGenSettingsMenuIsOpen(true)}>
+          <FiSliders />
         </div>
-        <label htmlFor='image-upload'>
-          <FiImage id='FiImage'/>
+        <label htmlFor="image-upload">
+          <FiImage id="FiImage" />
         </label>
-        <input id="image-upload" title="Upload Image" type="file" accept="image/" onChange={(e) => handleImageUpload(e.target.files[0])} style={{ display: 'none' }}/>
         <input
-          type="text"
-          id='input' 
-          autoComplete='off'
+          id="image-upload"
+          title="Upload Image"
+          type="file"
+          accept="image/"
+          onChange={(e) => handleImageUpload(e.target.files[0])}
+          style={{ display: "none" }}
+        />
+        <textarea
+          id="input"
+          autoComplete="off"
           value={text}
           placeholder="Type your message..."
           onChange={handleTextChange}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSendClick();
-            }
-          }}
-        />
-        <div onClick={handleSendClick} id='FiSend'><HiOutlinePaperAirplane/></div>
+          onKeyDown={handleKeyDown}
+          ref={textAreaRef}/>
+        <div onClick={handleSendClick} id="FiSend">
+          <HiOutlinePaperAirplane />
+        </div>
       </div>
     </div>
-    </div>
+    </>
   );
 }
 

@@ -39,16 +39,16 @@ function parseTextEnd(text) {
     if(image !== null){
       imgText = await handleImageSend(image, configuredName)
     }
-    const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\n Example Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
+    const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
     const convo = 'Current Conversation:\n' + history + (imgText ? imgText : '') +'\n';
     const createdPrompt = basePrompt + convo + character.name + ':';
     const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings === null ? kobold_defaults : customSettings });
-  
+
     const generatedText = response.data.results[0];
     const parsedText = parseTextEnd(generatedText.text);
     const responseText = parsedText[0] !== undefined ? parsedText[0] : '';
     return responseText;
-  }  
+  };  
 
   export async function handleImageSend(image, configuredName) {
     var reader = new FileReader();
@@ -69,5 +69,11 @@ function parseTextEnd(text) {
         }
       }
     });
-  }
-  
+  };
+
+  export async function getModelStatus() {
+    var endpoint = localStorage.getItem('endpoint');
+    var endpointType = localStorage.getItem('endpointType');
+    const response = await axios.post(API_URL + '/textgen/status', { endpoint: endpoint, endpointType: endpointType});
+    return response.data;
+  };

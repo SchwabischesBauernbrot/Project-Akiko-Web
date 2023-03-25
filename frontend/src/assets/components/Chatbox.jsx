@@ -55,7 +55,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     // scroll to last message when messages state updates
     if (messagesEndRef.current !== null) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log("scrolling to last message...");
     }
   }, [messages]);
 

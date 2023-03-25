@@ -19,14 +19,17 @@ const AdvancedCharacter = () => {
     }, []);
 
     return (
+        <div>
+        {character && (
         <>
-        <h1>{character === null ? 'Placeholder' : character.name} - Advanced Settings</h1>
-        <div className="settings-panel">
-            <div className="settings-box-large" id="emotion-sprites">
-                <h2>Emotion Sprites</h2>
+            <h1 className="settings-panel-header">{character === null ? 'Placeholder' : character.name} - Advanced Settings</h1><div className="settings-panel">
+                <div className="settings-box-large" id="emotion-sprites">
+                    <h2>Emotion Sprites</h2>
+                </div>
             </div>
-        </div>
         </>
-    );
+        )}
+        </div>
+    )
 };
 export default AdvancedCharacter;
