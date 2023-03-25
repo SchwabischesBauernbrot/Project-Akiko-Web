@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../assets/css/character.css";
-import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter, updateCharacter, uploadTavernCharacter } from "../assets/components/Api";
+import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter, updateCharacter, uploadTavernCharacter } from "../assets/components/api";
 import { CharacterForm } from "../assets/components/CharacterForm";
 import { UpdateCharacterForm } from "../assets/components/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'

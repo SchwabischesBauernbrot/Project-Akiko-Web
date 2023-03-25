@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
+const USER_AVATARS_FOLDER = 'src/shared_data/user_avatars';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
 
 
@@ -52,17 +53,18 @@ export async function createCharacter(newCharacter) {
   return response.data.avatar;
 }
 
-
 export function getCharacterImageUrl(avatar) {
   return `/${AVATARS_FOLDER}/${avatar}`;
 }
 
+export function getUserImageUrl(avatar) {
+  return `/${USER_AVATARS_FOLDER}/${avatar}`;
+}
 
 export async function deleteCharacter(charId) {
   const response = await axios.delete(`${API_URL}/characters/${charId}`);
   return response.data;
 }
-
 
 export async function updateCharacter(updatedCharacter) {
   const formData = new FormData();
@@ -135,17 +137,60 @@ export async function exportTavernCharacter(charId) {
   return `/${EXPORTS_FOLDER}/${charId}.png`;
 }
 
-
 export async function fetchAdvancedCharacterEmotion(character, emotion) {
   const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
   return response.data['path'];
 }
+
+export async function fetchAdvancedCharacterEmotions(character) {
+  const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}`);
+  return response.data['emotions'];
+}
+
+export async function saveAdvancedCharacterEmotion(character, emotionName, emotionFile) {
+  const formData = new FormData();
+  formData.append('emotion', emotionFile);
+  const response = await axios.post(`${API_URL}/advanced-character/${character.char_id}/${emotionName}`, formData);
+  return response.data['path'];
+}
+
 export async function updateAdvancedCharacter(advancedCharacter) {
   const formData = new FormData();
-  formData.append('char_id', character.char_id);
-  formData.append('name', character.name);
+  formData.append('char_id', advancedCharacter.char_id);
+  formData.append('name', advancedCharacter.name);
 
-  const response = await axios.put(`${API_URL}/advanced-character/${character.char_id}`, formData);
+  const response = await axios.put(`${API_URL}/advanced-character/${advancedCharacter.char_id}`, formData);
 
   return response.data;
+}
+
+export async function getAvailableModules() {
+  const response = await axios.get(`${API_URL}/modules`);
+  const modules = response.data['modules'];
+
+  // Set localStorage values for caption and classify
+  for (let i = 0; i < modules.length; i++) {
+    switch (modules[i]) {
+      case 'caption':
+        localStorage.setItem('imageCaptioning', true);
+        break;
+      case 'classify':
+        localStorage.setItem('useEmotionClassifier', true);
+        break;
+      default:
+        break;
+    }
+  }
+
+  // Check if both caption and classify are present, otherwise set to false
+  const hasCaption = modules.includes('caption');
+  const hasClassify = modules.includes('classify');
+  if (!hasCaption) {
+    localStorage.setItem('imageCaptioning', false);
+  }
+  if(!hasClassify) {
+    localStorage.setItem('useEmotionClassifier', false);
+  }
+
+  return modules;
 }

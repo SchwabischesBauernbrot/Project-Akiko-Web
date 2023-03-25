@@ -8,13 +8,17 @@ function ChatboxInput({ onSend }) {
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
   const [GenSettingsMenuIsOpen, setGenSettingsMenuIsOpen] = useState(false);
+  const [imageCaptioning, setImageCaptioning] = useState(false);
 
   useEffect(() => {
+    if (localStorage.getItem('imageCaptioning') !== null) {
+      setImageCaptioning(localStorage.getItem('imageCaptioning') === 'true');
+    }
     if (textAreaRef.current) {
       // Auto-scroll to the bottom of the textarea
       textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
     }
-  });
+  }, []);
 
   const handleTextChange = (event) => {
     setText(event.target.value);
@@ -50,17 +54,21 @@ function ChatboxInput({ onSend }) {
         <div id="FiSliders" onClick={() => setGenSettingsMenuIsOpen(true)}>
           <FiSliders />
         </div>
-        <label htmlFor="image-upload">
-          <FiImage id="FiImage" />
-        </label>
-        <input
-          id="image-upload"
-          title="Upload Image"
-          type="file"
-          accept="image/"
-          onChange={(e) => handleImageUpload(e.target.files[0])}
-          style={{ display: "none" }}
-        />
+        {imageCaptioning == true && (
+          <>
+            <label htmlFor="image-upload">
+              <FiImage id="FiImage" />
+            </label>
+            <input
+            id="image-upload"
+            title="Upload Image"
+            type="file"
+            accept="image/"
+            onChange={(e) => handleImageUpload(e.target.files[0])}
+            style={{ display: "none" }}
+          />
+          </>
+        )}
         <textarea
           id="input"
           autoComplete="off"

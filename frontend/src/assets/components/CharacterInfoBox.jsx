@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { getCharacterImageUrl } from "./Api";
+import { getCharacterImageUrl } from "./api";
 import { FiCheck } from "react-icons/fi";
 const CharacterInfoBox = ({ Character, openModal, delCharacter, selectCharacter }) => {
     const [character, setCharacter] = useState({});

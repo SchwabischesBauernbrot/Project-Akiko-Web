@@ -675,7 +675,32 @@ def get_advanced_emotion(char_id, emotion):
         imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion}.png')
         return jsonify({'success': 'Character emotion found', 'path': imagePath})
     else:
-        return jsonify({'failure': 'Character does not have an image for this emotion.'})
+        imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'default.png')
+        return jsonify({'failure': 'Character does not have an image for this emotion.', 'path': imagePath})
+
+@app.route('/api/advanced-character/<char_id>/<emotion>', methods=['POST'])
+def save_advanced_emotion(char_id, emotion):
+    # Get the emotion image file from the request object
+    emotion_file = request.files['emotion']
+    # Split the uploaded file name into its base name and extension
+    base_name, extension = os.path.splitext(emotion_file.filename)
+    # Construct the new file name using the emotion name and extension
+    emotion_file_name = f"{emotion}{extension}"
+    # Save the image file to the character's folder with the new file name
+    emotion_file.save(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id, emotion_file_name))
+    # Return the frontend path to the image file
+    imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion_file_name}')
+    return jsonify({'path': imagePath})
+
+
+@app.route('/api/advanced-character/<char_id>', methods=['GET'])
+def get_advanced_emotions(char_id):
+    if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))):
+        emotions_with_ext = os.listdir(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))
+        emotions = [os.path.splitext(emotion)[0] for emotion in emotions_with_ext] # Remove the file extension from each emotion
+        return jsonify({'success': 'Character emotions found', 'emotions': emotions})
+    else:
+        return jsonify({'failure': 'Character does not have any emotions.'})
     
 
 ##########################################

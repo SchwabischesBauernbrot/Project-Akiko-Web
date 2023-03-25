@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatboxInput from './ChatBoxInput';
+import { clearMessages, setName, showHelp, showEmotions, setEmotion } from './slashcommands';
 import Avatar from './Avatar';
-import { saveConversation, fetchConversation } from "./api";
-import { characterTextGen } from "./ChatApi";
+import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
+import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
@@ -10,12 +11,16 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [characterAvatar, setCharacterAvatar] = useState(null);
   const [conversationName, setConversationName] = useState('');
   const [configuredName, setconfiguredName] = useState('You');
+  const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('default');
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
 
   useEffect(() => {
     const fetchData = async () => {
+      if(localStorage.getItem('useEmotionClassifier') !== null){
+        setUseEmotionClassifier(localStorage.getItem('useEmotionClassifier'));
+      }
       if (!localStorage.getItem('configuredName') == null){
         setconfiguredName(localStorage.getItem('configuredName'));
       }
@@ -64,31 +69,33 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   }
   
   const handleUserMessage = async (text, image, avatar) => {
-    if(text.startsWith('/')){
-      if (text === '/clear'){
-        setMessages([]);
-        localStorage.removeItem('convoName');
-        window.location.href = '/characters';
-      }else if (text === '/name'){
-        setconfiguredName(prompt("Enter your name:"));
-        localStorage.setItem('configuredName', configuredName);
-      }else if (text === '/help'){
-        alert("Available commands:")
-      }else if (text === '/emotions'){
-        alert("Available emotions:")
-      }else if(text.startsWith('/emotion')){
-        const emotion = text.split(' ')[1];
-        if (emotion === 'default'){
-          setCurrentEmotion('default');
-        }else{
-          const emotionExists = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion);
-          if (emotionExists){
-            setCurrentEmotion(emotion);
-          }else{
-            alert("Invalid emotion.");
-          }
-        }
-      
+    console.log('text:', text);
+    if (text.startsWith('/')) {
+      const [command, argument] = text.split(' ');
+      console.log('command:', command);
+      switch (command) {
+        case '/clear':
+          clearMessages(setMessages);
+          break;
+        case '/clearname':
+          setconfiguredName('You');
+          localStorage.removeItem('configuredName');
+          break;
+        case '/name':
+          setName(setconfiguredName, argument);
+          break;
+        case '/help':
+          showHelp();
+          break;
+        case '/emotions':
+          await showEmotions(selectedCharacter, fetchAdvancedCharacterEmotions);
+          break;
+        case '/emotion':
+          await setEmotion(argument, setCurrentEmotion, selectedCharacter, fetchAdvancedCharacterEmotion);
+          break;
+        default:
+          alert("Invalid command.");
+          break;
       }
       return;
     }
@@ -125,7 +132,15 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
 
     // Make API call
     const generatedText = await characterTextGen(selectedCharacter, history, endpoint, endpointType, image, configuredName);
-
+    if (generatedText !== null && useEmotionClassifier) {
+      const classification = await classifyEmotion(generatedText);
+      if (classification && classification.length > 0) {
+        const label = classification[0]['label'];
+        setCurrentEmotion(label);
+      } else {
+        console.error('Invalid classification data:', classification);
+      }
+    }
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {

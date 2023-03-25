@@ -71,6 +71,11 @@ function parseTextEnd(text) {
     });
   };
 
+  export async function classifyEmotion(generatedText) {
+    const response = await axios.post(`${API_URL}/classify`, { text: generatedText });
+    return response.data['classification'];
+  };
+
   export async function getModelStatus() {
     var endpoint = localStorage.getItem('endpoint');
     var endpointType = localStorage.getItem('endpointType');
