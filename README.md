@@ -9,8 +9,7 @@
 - Discord Server: https://discord.gg/Pdhd7dEqHp
 # Basic Usage Guide (no image gen or emotion classification):
 1. Clone the repo to your local machine.
-2. Click the 'start.bat' file.
-2.5 Wait for the batch file to complete setting up your enviornment.
+2. Click the 'start.bat' file and wait for the batch file to complete setting up your enviornment.
 3. Navigate to the link displayed on the Node CMD. usually it is 'http://localhost:5173/'.
 4. Go to the 'Settings' tab and configure your Textgen Endpoint. 
 5. Start chatting!
