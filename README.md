@@ -49,11 +49,10 @@ This feature and it's components will be optional.
 - Custom Chat Settings are also available on the discord bot.
 # Current State of the UI (Obviously WIP submit suggestions to the form above):
 ## Character Page:
-![CharacterInProgress](https://user-images.githubusercontent.com/26259870/227011566-218b32c5-1560-449a-8730-369b5795357c.png)
-![EditCharacter](https://user-images.githubusercontent.com/26259870/227012186-af8086eb-ac14-4fc4-a545-f64a7fe56793.png)
-![CharacterCreation](https://user-images.githubusercontent.com/26259870/227012171-2fbd333b-27b4-469b-9377-bdbefe5f447b.png)
-![image5](https://user-images.githubusercontent.com/26259870/226003654-17564e32-9177-4d9d-9dad-b21a79f90c5b.png)
+![CharPage](https://user-images.githubusercontent.com/26259870/227728127-5c59c204-fb4f-48d5-a820-61155be98850.png)
+![CreateAChar](https://user-images.githubusercontent.com/26259870/227728141-47ae652f-1eaa-4b14-8c09-a29d61a75093.png)
+![EditAChar](https://user-images.githubusercontent.com/26259870/227728147-9b07d53c-d176-4408-ac3a-ef321bc4f12f.png)
 ## Chat Page: 
-![ChatPage](https://user-images.githubusercontent.com/26259870/227012749-82832b93-c213-4f9f-bfde-6442a9a78ad3.png)
-![ImageSending](https://user-images.githubusercontent.com/26259870/227012765-b5efb063-5355-4368-b7f0-df25f4fe048a.png)
+![ChatPage](https://user-images.githubusercontent.com/26259870/227728154-de52c655-ea25-4c98-b29b-6726db95736e.png)
+
 
