@@ -64,7 +64,7 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
             {imageUrl !== null ? (
               <img src={imageUrl} alt="New avatar" id="character-avatar" />
             ) : (
-              <img src={getCharacterImageUrl(character.avatar)} title="Current avatar" id="character-avatar" />
+              <img src={getCharacterImageUrl(character.avatar)} title="Current avatar" id="character-avatar-form" />
             )}
           </>
           )}

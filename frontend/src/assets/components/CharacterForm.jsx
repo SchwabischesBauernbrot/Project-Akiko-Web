@@ -56,7 +56,7 @@ function handleSubmit(event) {
         <span className="close" onClick={onClose}>&times;</span>
         <h2>Create New Character</h2>
         <form onSubmit={handleSubmit}>
-        <label htmlFor="avatar-field">{!imageUrl && <FiImage id="avatar-default"/>} {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar"/>}</label>
+        <label htmlFor="avatar-field">{!imageUrl && <FiImage id="avatar-default"/>} {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar-form"/>}</label>
         <input
           id="avatar-field"
           type="file"

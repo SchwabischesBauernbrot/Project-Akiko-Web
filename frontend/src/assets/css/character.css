@@ -82,7 +82,7 @@
 }
 
 .character-form {
-  margin-top: 15x;
+  margin-top: 15px;
   margin-right: auto;
   margin-left: auto;
   width: 40%;
@@ -106,7 +106,18 @@
 	margin-left: auto;
 	object-fit: cover;
 }
-
+#character-avatar-form {
+	padding: 10px;
+	word-wrap:break-word;
+	cursor: pointer;
+	height: 21.875em;
+	width: 21.875em;
+	border-radius: 10%;
+	overflow: hidden;
+	margin-right: auto;
+	margin-left: auto;
+	object-fit: cover;
+}
 #avatar-default {
 	padding: 10px;
 	word-wrap:break-word;
@@ -247,13 +258,18 @@
 		text-align: center;
 		font-size: 20px;
 	}
+	#character-avatar-form {
+		padding: 10px;
+		height: 15rem;
+		width: 15rem;
+	}
 	#avatar-default {
 		padding: 10px;
 		height: 15rem;
 		width: 15rem;
 	}
 	.character-form {
-		margin-top: 0;
+		margin-top: 10rem;
 		margin-right: 0;
 		margin-left: 0;
 		width: 100%;
@@ -278,12 +294,10 @@
 	#character-submit {
 		bottom: 0;
 		right: 0;
-		position: relative;
 	}
 	#character-download {
 		bottom: 0;
 		left: 0;
-		position: relative;
 	}
 	
 	#character-close {
@@ -313,13 +327,18 @@
 		text-align: center;
 		font-size: 20px;
 	}
+	#character-avatar-form {
+		padding: 10px;
+		height: 15rem;
+		width: 15rem;
+	}
 	#avatar-default {
 		padding: 10px;
 		height: 15rem;
 		width: 15rem;
 	}
 	.character-form {
-		margin-top: 0;
+		margin-top: 10rem;
 		margin-right: 0;
 		margin-left: 0;
 		width: 100%;
