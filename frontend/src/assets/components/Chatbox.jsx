@@ -21,16 +21,19 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       }
       if (selectedCharacter && selectedCharacter.avatar) {
         setCharacterAvatar(charAvatar);
+        console.log(selectedCharacter.name, "is selected.");
       }else{
         return;
       }
       if (convoName !== null) {
         setConversationName(convoName);
+        localStorage.setItem('convoName', convoName);
         const conversation = await fetchConversation(convoName);
         setMessages(conversation.messages);
       }else {
         const now = new Date();
         const newName = selectedCharacter.name + "_" + now.getTime();
+        localStorage.setItem('convoName', newName);
         setConversationName(newName);
         if (selectedCharacter && selectedCharacter.name) {
           const defaultMessage = {
@@ -52,6 +55,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     // scroll to last message when messages state updates
     if (messagesEndRef.current !== null) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log("scrolling to last message...");
     }
   }, [messages]);
 

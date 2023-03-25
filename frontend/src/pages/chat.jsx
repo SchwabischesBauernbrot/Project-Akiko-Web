@@ -23,7 +23,11 @@ useEffect(() => {
         setconfiguredEndpoint(localStorage.getItem('endpoint'));
         setconfiguredEndpointType(localStorage.getItem('endpointType'));
         var selectedChar = localStorage.getItem('selectedCharacter');
+        var convoName = localStorage.getItem('convoName');
         setSettings(fetchSettings())
+        if (convoName){
+            setSelectedConversation(convoName);
+        }
         if (selectedChar) {
             selectedChar = await fetchCharacter(selectedChar);
             setSelectedCharacter(selectedChar); // set the state to the character object
@@ -51,7 +55,6 @@ const handleDelete = () => {
 
 return (
 	<div className="container">
-        <div id='dropdown'>
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (
             <DeleteChatButton
@@ -59,10 +62,8 @@ return (
                 onDelete={handleDelete}
             />
         )};
-        </div>
 		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} endpointType={configuredEndpointType} convoName={selectedConversation}/>
-    
-    </div>
+	</div>
 );
 };
 

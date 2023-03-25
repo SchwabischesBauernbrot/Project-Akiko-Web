@@ -9,11 +9,22 @@ function ConversationSelector({ onConversationSelect, characterName, charAvatar 
   useEffect(() => {
     const fetchConversationNames = async () => {
       const data = await fetchConversations(characterName);
-      setConversationNames(data.map((name, index) => ({ value: name, label: name, image: charAvatar })));
+      setConversationNames(data.map((name, index) => ({ value: name, label: name})));
     };
-    handleChange({ value: '', label: 'New Chat', image: charAvatar })
     fetchConversationNames();
-  }, [characterName, charAvatar]);
+  }, [characterName]);
+
+  useEffect(() => {
+    if (conversationNames.length === 0){
+      handleChange({ value: '', label: 'New Chat'});
+    }
+    var convoName = localStorage.getItem('convoName');
+    if (convoName != null && conversationNames.some(conversation => conversation.value === convoName)){
+      setSelectedOption({value: convoName, label: convoName});
+    }else{
+      handleChange({ value: '', label: 'New Chat'});
+    }
+  }, [conversationNames]);
 
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -21,7 +32,7 @@ function ConversationSelector({ onConversationSelect, characterName, charAvatar 
   };
 
   const options = [
-    { value: '', label: 'New Chat', image: charAvatar },
+    { value: '', label: 'New Chat'},
     ...conversationNames,
   ];
 
