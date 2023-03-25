@@ -2,26 +2,26 @@
  Making an Open Source Twitch VTuber with TTS and Language Model processing, and creating a universal Chat Platform for LLMs like Pygmalion, LLaMA and others.
 ## Quick Links:
 - Suggestions Form: https://forms.gle/pahKwy73D6DzCaJV8
-- Trello Board: https://trello.com/b/muwhUyM9/main-app
+- Trello Board (Check here for what's being worked on): https://trello.com/b/muwhUyM9/main-app
 - Discord Server: https://discord.gg/Pdhd7dEqHp
 # Planned Features:
 ## Backend Features:
 - Connect to Kobold, Ooba, horde, or use Akiko's own backend. With Pygmalion and LLaMA support.
 - Emotion Detection.
 - Long-term and Short Term memory summarization.
-- Image captioning.
+- Image captioning. (Done)
 - Stable Diffusion (probably).
 ## Full Guide to Language Model Config, Character Creation, and more:
-- Character Creation
-- Character Card Import/Export
+- Character Creation (Done)
+- Character Card Import/Export (Done)
 - Guide Page full of info for creating characters in every available style, AliChat, W++, and more.
 ## Chat with Characters:
-- Character creation and character management with exports to Character Cards (TavernCardPNG).
-- Chat with your favorite Character through a polished UI. 
+- Character creation and character management with exports to Character Cards (TavernCardPNG). (Done)
+- Chat with your favorite Character through a polished UI. (Done)
 - Chat with multiple characters in character groups.
 - Chat regeneration (swipes), Editable Messages, Impersonation, Branching Chats.
 - Emotion detection with corresponding emotional display for set-characters (configuration required).
-- Send images to your character and have them recognize what the image is.
+- Send images to your character and have them recognize what the image is. (Done)
 - Live2D models with emotion display.
 - Text-to-speech with AzureTTS or (maybe) other alternatives. (this will also allow you to see lips moving on Live2D models.)
 ### Custom Chat Settings:
