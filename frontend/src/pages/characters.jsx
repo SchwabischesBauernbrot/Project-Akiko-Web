@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../assets/css/character.css";
 import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter, updateCharacter, uploadTavernCharacter } from "../assets/components/api";
-import { CharacterForm } from "../assets/components/CharacterForm";
-import { UpdateCharacterForm } from "../assets/components/UpdateCharacterForm";
+import { CharacterForm } from "../assets/components/charactercomponents/CharacterForm";
+import { UpdateCharacterForm } from "../assets/components/charactercomponents/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
-import CharacterInfoBox from "../assets/components/CharacterInfoBox";
+import CharacterInfoBox from "../assets/components/charactercomponents/CharacterInfoBox";
 
 const Characters = () => {
   const [characters, setCharacters] = useState([]);

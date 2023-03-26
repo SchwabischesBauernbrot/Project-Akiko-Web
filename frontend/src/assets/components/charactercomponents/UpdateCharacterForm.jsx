@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getCharacterImageUrl, exportTavernCharacter } from "./api";
+import { getCharacterImageUrl, exportTavernCharacter } from "../api";
 import { FiSave, FiDownload } from "react-icons/fi";
 export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) => {
   const [characterName, setCharacterName] = useState(character.name);
