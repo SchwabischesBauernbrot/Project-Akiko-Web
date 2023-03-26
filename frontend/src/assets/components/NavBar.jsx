@@ -5,7 +5,6 @@ import { RxDiscordLogo } from 'react-icons/rx';
 import { HiChevronDoubleRight } from 'react-icons/hi2'
 import { FiMessageCircle } from 'react-icons/fi'
 import BackgroundSelect from './BackgroundSelector';
-import ConversationMenu from "./ConversationSelectModal";
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {

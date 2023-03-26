@@ -4,8 +4,6 @@ import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
 import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
 import "../assets/css/chat.css";
-import { FiMessageCircle } from 'react-icons/fi'
-import ConversationMenu from "../assets/components/ConversationSelectModal";
 
 const defaultChar = 'Vapor'
 const Chat = () => {
