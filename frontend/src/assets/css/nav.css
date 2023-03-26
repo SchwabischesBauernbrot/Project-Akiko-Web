@@ -9,6 +9,20 @@
     backdrop-filter: blur(11px);
     margin: auto;
 }
+  
+  #bgdropdown img {
+    width: 150px;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  #bgdropdown {
+    width: 11rem;
+    display: flex;
+    position: absolute;
+    padding-top: 1.15rem;
+    left: 0;
+  }
 
 .nav {
     width: 40rem;
@@ -18,7 +32,7 @@
     justify-content: center;
     margin: auto;
     display: flex;
-    gap: 10%;   
+    gap: 10%;
 }
 
 #nav-button {
