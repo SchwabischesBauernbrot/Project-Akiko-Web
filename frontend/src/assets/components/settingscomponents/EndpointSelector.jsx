@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import "../css/settings.css";
 
 const EndpointSelector = () => {
     const [selectedOption, setSelectedOption] = useState(null);

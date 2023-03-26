@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "../assets/css/character.css";
+import "../assets/css/settings.css";
 import { getCharacterImageUrl, fetchCharacter, updateAdvancedCharacter, fetchAdvancedCharacterEmotion } from "../assets/components/api";
 
 const AdvancedCharacter = () => {

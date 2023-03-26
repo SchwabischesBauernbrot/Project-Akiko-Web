@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
-import { FiChevronDown } from 'react-icons/fi';
 import '../css/backgroundselector.css';
 
 const { Option } = components;
@@ -23,13 +22,6 @@ const customStyles = {
   }),
 };
 
-
-const CustomOption = (props) => (
-  <Option {...props}>
-    {props.data.icon} {props.data.label}
-  </Option>
-);
-
 const Menu = ({ innerProps, children }) => {
   return (
     <div
@@ -49,37 +41,56 @@ const Menu = ({ innerProps, children }) => {
 
 const BackgroundSelect = () => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/design/background')
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error(`Fetch failed; network response: ${response}`);
+      })
+      .then(data => {
+        const newOptions = data.backgrounds.map(file => {
+          const filename = file.split('.').slice(0, -1).join('.');
+          return {
+            value: filename,
+            label: filename,
+            imagePath: `/api/design/background/${file}`
+          }
+        });
+        setOptions(newOptions);
+      })
+      .catch(error => {
+        console.error('There was a problem fetching the background options:', error);
+      });
+  }, []);
 
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
+    document.documentElement.style.setProperty('--bg-image', `url(${selectedOption.imagePath})`);
   };
 
-  const options = [
-    {
-      icon: <img src="https://i.imgur.com/jf9w6NO.png"/>,
-    },
-    {
-      icon: <img src="https://cdnb.artstation.com/p/assets/images/images/009/356/463/large/natthamon-asawakowitkorn-.jpg?1518517487"/>,
-    },
-    {
-      icon: <img src="https://cdnb.artstation.com/p/assets/images/images/014/943/389/large/julian-seifert-tavern-ful.jpg?1546427640"/>,
-    },
-  ];
+  const CustomOption = (props) => (
+    <Option {...props}>
+      <img src={props.data.imagePath} style={{ width: '32px' }} />
+    </Option>
+  );
 
   return (
     <div id='bgdropdown'>
-    <Select
-      value={selectedOption}
-      onChange={handleChange}
-      options={options}
-      isSearchable={false}
-      placeholder='Background'
-      components={{ Option: CustomOption, Menu }}
-      styles={customStyles}
-    />
+      <Select
+        value={selectedOption}
+        onChange={handleChange}
+        options={options}
+        isSearchable={false}
+        placeholder='Background'
+        components={{ Option: CustomOption, Menu }}
+        styles={customStyles}
+      />
     </div>
   );
 };
 
 export default BackgroundSelect;
-

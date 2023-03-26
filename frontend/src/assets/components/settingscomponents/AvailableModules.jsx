@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAvailableModules } from './api';
+import { getAvailableModules } from '../api';
 
 function AvailableModules() {
   const [modules, setModules] = useState([]);

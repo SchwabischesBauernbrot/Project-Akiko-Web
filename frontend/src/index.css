@@ -5,7 +5,7 @@
 
 :root {
 	--transparent:	rgba(0,0,0,0);
-	
+	--bg-image: url('https://i.imgur.com/jf9w6NO.png');
 	--black30a:		rgba(0,0,0,0.3);
 	--black50a:		rgba(0,0,0,0.5);
 	--black70a:		rgba(0,0,0,0.7);
@@ -34,11 +34,10 @@
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	-moz-appearance:initial;
 }
 
 body {
-  background-image: url("https://i.imgur.com/jf9w6NO.png");
+  background-image: var(--bg-image);
   margin: 0;
 	padding:0;
 	width: 100%;
@@ -74,7 +73,7 @@ body {
     }
  }
 
-::-webkit-scrollbar {
+ ::-webkit-scrollbar {
     width: 0.6em;   
 }
 
@@ -84,9 +83,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--white70a);
-    -webkit-box-shadow: inset 0 0 2px var(--black30a);
-	        box-shadow: inset 0 0 5px black;
+    background: rgba(106, 106, 108, 0.3);
     border-radius: 5px;
 }
 
@@ -166,25 +163,25 @@ body {
 
 .modal-overlay {
 	position: fixed;
-	top: 0 !important;
-	left: 0 !important;
-	width: 100% !important;
-	height: 100% !important;
-	background-color: rgba(0, 0, 0, 0.39) !important; /* semi-transparent black background */
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
-	z-index: 9999 !important; /* make sure the modal is on top of other content */
-	overflow-y: scroll !important;
+	top: 0 ;
+	left: 0;
+	width: 100% ;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.39); /* semi-transparent black background */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999; /* make sure the modal is on top of other content */
+	overflow-y: scroll;
 }
 
 .close {
 	color: #aaaaaa;
-	margin-top: 5rem;
 	float: right;
 	font-size: 28px;
 	font-weight: bold;
-  }
+}
+
 .close:hover {
     color: rgba(179, 6, 6, 0.636);
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getCharacterImageUrl, exportTavernCharacter } from "./api";
+import { getCharacterImageUrl, exportTavernCharacter } from "../api";
 import { FiSave, FiDownload } from "react-icons/fi";
 export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) => {
   const [characterName, setCharacterName] = useState(character.name);
@@ -10,6 +10,21 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
   const [characterExamples, setCharacterExamples] = useState(character.mes_example);
   const [characterAvatar, setCharacterAvatar] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
+    const closeOnOutsideClick = e => {
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
+        onClose();
+        }
+    };
+    document.body.addEventListener("keydown", closeOnEscapeKey);
+    window.addEventListener("mousedown", closeOnOutsideClick);
+    return () => {
+        document.body.removeEventListener("keydown", closeOnEscapeKey);
+        window.removeEventListener("mousedown", closeOnOutsideClick);
+    };
+    }, []);
 
   useEffect(() => {
     setCharacterName(character.name);
@@ -55,16 +70,26 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
   return (
     <div className="modal-overlay">
     <div className="character-form">
-      <span className="close" onClick={onClose}>&times;</span>
-      <h2>{character.name}</h2>
+      <span className="close" onClick={onClose} style={{cursor: 'pointer'}}>&times;</span>
+      <h2 id='charactername-title'>{character.name}</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="avatar-field">          
           {character.avatar && (
           <>
             {imageUrl !== null ? (
-              <img src={imageUrl} alt="New avatar" id="character-avatar" />
+              <img
+              src={imageUrl}
+              alt="New avatar"
+              id="character-avatar"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+            />
             ) : (
-              <img src={getCharacterImageUrl(character.avatar)} title="Current avatar" id="character-avatar-form" />
+              <img
+              src={getCharacterImageUrl(character.avatar)}
+              title="Current avatar"
+              id="character-avatar-form"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+              />
             )}
           </>
           )}
