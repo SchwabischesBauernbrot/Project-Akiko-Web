@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "../assets/css/settings.css";
-import EndpointSelector from '../assets/components/settingscomonents/EndpointSelector'
-import AvailableModules from '../assets/components/settingscomonents/AvailableModules'
+import EndpointSelector from '../assets/components/settingscomponents/EndpointSelector'
+import AvailableModules from '../assets/components/settingscomponents/AvailableModules'
 
 function Settings() {
   return (
