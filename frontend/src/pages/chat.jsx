@@ -4,7 +4,8 @@ import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
 import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
 import "../assets/css/chat.css";
-import BackgroundSelect from '../assets/components/BackgroundSelector';
+import { FiMessageCircle } from 'react-icons/fi'
+import ConversationMenu from "../assets/components/ConversationSelectModal";
 
 const defaultChar = 'Vapor'
 const Chat = () => {
@@ -18,6 +19,8 @@ const [configuredEndpointType, setconfiguredEndpointType] = useState('AkikoBacke
 const handleConversationSelect = (conversationName) => {
   setSelectedConversation(conversationName || null); // Set to null if conversationName is empty
 };
+
+
 
 useEffect(() => {
     const fetchData = async () => {
@@ -53,8 +56,12 @@ const handleDelete = () => {
     setSelectedConversation('')
     window.location.reload();
 }
-
+const [ConversationMenuIsOpen, setConversationMenuIsOpen] = useState(false);
 return (
+    <>
+    {ConversationMenuIsOpen && (
+      <ConversationMenu onClose={() => setConversationMenuIsOpen(false)}/>
+    )}
 	<div className="container">
         <div id='dropdown'>
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
@@ -65,9 +72,9 @@ return (
             />
         )};
         </div>
-        <BackgroundSelect/>
 		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} endpointType={configuredEndpointType} convoName={selectedConversation}/>
     </div>
+    </>
 );
 };
 
