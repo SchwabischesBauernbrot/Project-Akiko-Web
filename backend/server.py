@@ -142,6 +142,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}}) # allow cross-domain reque
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
 app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
+app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 app.config['CONVERSATIONS_FOLDER'] = '../frontend/src/shared_data/conversations/'
 app.config['CHARACTER_FOLDER'] = '../frontend/src/shared_data/character_info/'
 app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_images/'
@@ -149,7 +150,6 @@ app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
-app.config['UPLOAD_FOLDER'] = '../frontend/src/backgrounds/'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -723,14 +723,14 @@ def upload_background():
     if file.filename == '':
         return {'error': 'No selected file.'}, 400
     filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
     file.save(filepath)
     return {'path': filepath}, 200
 
 @app.route('/api/design/background', methods=['GET'])
 def get_backgrounds():
     backgrounds = []
-    for file in os.listdir(os.path.join('../frontend/src', 'backgrounds')):
+    for file in os.listdir(os.path.join(app.config['BACKGROUNDS_FOLDER'])):
         if file.lower().endswith(('.png', '.jpg')):
             filename = os.path.splitext(file)[0]
             backgrounds.append({
@@ -744,7 +744,7 @@ def get_backgrounds():
 def get_selected_background(bg_select):
     filename, ext = os.path.splitext(bg_select)
     if ext.lower() in ['.png', '.jpg']:
-        path = os.path.join('src', 'backgrounds', f'{filename}{ext}')
+        path = os.path.join(app.config['BACKGROUNDS_FOLDER'], f'{filename}{ext}')
         if os.path.exists(path):
             return send_file(path, mimetype='image')
     return {'error': 'Invalid file type.'}, 400
