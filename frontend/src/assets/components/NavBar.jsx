@@ -15,12 +15,12 @@ const Navbar = () => {
         <Link title='Chat' id={'nav-button'} to='/chat'>
           <ChatBubbleLeftRightIcon className="heroicon"/>
         </Link >
-		<Link  title='Characters' id={'nav-button'} to='/characters'>
-			<UserGroupIcon className="heroicon"/>
-		</Link >
-		<Link title='Advanced Characters' to='/advcharacter' id={'nav-button'}>
-			<HiChevronDoubleRight className="react-icon" title="Advanced Characters"/>
-		</Link>
+        <Link  title='Characters' id={'nav-button'} to='/characters'>
+          <UserGroupIcon className="heroicon"/>
+        </Link >
+        <Link title='Advanced Characters' to='/advcharacter' id={'nav-button'}>
+          <HiChevronDoubleRight className="react-icon" title="Advanced Characters"/>
+        </Link>
         <Link title='Discord Bot' id={'nav-button'} to='/discordbot' >
           <RxDiscordLogo className="react-icon"/>
         </Link >
