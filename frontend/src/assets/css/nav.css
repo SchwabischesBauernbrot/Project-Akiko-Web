@@ -11,17 +11,14 @@
 }
 
 .nav {
-    width: 40%;
+    width: 40rem;
+    background-color: transparent;
+    border-radius: 10px;
+    backdrop-filter: blur(100%);
     justify-content: center;
     margin: auto;
     display: flex;
-    flex-direction: row;
     gap: 10%;   
-}
-
-#chevronmenu {
-    display: flex;
-    position: absolute;
 }
 
 #nav-button {
@@ -29,8 +26,6 @@
     border-radius: 10px;
     padding: 15px;
     width: 30rem;
-    margin-right: auto;
-    margin-left: auto;
     border: none;
     outline: none;
     color: white;

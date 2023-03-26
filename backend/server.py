@@ -149,6 +149,7 @@ app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
+app.config['UPLOAD_FOLDER'] = '../frontend/src/backgrounds/'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -674,9 +675,11 @@ def get_advanced_emotion(char_id, emotion):
     if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'{emotion}.png'))):
         imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion}.png')
         return jsonify({'success': 'Character emotion found', 'path': imagePath})
-    else:
+    elif(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'default.png'))):
         imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'default.png')
-        return jsonify({'failure': 'Character does not have an image for this emotion.', 'path': imagePath})
+        return jsonify({'failure': 'Character emotion not found, reverting to default', 'path': imagePath})
+    else:
+        return jsonify({'failure': 'Character does not have an image for this emotion.'})
 
 @app.route('/api/advanced-character/<char_id>/<emotion>', methods=['POST'])
 def save_advanced_emotion(char_id, emotion):
@@ -707,6 +710,49 @@ def get_advanced_emotions(char_id):
 #### END OF ADVANCED CHARACTER ROUTES ####
 ##########################################
 
+
+##############################
+#### LAYOUT/DESIGN ROUTES ####
+##############################
+
+@app.route('/api/design/background', methods=['POST'])
+def upload_background():
+    if 'background' not in request.files:
+        return {'error': 'No background file uploaded.'}, 400
+    file = request.files['background']
+    if file.filename == '':
+        return {'error': 'No selected file.'}, 400
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
+    return {'path': filepath}, 200
+
+@app.route('/api/design/background', methods=['GET'])
+def get_backgrounds():
+    backgrounds = []
+    for file in os.listdir(os.path.join('../frontend/src', 'backgrounds')):
+        if file.lower().endswith(('.png', '.jpg')):
+            filename = os.path.splitext(file)[0]
+            backgrounds.append({
+                'value': filename,
+                'label': filename.capitalize(),
+                'imagePath': f'/api/design/background/{filename}.png'
+            })
+    return {'backgrounds': backgrounds}, 200
+
+@app.route('/api/design/background/<bg_select>', methods=['GET'])
+def get_selected_background(bg_select):
+    filename, ext = os.path.splitext(bg_select)
+    if ext.lower() in ['.png', '.jpg']:
+        path = os.path.join('src', 'backgrounds', f'{filename}{ext}')
+        if os.path.exists(path):
+            return send_file(path, mimetype='image')
+    return {'error': 'Invalid file type.'}, 400
+
+
+#####################################
+#### END OF LAYOUT/DESIGN ROUTES ####
+#####################################
 
 @app.route('/api/modules', methods=['GET'])
 def get_modules():
