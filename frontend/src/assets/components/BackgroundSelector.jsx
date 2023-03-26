@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
-import '../css/backgroundselector.css';
+import { FiChevronDown } from 'react-icons/fi';
 
 const { Option } = components;
+const [isOpen, setIsOpen] = useState(false);
 
 const customStyles = {
   control: (provided) => ({
@@ -79,17 +80,19 @@ const BackgroundSelect = () => {
   );
 
   return (
-    <div id='bgdropdown'>
-      <Select
-        value={selectedOption}
-        onChange={handleChange}
-        options={options}
-        isSearchable={false}
-        placeholder='Background'
-        components={{ Option: CustomOption, Menu }}
-        styles={customStyles}
-      />
-    </div>
+<div id='bgdropdown' onClick={() => setIsOpen(!isOpen)}>
+  <FiChevronDown id='dropdownicon'/>
+  {isOpen && (
+    <Select
+      value={selectedOption}
+      onChange={handleChange}
+      options={options}
+      isSearchable={false}
+      components={{ Option: CustomOption, Menu }}
+      styles={customStyles}
+    />
+  )}
+</div>
   );
 };
 

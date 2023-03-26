@@ -112,7 +112,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         sender: configuredName,
         text: text,
         image: image ? await getBase64(image) : null, // convert image to base64 string
-        avatar: avatar || 'https://cdn.discordapp.com/attachments/1070388301397250170/1072227534713921616/tmpu7e13o19.png',
+        avatar: avatar || 'http://clipart-library.com/images/8TAbjBjAc.jpg',
         isIncoming: false,
         timestamp: now.getTime(),
       };
