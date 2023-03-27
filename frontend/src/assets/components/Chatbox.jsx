@@ -15,6 +15,8 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('default');
+  const [messageEditor, setMessageEditor] = useState(false);
+  const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
   
   useEffect(() => {
@@ -166,8 +168,13 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       }
       return msg;
     });
+    setEditedMessageIndex(-1);
     setMessages(updatedMessages);
     saveConversation(selectedCharacter, updatedMessages);
+  };  
+
+  const handleEditMessage = (index) => {
+    setEditedMessageIndex(index);
   };
   
   return (
@@ -178,18 +185,26 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     <div className="chatbox-wrapper">
       <div className="message-box">
       {messages.map((message, index) => (
-        <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
-          <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-            <img src={message.avatar} alt={`${message.sender}'s avatar`} />
-          </div>
-          <div className="message-info">
-            <p className="sender-name">{message.sender}</p>
-            <ReactMarkdown className="message-text" contentEditable={true} components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
-            {message.image && (
-              <img className="sent-image" src={message.image} alt="User image"/>
-            )}
-          </div>
+      <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
+        <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
+          <img src={message.avatar} alt={`${message.sender}'s avatar`} />
         </div>
+        <div className="message-info">
+          <p className="sender-name">{message.sender}</p>
+          {editedMessageIndex === index ? (
+            <div className="message-editor">
+              <p className="message-text" contentEditable suppressContentEditableWarning={true} onBlur={(e) => handleTextEdit(index, e.target.innerText)}>{message.text}</p>
+            </div>
+          ) : (
+            <div onClick={() => handleEditMessage(index)}>
+              <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
+            </div>
+          )}
+          {message.image && (
+            <img className="sent-image" src={message.image} alt="User image"/>
+          )}
+        </div>
+      </div>
       ))}
       <div ref={messagesEndRef}></div>
       </div>

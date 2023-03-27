@@ -97,7 +97,7 @@
 	
 	
 	.message-text {
-	margin: -1rem 0 0px 0;
+	margin: 0rem 0 0px 0;
 	padding: 0px 0px;
 	border-radius: 10px;
 	position: left;
@@ -107,7 +107,18 @@
 	line-height: 1.45rem;
 	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	}
-	
+
+	.message-text p{
+		margin: 0px 0 0px 0;
+		padding: 2px 0px;
+		border-radius: 10px;
+		position: left;
+		word-break: break-word;
+		font-size: 15.5px;
+		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
+		line-height: 1.45rem;
+		font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
 	.send-input {
 	display: flex;
 	justify-content: space-between;
