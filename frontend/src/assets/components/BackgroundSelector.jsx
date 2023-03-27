@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
-import '../css/backgroundselector.css';
 
 const { Option } = components;
 

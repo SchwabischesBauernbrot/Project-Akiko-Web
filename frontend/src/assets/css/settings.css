@@ -1,7 +1,6 @@
 .settings-panel {
 	margin-top: 3%;
 	display: flex;
-	justify-content: center;
 	background-color: rgba(11, 11, 11, 0.636);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
@@ -10,7 +9,7 @@
 	color: white;
 	margin-left: 5%;
 	margin-right: 5%;
-	gap: 3%;
+	gap: 5%;
 }
 
 #endpoint-container {
@@ -65,6 +64,13 @@
 	color: white;
 	justify-content: center;
 	width: 30%;
+  }
+.settings-box h2{
+	margin: auto;
+	padding: 3%;
+	width: fit-content;
+	color: white;
+	justify-content: center;
   }
 
 .settings-box-input{

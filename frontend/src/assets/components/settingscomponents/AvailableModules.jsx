@@ -14,7 +14,7 @@ function AvailableModules() {
 
   return (
     <div className='settings-box' id='modules'>
-      <h2>Available Modules:</h2>
+      <h2 className='settings-box'>Available Modules:</h2>
         {modules.map((module) => (
           <p key={module}>{module}</p>
         ))}

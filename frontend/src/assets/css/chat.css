@@ -1,21 +1,23 @@
 .message-box {
 	height: 77.5vh;
 	overflow-x: hidden;
+	position: relative;
 	max-width: 720px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
 	background-color: rgba(18, 18, 18, 0.737);
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
 	backdrop-filter: blur(11px);
-	margin-top: 1px;
 	}
 	
 	#dropdown {
 		width: 10rem;
-		margin-bottom: -5rem;
-		margin-top: 0.4rem;
+		margin-bottom: 0rem;
+		margin-top: -3rem;
 		margin-right: 10vh;
 		font-size: 14px;
 
