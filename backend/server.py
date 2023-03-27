@@ -138,7 +138,7 @@ if 'text' in modules:
 
 # Flask init
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "*"}}) # allow cross-domain requests
+cors = CORS(app) # allow cross-domain requests
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
 app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
@@ -441,6 +441,7 @@ def textgen_status():
 
 
 @app.route('/api/characters', methods=['GET'])
+@cross_origin()
 def get_characters():
     characters = []
     # loop through all the character files and load the data
@@ -488,6 +489,7 @@ def add_character():
 
 
 @app.route('/api/characters/<char_id>', methods=['GET'])
+@cross_origin()
 def get_character(char_id):
     character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
     try:
@@ -499,6 +501,7 @@ def get_character(char_id):
 
 
 @app.route('/api/characters/<char_id>', methods=['DELETE'])
+@cross_origin()
 def delete_character(char_id):
     character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
     image_path = app.config['CHARACTER_IMAGES_FOLDER'] + str(char_id) + '.png'
@@ -511,6 +514,7 @@ def delete_character(char_id):
 
 
 @app.route('/api/characters/<char_id>', methods=['PUT'])
+@cross_origin()
 def update_character(char_id):
     # Get the character information from the request
     fields = {
@@ -567,6 +571,7 @@ def update_character(char_id):
 
 
 @app.route('/api/conversation', methods=['POST'])
+@cross_origin()
 def save_conversation():
     conversation_data = request.get_json()
     if not conversation_data['messages']:
@@ -588,6 +593,7 @@ def save_conversation():
 
 
 @app.route('/api/conversations', methods=['GET'])
+@cross_origin()
 def get_conversation_names():
     conversations_folder = app.config['CONVERSATIONS_FOLDER']
     if not os.path.exists(conversations_folder):
@@ -599,6 +605,7 @@ def get_conversation_names():
 
 
 @app.route('/api/conversation/<conversation_name>', methods=['GET', 'DELETE'])
+@cross_origin()
 def conversation(conversation_name):
     convo_path = os.path.join(app.config['CONVERSATIONS_FOLDER'], f'{conversation_name}.json')
 
@@ -628,6 +635,7 @@ def conversation(conversation_name):
 
 
 @app.route('/api/tavern-character', methods=['POST'])
+@cross_origin()
 def upload_tavern_character():
     char_id = request.form.get('char_id')
     avatar = request.files['image']
@@ -651,6 +659,7 @@ def upload_tavern_character():
 
 
 @app.route('/api/tavern-character/<char_id>', methods=['GET'])
+@cross_origin()
 def download_tavern_character(char_id):
     try:
         export_tavern_character(char_id)
@@ -671,6 +680,7 @@ def download_tavern_character(char_id):
 
 
 @app.route('/api/advanced-character/<char_id>/<emotion>', methods=['GET'])
+@cross_origin()
 def get_advanced_emotion(char_id, emotion):
     if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'{emotion}.png'))):
         imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion}.png')
@@ -682,6 +692,7 @@ def get_advanced_emotion(char_id, emotion):
         return jsonify({'failure': 'Character does not have an image for this emotion.'})
 
 @app.route('/api/advanced-character/<char_id>/<emotion>', methods=['POST'])
+@cross_origin()
 def save_advanced_emotion(char_id, emotion):
     # Get the emotion image file from the request object
     emotion_file = request.files['emotion']
@@ -697,6 +708,7 @@ def save_advanced_emotion(char_id, emotion):
 
 
 @app.route('/api/advanced-character/<char_id>', methods=['GET'])
+@cross_origin()
 def get_advanced_emotions(char_id):
     if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))):
         emotions_with_ext = os.listdir(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))
@@ -717,6 +729,7 @@ def get_advanced_emotions(char_id):
 
 
 @app.route('/api/design/background', methods=['POST'])
+@cross_origin()
 def upload_background():
     if 'background' not in request.files:
         return {'error': 'No background file uploaded.'}, 400
@@ -729,6 +742,7 @@ def upload_background():
     return {'path': filepath}, 200
 
 @app.route('/api/design/background', methods=['GET'])
+@cross_origin()
 def get_backgrounds():
     backgrounds = []
     for file in os.listdir(app.config['BACKGROUNDS_FOLDER']):
@@ -742,6 +756,7 @@ def get_backgrounds():
     return {'backgrounds': backgrounds}, 200
 
 @app.route('/api/design/background/<bg_select>', methods=['GET'])
+@cross_origin()
 def get_selected_background(bg_select):
     filename, ext = os.path.splitext(bg_select)
     if ext.lower() in ['.png', '.jpg']:
@@ -756,10 +771,12 @@ def get_selected_background(bg_select):
 ##########################################
 
 @app.route('/api/modules', methods=['GET'])
+@cross_origin()
 def get_modules():
     return jsonify({'modules': modules})
 
 @app.route('/api/settings', methods=['GET'])
+@cross_origin()
 def get_settings():
     settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
     try:

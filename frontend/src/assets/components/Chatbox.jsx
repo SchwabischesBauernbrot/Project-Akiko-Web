@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from 'react-markdown';
 import ChatboxInput from './ChatBoxInput';
 import { clearMessages, setName, showHelp, showEmotions, setEmotion } from './slashcommands';
 import Avatar from './Avatar';
@@ -14,8 +15,11 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('default');
+  const [messageEditor, setMessageEditor] = useState(false);
+  const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
+  const editedMessageRef = useRef(null);
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
-
+  
   useEffect(() => {
     const fetchData = async () => {
       if(localStorage.getItem('useEmotionClassifier') !== null){
@@ -157,6 +161,31 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setMessages(updatedMessages);
     saveConversation(selectedCharacter, updatedMessages)
   };
+
+  const handleTextEdit = (index, newText) => {
+    const updatedMessages = messages.map((msg, i) => {
+      if (i === index) {
+        return { ...msg, text: newText };
+      }
+      return msg;
+    });
+    setEditedMessageIndex(-1);
+    setMessages(updatedMessages);
+    saveConversation(selectedCharacter, updatedMessages);
+  };  
+
+  const handleEditMessage = (event, index) => {
+    event.preventDefault();
+    event.target.blur();
+    setEditedMessageIndex(index);
+  };
+  
+  const handleMessageKeyDown = (event, index) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.target.blur();
+    }
+  };
   
   return (
     <>
@@ -166,18 +195,34 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     <div className="chatbox-wrapper">
       <div className="message-box">
       {messages.map((message, index) => (
-        <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
-          <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-            <img src={message.avatar} alt={`${message.sender}'s avatar`} />
-          </div>
-          <div className="message-info">
-            <p className="sender-name">{message.sender}</p>
-            <p className="message-text" dangerouslySetInnerHTML={{__html: message.text.replace(/\*(.*?)\*/g, '<i>$1</i>')}}></p>
-            {message.image && (
-              <img className="sent-image" src={message.image} alt="User image"/>
-            )}
-          </div>
+      <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
+        <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
+          <img src={message.avatar} alt={`${message.sender}'s avatar`} />
         </div>
+        <div className="message-info">
+          <p className="sender-name">{message.sender}</p>
+          {editedMessageIndex === index ? (
+            <div className="message-editor">
+              <textarea
+                id="message-edit"
+                contentEditable
+                suppressContentEditableWarning={true}
+                onBlur={(e) => handleTextEdit(index, e.target.value)}
+                onKeyDown={(e) => handleMessageKeyDown(e, index)}
+                ref={editedMessageRef}
+                defaultValue={message.text}
+              />
+            </div>
+          ) : (
+            <div onDoubleClick={(event) => handleEditMessage(event, index)}>
+              <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
+            </div>
+          )}
+          {message.image && (
+            <img className="sent-image" src={message.image} alt="User image"/>
+          )}
+        </div>
+      </div>
       ))}
       <div ref={messagesEndRef}></div>
       </div>
