@@ -132,13 +132,15 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
 
     // Make API call
     const generatedText = await characterTextGen(selectedCharacter, history, endpoint, endpointType, image, configuredName);
-    if (generatedText !== null && useEmotionClassifier) {
+    if (generatedText !== null) {
+      if(useEmotionClassifier === 'true'){
       const classification = await classifyEmotion(generatedText);
       if (classification && classification.length > 0) {
         const label = classification[0]['label'];
         setCurrentEmotion(label);
       } else {
         console.error('Invalid classification data:', classification);
+      }
       }
     }
     // Add new incoming message to state
