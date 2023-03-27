@@ -15,7 +15,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('default');
-  const [messageEditor, setMessageEditor] = useState(false);
+  const [editRowCounter, setEditRowCounter] = useState(1);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
   const editedMessageRef = useRef(null);
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
@@ -171,7 +171,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     });
     setEditedMessageIndex(-1);
     setMessages(updatedMessages);
-    saveConversation(selectedCharacter, updatedMessages);
   };  
 
   const handleEditMessage = (event, index) => {
@@ -180,7 +179,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setEditedMessageIndex(index);
   };
   
-  const handleMessageKeyDown = (event, index) => {
+  const handleMessageKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       event.target.blur();
@@ -200,17 +199,25 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
           <img src={message.avatar} alt={`${message.sender}'s avatar`} />
         </div>
         <div className="message-info">
+          <div className="message-buttons">
+            <button className="message-button">T</button>
+            <button className="message-button">E</button>
+            <button className="message-button">S</button>
+            <button className="message-button">T</button>
+          </div>
           <p className="sender-name">{message.sender}</p>
           {editedMessageIndex === index ? (
             <div className="message-editor">
               <textarea
+                rows={editRowCounter > 1 ? editRowCounter : Math.ceil(message.text.length / 75)}
                 id="message-edit"
                 contentEditable
                 suppressContentEditableWarning={true}
                 onBlur={(e) => handleTextEdit(index, e.target.value)}
-                onKeyDown={(e) => handleMessageKeyDown(e, index)}
+                onKeyDown={(e) => handleMessageKeyDown(e)}
                 ref={editedMessageRef}
                 defaultValue={message.text}
+                onInput={(e) => { setEditRowCounter(e.target.value.length/75) }}
               />
             </div>
           ) : (
