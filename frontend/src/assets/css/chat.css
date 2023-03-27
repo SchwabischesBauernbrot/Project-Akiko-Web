@@ -23,8 +23,7 @@
 
 	}
 	.input-box textarea {
-		height: 2rem !important;
-		resize: vertical;
+		min-height: 2rem !important;
 	}
 
 	.input-box {
@@ -43,6 +42,7 @@
 	border-top-right-radius: 0px;
 	border-top-left-radius: 0px;
 	margin-top: 4px;
+	height: auto;
 	}
 	
 	.chat-selection-menu {
