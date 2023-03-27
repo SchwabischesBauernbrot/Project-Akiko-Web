@@ -17,6 +17,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [currentEmotion, setCurrentEmotion] = useState('default');
   const [messageEditor, setMessageEditor] = useState(false);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
+  const editedMessageRef = useRef(null);
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
   
   useEffect(() => {
@@ -173,8 +174,17 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     saveConversation(selectedCharacter, updatedMessages);
   };  
 
-  const handleEditMessage = (index) => {
+  const handleEditMessage = (event, index) => {
+    event.preventDefault();
+    event.target.blur();
     setEditedMessageIndex(index);
+  };
+  
+  const handleMessageKeyDown = (event, index) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.target.blur();
+    }
   };
   
   return (
@@ -193,10 +203,18 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
           <p className="sender-name">{message.sender}</p>
           {editedMessageIndex === index ? (
             <div className="message-editor">
-              <p className="message-text" contentEditable suppressContentEditableWarning={true} onBlur={(e) => handleTextEdit(index, e.target.innerText)}>{message.text}</p>
+              <textarea
+                id="message-edit"
+                contentEditable
+                suppressContentEditableWarning={true}
+                onBlur={(e) => handleTextEdit(index, e.target.value)}
+                onKeyDown={(e) => handleMessageKeyDown(e, index)}
+                ref={editedMessageRef}
+                defaultValue={message.text}
+              />
             </div>
           ) : (
-            <div onClick={() => handleEditMessage(index)}>
+            <div onDoubleClick={(event) => handleEditMessage(event, index)}>
               <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
             </div>
           )}
