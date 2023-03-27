@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from 'react-markdown';
 import ChatboxInput from './ChatBoxInput';
 import { clearMessages, setName, showHelp, showEmotions, setEmotion } from './slashcommands';
 import Avatar from './Avatar';
@@ -15,7 +16,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('default');
   const messagesEndRef = useRef(null); // create ref to last message element in chatbox
-
+  
   useEffect(() => {
     const fetchData = async () => {
       if(localStorage.getItem('useEmotionClassifier') !== null){
@@ -157,6 +158,17 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setMessages(updatedMessages);
     saveConversation(selectedCharacter, updatedMessages)
   };
+
+  const handleTextEdit = (index, newText) => {
+    const updatedMessages = messages.map((msg, i) => {
+      if (i === index) {
+        return { ...msg, text: newText };
+      }
+      return msg;
+    });
+    setMessages(updatedMessages);
+    saveConversation(selectedCharacter, updatedMessages);
+  };
   
   return (
     <>
@@ -172,7 +184,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
           </div>
           <div className="message-info">
             <p className="sender-name">{message.sender}</p>
-            <p className="message-text" dangerouslySetInnerHTML={{__html: message.text.replace(/\*(.*?)\*/g, '<i>$1</i>')}}></p>
+            <ReactMarkdown className="message-text" contentEditable={true} components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
             {message.image && (
               <img className="sent-image" src={message.image} alt="User image"/>
             )}
