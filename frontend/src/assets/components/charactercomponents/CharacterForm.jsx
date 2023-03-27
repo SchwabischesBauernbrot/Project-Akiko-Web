@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiSave, FiImage } from 'react-icons/fi';
 
 export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
@@ -11,6 +11,21 @@ export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
 const [characterAvatar, setCharacterAvatar] = useState(null);
 const [imageUrl, setImageUrl] = useState(null);
 
+useEffect(() => {
+  const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
+  const closeOnOutsideClick = e => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+      onClose();
+      }
+  };
+  document.body.addEventListener("keydown", closeOnEscapeKey);
+  window.addEventListener("mousedown", closeOnOutsideClick);
+  return () => {
+      document.body.removeEventListener("keydown", closeOnEscapeKey);
+      window.removeEventListener("mousedown", closeOnOutsideClick);
+  };
+  }, []);
+  
 function handleSubmit(event) {
     event.preventDefault();
 
@@ -53,8 +68,8 @@ function handleSubmit(event) {
   return (
     <div className="modal-overlay">
       <div className="character-form">
-        <span className="close" onClick={onClose}>&times;</span>
-        <h2>Create New Character</h2>
+        <span className="close" onClick={onClose} style={{cursor: 'pointer'}}>&times;</span>
+        <h2 id='charactername-title'>Create New Character</h2>
         <form onSubmit={handleSubmit}>
         <label htmlFor="avatar-field">{!imageUrl && <FiImage id="avatar-default"/>} {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar-form"/>}</label>
         <input

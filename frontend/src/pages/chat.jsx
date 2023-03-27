@@ -4,6 +4,7 @@ import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
 import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
 import "../assets/css/chat.css";
+import BackgroundSelect from '../assets/components/BackgroundSelector';
 
 const defaultChar = 'Vapor'
 const Chat = () => {
@@ -55,6 +56,7 @@ const handleDelete = () => {
 
 return (
 	<div className="container">
+        <div id='dropdown'>
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (
             <DeleteChatButton
@@ -62,8 +64,10 @@ return (
                 onDelete={handleDelete}
             />
         )};
+        </div>
+        <BackgroundSelect/>
 		<Chatbox selectedCharacter={selectedCharacter} charAvatar={characterAvatar} endpoint={configuredEndpoint} endpointType={configuredEndpointType} convoName={selectedConversation}/>
-	</div>
+    </div>
 );
 };
 
