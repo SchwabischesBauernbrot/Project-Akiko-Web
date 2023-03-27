@@ -22,8 +22,8 @@
 - Image captioning. **(Done)**
 - Stable Diffusion (probably).
 ## Full Guide to Language Model Config, Character Creation, and more:
-- Character Creation **(Done)**
-- Character Card Import/Export **(Done)**
+- Character Creation 
+- Character Card Import/Export
 - Guide Page full of info for creating characters in every available style, AliChat, W++, and more.
 ## Chat with Characters:
 - Character creation and character management with exports to Character Cards (TavernCardPNG). **(Done)**
