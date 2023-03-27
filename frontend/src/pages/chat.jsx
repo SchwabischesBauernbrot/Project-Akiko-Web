@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Chatbox from '../assets/components/ChatBox';
+import Chatbox from '../assets/components/Chatbox';
 import ConversationSelector from '../assets/components/ConversationSelector';
 import DeleteChatButton from '../assets/components/DeleteChatButton';
 import { fetchCharacter, fetchSettings, getCharacterImageUrl } from "../assets/components/api";
