@@ -11,7 +11,7 @@
 	border-top-left-radius: 10px;
 	background-color: rgba(18, 18, 18, 0.737);
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(11px);
+	backdrop-filter: blur(15px);
 	}
 	
 	#dropdown {
@@ -22,7 +22,11 @@
 		font-size: 14px;
 
 	}
-	
+	.input-box textarea {
+		height: 2rem !important;
+		resize: vertical;
+	}
+
 	.input-box {
 	overflow-x: break-word;
 	max-width: 720px;
@@ -33,13 +37,12 @@
 	background-color: rgba(11, 11, 11, 0.737);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(11px);
+	backdrop-filter: blur(15px);
 	margin-right: 0;
 	margin-left: 0px;
 	border-top-right-radius: 0px;
 	border-top-left-radius: 0px;
 	margin-top: 4px;
-	height: auto;
 	}
 	
 	.chat-selection-menu {
@@ -103,9 +106,9 @@
 	position: left;
 	word-break: break-word;
 	font-size: 15.5px;
-	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
+	text-shadow: 2px 0px 2px rgba(0, 0, 0, 0.223);
 	line-height: 1.45rem;
-	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	}
 
 	.message-text p{
@@ -154,6 +157,7 @@
 	font-family: "Noto Sans", "Noto Color Emoji", sans-serif; 
 	font-size: 14.5px;
 	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.614);
+	height: auto;
 	}
 	
 	#input {
