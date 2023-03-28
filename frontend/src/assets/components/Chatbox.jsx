@@ -286,7 +286,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       {messages.map((message, index) => (
       <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
         <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-          <img src={message.avatar} onClick={message.sender === selectedCharacter.name && (handleOpenCharacterProfile)}alt={`${message.sender}'s avatar`} />
+          <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? handleOpenCharacterProfile : undefined}alt={`${message.sender}'s avatar`} />
         </div>
         <div className="message-info">
           <div className="message-buttons">
