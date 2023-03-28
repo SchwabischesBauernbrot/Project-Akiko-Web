@@ -256,7 +256,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   };
 
   const sendImpersonation = () => {
-    setActivateImpersonation(true);
+    setActivateImpersonation(!activateImpersonation);
   };
 
   const handleReneration = () => {
