@@ -18,10 +18,10 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [currentEmotion, setCurrentEmotion] = useState('default');
   const [editRowCounter, setEditRowCounter] = useState(1);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
-  const editedMessageRef = useRef(null);
-  const messagesEndRef = useRef(null);
   const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
+  const editedMessageRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
 
   useEffect(() => {
@@ -163,7 +163,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     };
     const updatedMessages = [...chatHistory, newIncomingMessage];
     setMessages(updatedMessages);
-    saveConversation(selectedCharacter, updatedMessages)
+    saveConversation(selectedCharacter, updatedMessages);
   };
 
   const handleTextEdit = (index, newText) => {
@@ -203,6 +203,38 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setShowDeleteMessageModal(true);
   };
 
+  // Add these new functions inside the Chatbox component
+  const handleMoveUp = (index) => {
+    if (index > 0) {
+      const updatedMessages = messages.map((msg, i) => {
+        if (i === index - 1) {
+          return messages[index];
+        } else if (i === index) {
+          return messages[index - 1];
+        }
+        return msg;
+      });
+      setMessages(updatedMessages);
+      saveConversation(selectedCharacter, updatedMessages);
+    }
+  };
+
+  const handleMoveDown = (index) => {
+    if (index < messages.length - 1) {
+      const updatedMessages = messages.map((msg, i) => {
+        if (i === index) {
+          return messages[index + 1];
+        } else if (i === index + 1) {
+          return messages[index];
+        }
+        return msg;
+      });
+      setMessages(updatedMessages);
+      saveConversation(selectedCharacter, updatedMessages);
+    }
+  };
+
+
   return (
     <>
     {selectedCharacter && (
@@ -218,8 +250,8 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         <div className="message-info">
           <div className="message-buttons">
             <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)}><FiEdit/></button>
-            <button className="message-button" id={'move-up'}><FiArrowUp/></button>
-            <button className="message-button" id={'move-down'} ><FiArrowDown/></button>
+            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)}><FiArrowUp/></button>
+            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)}><FiArrowDown/></button>
             <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
           </div>
           <p className="sender-name">{message.sender}</p>
