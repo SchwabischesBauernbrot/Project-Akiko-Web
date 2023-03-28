@@ -162,8 +162,8 @@ return (
     {showDeleteModal && (
     <div className="modal-overlay">
       <div className="modal-small-box">
-        <h2>Delete Character</h2>
-        <p>Are you sure you want to delete {characterToDelete.name}?</p>
+        <h2 className="centered">Delete Character</h2>
+        <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
         <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
         <button className="cancel-button" onClick={handleDelete}>Delete</button>
       </div>

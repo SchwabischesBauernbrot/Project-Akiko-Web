@@ -6,6 +6,7 @@ import Avatar from './Avatar';
 import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
+import { FiArrowDown, FiArrowUp, FiEdit, FiTrash2 } from "react-icons/fi";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -15,11 +16,14 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('default');
-  const [messageEditor, setMessageEditor] = useState(false);
+  const [editRowCounter, setEditRowCounter] = useState(1);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
   const editedMessageRef = useRef(null);
-  const messagesEndRef = useRef(null); // create ref to last message element in chatbox
-  
+  const messagesEndRef = useRef(null);
+  const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
+  const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
+
+
   useEffect(() => {
     const fetchData = async () => {
       if(localStorage.getItem('useEmotionClassifier') !== null){
@@ -171,7 +175,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     });
     setEditedMessageIndex(-1);
     setMessages(updatedMessages);
-    saveConversation(selectedCharacter, updatedMessages);
   };  
 
   const handleEditMessage = (event, index) => {
@@ -180,13 +183,26 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setEditedMessageIndex(index);
   };
   
-  const handleMessageKeyDown = (event, index) => {
+  const handleMessageKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       event.target.blur();
     }
   };
+
+  const handleDeleteMessage = (index) => {
+    const updatedMessages = messages.filter((_, i) => i !== index);
+    setMessages(updatedMessages);
+    saveConversation(selectedCharacter, updatedMessages);
+    setDeleteMessageIndex(-1);
+    setShowDeleteMessageModal(false);
+  };
   
+  const delMessage = async (index) => {
+    setDeleteMessageIndex(index);
+    setShowDeleteMessageModal(true);
+  };
+
   return (
     <>
     {selectedCharacter && (
@@ -200,17 +216,25 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
           <img src={message.avatar} alt={`${message.sender}'s avatar`} />
         </div>
         <div className="message-info">
+          <div className="message-buttons">
+            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)}><FiEdit/></button>
+            <button className="message-button" id={'move-up'}><FiArrowUp/></button>
+            <button className="message-button" id={'move-down'} ><FiArrowDown/></button>
+            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
+          </div>
           <p className="sender-name">{message.sender}</p>
           {editedMessageIndex === index ? (
             <div className="message-editor">
               <textarea
+                rows={editRowCounter > 1 ? editRowCounter : Math.ceil(message.text.length / 75)}
                 id="message-edit"
                 contentEditable
                 suppressContentEditableWarning={true}
                 onBlur={(e) => handleTextEdit(index, e.target.value)}
-                onKeyDown={(e) => handleMessageKeyDown(e, index)}
+                onKeyDown={(e) => handleMessageKeyDown(e)}
                 ref={editedMessageRef}
                 defaultValue={message.text}
+                onInput={(e) => { setEditRowCounter(e.target.value.length/75) }}
               />
             </div>
           ) : (
@@ -237,6 +261,16 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         </div>
       )}
     </div>
+    {showDeleteMessageModal && (
+    <div className="modal-overlay">
+      <div className="modal-small-box">
+        <h2 className="centered">Delete Message</h2>
+        <p className="centered">Are you sure you want to delete this message?</p>
+        <button className="submit-button" onClick={() => setShowDeleteMessageModal(false)}>Cancel</button>
+        <button className="cancel-button" onClick={() => handleDeleteMessage(deleteMessageIndex)}>Delete</button>
+      </div>
+    </div>
+   )}
     </>
   );
 }

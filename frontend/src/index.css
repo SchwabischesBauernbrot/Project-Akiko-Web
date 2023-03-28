@@ -103,6 +103,11 @@ body {
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
 	backdrop-filter: blur(10px);
 }
+.centered{
+	width: fit-content;
+	margin: 1.5rem auto;
+	color: white;
+}
 
 .modal-small-box {
 	margin-right: auto;
