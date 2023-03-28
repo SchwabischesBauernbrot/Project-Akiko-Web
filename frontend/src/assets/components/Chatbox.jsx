@@ -7,7 +7,7 @@ import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fet
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
 import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
-import { updateCharacter } from "./api";
+import Connect from "./Connect";
 import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
@@ -295,6 +295,9 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     )}
     <div className="chatbox-wrapper">
       <div className="message-box">
+      <div className={'connect-chat-box'}>
+        <Connect/>
+      </div>
       {messages.map((message, index) => (
       <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
         <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
