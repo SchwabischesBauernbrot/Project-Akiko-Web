@@ -51,6 +51,7 @@ function parseTextEnd(text) {
   };  
 
   export async function handleImageSend(image, configuredName) {
+    if(!image) return Promise.resolve(null);
     var reader = new FileReader();
     reader.readAsDataURL(image);
     return new Promise((resolve, reject) => {
