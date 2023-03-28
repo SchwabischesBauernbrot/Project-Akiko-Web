@@ -7,7 +7,7 @@ import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fet
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
 import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
-import { updateCharacter } from "./api";
+import Connect from "./Connect";
 import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
@@ -81,7 +81,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   }
   
   const handleUserMessage = async (text, image, avatar) => {
-    console.log('text:', text);
     if (text.startsWith('/')) {
       const [command, argument] = text.split(' ');
       console.log('command:', command);
@@ -281,9 +280,10 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setOpenCharacterProfile(true);
   }
   const handleUpdateCharacterProfile = () => {
-    updateCharacter(selectedCharacter);
-    setOpenCharacterProfile(false);
+    window.location.reload();
+    handleCloseCharacterProfile();
   }
+
   const handleCloseCharacterProfile = () => {
     setOpenCharacterProfile(false);
   }
@@ -293,6 +293,9 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     {selectedCharacter && (
       <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
+      <div className={'connect-chat-box'}>
+        <Connect/>
+      </div>
     <div className="chatbox-wrapper">
       <div className="message-box">
       {messages.map((message, index) => (

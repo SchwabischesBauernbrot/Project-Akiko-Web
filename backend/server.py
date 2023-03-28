@@ -428,7 +428,7 @@ def textgen_status():
     elif(endpointType == 'Ooba'):
         requests.put(f"{endpoint}/config", json={data})
     elif(endpointType == 'AkikoBackend'):
-        results = {'results': text_model}
+        results = {'result': text_model}
 
 ##############################################
 ##### END OF TXT GEN API HANDLING ROUTES #####

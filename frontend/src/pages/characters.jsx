@@ -77,19 +77,12 @@ const Characters = () => {
         //window.location.href = '/error';
       });
   };
-
-  const editCharacter = async (updatedCharacter) => {
-    updateCharacter(updatedCharacter)
-      .then(() => {
-        const updatedCharacters = characters.map((c) => c.char_id === updatedCharacter.char_id ? updatedCharacter : c);
-        setCharacters(updatedCharacters);
-        window.location.reload();
-      })
-      .catch(error => {
-        console.error(error);
-        //window.location.href = '/error';
-      });
-  }; 
+  
+  const editCharacter = (updatedCharacter) => {
+    const updatedCharacters = characters.map((c) => c.char_id === updatedCharacter.char_id ? updatedCharacter : c);
+    setCharacters(updatedCharacters);
+    window.location.reload();
+  };
 
   const delCharacter = async (character) => {
     setCharacterToDelete(character);
