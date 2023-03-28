@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FiUsers, FiSliders, FiImage } from "react-icons/fi";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
+import { BsPersonCheck } from "react-icons/bs";
 import GenSettingsMenu from "./GenSettingsMenu";
 
-function ChatboxInput({ onSend }) {
+function ChatboxInput({ onSend, impersonate }) {
   const [messageImage, setMessageImage] = useState(null);
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
@@ -30,6 +31,10 @@ function ChatboxInput({ onSend }) {
     setMessageImage(null);
   };
 
+  const handleImpersonateClick = () => {
+    impersonate();
+  };
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
@@ -48,11 +53,14 @@ function ChatboxInput({ onSend }) {
     )}
     <div className="input-box">
       <div className="send-input">
-        <div id="FiMenu" onClick={() => setIsOpen(true)}>
+        <div id="FiMenu" onClick={() => setIsOpen(true)} title={'Change User Profile Settings'}>
           <FiUsers />
         </div>
-        <div id="FiSliders" onClick={() => setGenSettingsMenuIsOpen(true)}>
+        <div id="FiSliders" onClick={() => setGenSettingsMenuIsOpen(true)} title={'Change Generation Settings'}>
           <FiSliders />
+        </div>
+        <div id="FiImage" onClick={() => handleImpersonateClick()} title={'Impersonate Selected Character'}>
+          <BsPersonCheck/>
         </div>
         {imageCaptioning == true && (
           <>
@@ -77,7 +85,7 @@ function ChatboxInput({ onSend }) {
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
           ref={textAreaRef}/>
-        <div onClick={handleSendClick} id="FiSend">
+        <div onClick={handleSendClick} id="FiSend" title={'Send message'}>
           <HiOutlinePaperAirplane />
         </div>
       </div>

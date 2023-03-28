@@ -20,6 +20,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
   const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
+  const [activateImpersonation, setActivateImpersonation] = useState(false);
   const editedMessageRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -109,6 +110,23 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     }
     if (!selectedCharacter){
       setInvalidActionPopup(true)
+      return;
+    }
+    if(activateImpersonation === true){
+      const now = new Date();
+      const newIncomingMessage = {
+        conversationName: conversationName,
+        sender: selectedCharacter.name,
+        text: text,
+        avatar: characterAvatar,
+        isIncoming: true,
+        timestamp: now.getTime(),
+      };
+      const updatedMessages = [...messages, newIncomingMessage];
+      setMessages(updatedMessages);
+      // Save the conversation with the new message
+      saveConversation(selectedCharacter, updatedMessages);
+      setActivateImpersonation(false);
       return;
     }
     if (text.length < 1 && image == null) {
@@ -234,7 +252,9 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     }
   };
 
-
+  const sendImpersonation = () => {
+    setActivateImpersonation(true);
+  };
   return (
     <>
     {selectedCharacter && (
@@ -282,7 +302,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       ))}
       <div ref={messagesEndRef}></div>
       </div>
-      <ChatboxInput onSend={handleUserMessage} />
+      <ChatboxInput onSend={handleUserMessage} impersonate={sendImpersonation}/>
       {invalidActionPopup && (
         <div className="modal-overlay">
           <div className="modal-small-box">
