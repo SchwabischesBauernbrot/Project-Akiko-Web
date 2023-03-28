@@ -6,7 +6,7 @@ import Avatar from './Avatar';
 import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
-import { FiArrowDown, FiArrowUp, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 import { updateCharacter } from "./api";
 import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
 
@@ -155,6 +155,17 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   };  
   
   const handleChatbotResponse = async (chatHistory, image) => {
+    const isTypingNow = new Date();
+    const isTyping = {
+      conversationName: conversationName,
+      sender: selectedCharacter.name,
+      text: `*${selectedCharacter.name} is typing...*`,
+      avatar: characterAvatar,
+      isIncoming: true,
+      timestamp: isTypingNow.getTime(),
+    };
+    const isTypingHistory = [...chatHistory, isTyping];
+    setMessages(isTypingHistory);
     const history = chatHistory
     .map((message) => `${message.sender}: ${message.text}`)
     .join('\n');
@@ -276,6 +287,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const handleCloseCharacterProfile = () => {
     setOpenCharacterProfile(false);
   }
+
   return (
     <>
     {selectedCharacter && (
@@ -290,7 +302,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         </div>
         <div className="message-info">
           <div className="message-buttons">
-            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)} title={'Edit Message'}><FiEdit/></button>
+            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)} title={'Edit Message'}>{editedMessageIndex === index ? <FiCheck/> : <FiEdit/>}</button>
             <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)} title={'Move Message Up One'}><FiArrowUp/></button>
             <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)} title={'Move Message Down One'}><FiArrowDown/></button>
             <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)} title={'Remove Message from Conversation'}><FiTrash2/></button>

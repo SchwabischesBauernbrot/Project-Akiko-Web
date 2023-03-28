@@ -11,6 +11,7 @@ function ChatboxInput({ onSend, impersonate }) {
   const [GenSettingsMenuIsOpen, setGenSettingsMenuIsOpen] = useState(false);
   const [imageCaptioning, setImageCaptioning] = useState(false);
   const [isImpersonating, setIsImpersonating] = useState(false);
+  
   useEffect(() => {
     if (localStorage.getItem('imageCaptioning') !== null) {
       setImageCaptioning(localStorage.getItem('imageCaptioning') === 'true');
