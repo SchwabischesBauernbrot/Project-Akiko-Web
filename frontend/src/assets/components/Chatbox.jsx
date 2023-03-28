@@ -6,6 +6,7 @@ import Avatar from './Avatar';
 import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
+import { FiArrowDown, FiArrowUp, FiEdit, FiTrash2 } from "react-icons/fi";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -18,8 +19,11 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [editRowCounter, setEditRowCounter] = useState(1);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
   const editedMessageRef = useRef(null);
-  const messagesEndRef = useRef(null); // create ref to last message element in chatbox
-  
+  const messagesEndRef = useRef(null);
+  const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
+  const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
+
+
   useEffect(() => {
     const fetchData = async () => {
       if(localStorage.getItem('useEmotionClassifier') !== null){
@@ -185,7 +189,20 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       event.target.blur();
     }
   };
+
+  const handleDeleteMessage = (index) => {
+    const updatedMessages = messages.filter((_, i) => i !== index);
+    setMessages(updatedMessages);
+    saveConversation(selectedCharacter, updatedMessages);
+    setDeleteMessageIndex(-1);
+    setShowDeleteMessageModal(false);
+  };
   
+  const delMessage = async (index) => {
+    setDeleteMessageIndex(index);
+    setShowDeleteMessageModal(true);
+  };
+
   return (
     <>
     {selectedCharacter && (
@@ -200,10 +217,10 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         </div>
         <div className="message-info">
           <div className="message-buttons">
-            <button className="message-button">T</button>
-            <button className="message-button">E</button>
-            <button className="message-button">S</button>
-            <button className="message-button">T</button>
+            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)}><FiEdit/></button>
+            <button className="message-button" id={'move-up'}><FiArrowUp/></button>
+            <button className="message-button" id={'move-down'} ><FiArrowDown/></button>
+            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
           </div>
           <p className="sender-name">{message.sender}</p>
           {editedMessageIndex === index ? (
@@ -244,6 +261,16 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         </div>
       )}
     </div>
+    {showDeleteMessageModal && (
+    <div className="modal-overlay">
+      <div className="modal-small-box">
+        <h2 className="centered">Delete Message</h2>
+        <p className="centered">Are you sure you want to delete this message?</p>
+        <button className="submit-button" onClick={() => setShowDeleteMessageModal(false)}>Cancel</button>
+        <button className="cancel-button" onClick={() => handleDeleteMessage(deleteMessageIndex)}>Delete</button>
+      </div>
+    </div>
+   )}
     </>
   );
 }

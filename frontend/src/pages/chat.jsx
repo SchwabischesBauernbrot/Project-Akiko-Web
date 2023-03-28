@@ -18,8 +18,6 @@ const handleConversationSelect = (conversationName) => {
   setSelectedConversation(conversationName || null); // Set to null if conversationName is empty
 };
 
-
-
 useEffect(() => {
     const fetchData = async () => {
         setconfiguredEndpoint(localStorage.getItem('endpoint'));
