@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import ReactMarkdown from 'react-markdown';
 import ChatboxInput from './ChatBoxInput';
-import { clearMessages, setName, showHelp, showEmotions, setEmotion } from './slashcommands';
 import Avatar from './Avatar';
-import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
-import { characterTextGen, classifyEmotion } from "./chatapi";
-import { getBase64 } from "./miscfunctions";
-import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import { saveConversation, fetchConversation } from "./api";
+import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
+import Message from "./chatcomponents/Message";
 import { updateCharacter } from "./api";
 import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
+import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
+import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
+import { handleUserMessage } from './chatcomponents/HandleUserMessage';
+import { scanSlash } from './chatcomponents/slashcommands';
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -24,9 +25,8 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
   const [activateImpersonation, setActivateImpersonation] = useState(false);
   const [openCharacterProfile, setOpenCharacterProfile] = useState(false);
-  const editedMessageRef = useRef(null);
+  const [userAvatar, setUserAvatar] = useState(null);
   const messagesEndRef = useRef(null);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,84 +75,16 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     }
   }, [messages]);
 
+  const handleUserSend = async (text, image) => {
+    if(await scanSlash(text, setMessages, setconfiguredName, selectedCharacter, setCurrentEmotion)){
+      return;
+    }
+    await handleUserMessage(text, image, userAvatar, selectedCharacter, conversationName, messages, setMessages, setInvalidActionPopup, handleChatbotResponse, setActivateImpersonation, configuredName, characterAvatar, activateImpersonation);
+  }
   const handleInvalidAction = () => {
     setInvalidActionPopup(false)
     window.location.href = '/characters'
-  }
-  
-  const handleUserMessage = async (text, image, avatar) => {
-    console.log('text:', text);
-    if (text.startsWith('/')) {
-      const [command, argument] = text.split(' ');
-      console.log('command:', command);
-      switch (command) {
-        case '/clear':
-          clearMessages(setMessages);
-          break;
-        case '/clearname':
-          setconfiguredName('You');
-          localStorage.removeItem('configuredName');
-          break;
-        case '/name':
-          setName(setconfiguredName, argument);
-          break;
-        case '/help':
-          showHelp();
-          break;
-        case '/emotions':
-          await showEmotions(selectedCharacter, fetchAdvancedCharacterEmotions);
-          break;
-        case '/emotion':
-          await setEmotion(argument, setCurrentEmotion, selectedCharacter, fetchAdvancedCharacterEmotion);
-          break;
-        default:
-          alert("Invalid command.");
-          break;
-      }
-      return;
-    }
-    if (!selectedCharacter){
-      setInvalidActionPopup(true)
-      return;
-    }
-    if(activateImpersonation === true){
-      const now = new Date();
-      const newIncomingMessage = {
-        conversationName: conversationName,
-        sender: selectedCharacter.name,
-        text: text,
-        avatar: characterAvatar,
-        isIncoming: true,
-        timestamp: now.getTime(),
-      };
-      const updatedMessages = [...messages, newIncomingMessage];
-      setMessages(updatedMessages);
-      // Save the conversation with the new message
-      saveConversation(selectedCharacter, updatedMessages);
-      setActivateImpersonation(false);
-      return;
-    }
-    if (text.length < 1 && image == null) {
-      handleChatbotResponse(messages);
-    } else {
-      const now = new Date();
-      const newMessage = {
-        conversationName: conversationName,
-        sender: configuredName,
-        text: text,
-        image: image ? await getBase64(image) : null, // convert image to base64 string
-        avatar: avatar || 'http://clipart-library.com/images/8TAbjBjAc.jpg',
-        isIncoming: false,
-        timestamp: now.getTime(),
-      };
-      const updatedMessages = [...messages, newMessage];
-      setMessages(updatedMessages);
-      // Call chatbot response after user message has been added
-      handleChatbotResponse(updatedMessages, image);
-      // Save the conversation with the new message
-      saveConversation(selectedCharacter, updatedMessages);
-    }
-  };  
+  } 
   
   const handleChatbotResponse = async (chatHistory, image) => {
     const isTypingNow = new Date();
@@ -296,69 +228,30 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     <div className="chatbox-wrapper">
       <div className="message-box">
       {messages.map((message, index) => (
-      <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
-        <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-          <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? handleOpenCharacterProfile : undefined}alt={`${message.sender}'s avatar`} />
-        </div>
-        <div className="message-info">
-          <div className="message-buttons">
-            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)} title={'Edit Message'}>{editedMessageIndex === index ? <FiCheck/> : <FiEdit/>}</button>
-            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)} title={'Move Message Up One'}><FiArrowUp/></button>
-            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)} title={'Move Message Down One'}><FiArrowDown/></button>
-            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)} title={'Remove Message from Conversation'}><FiTrash2/></button>
-            {index === Math.ceil(messages.length - 1) && message.sender === selectedCharacter.name && (
-              <button className="message-button" id={'regenerate'} onClick={() => handleReneration()} title={'Regenerate Message'}><FiRefreshCw/></button>
-            )}
-          </div>
-          <p className="sender-name">{message.sender}</p>
-          {editedMessageIndex === index ? (
-            <div className="message-editor">
-              <textarea
-                rows={editRowCounter > 1 ? editRowCounter : Math.ceil(message.text.length / 75)}
-                id="message-edit"
-                contentEditable
-                suppressContentEditableWarning={true}
-                onBlur={(e) => handleTextEdit(index, e.target.value)}
-                onKeyDown={(e) => handleMessageKeyDown(e)}
-                ref={editedMessageRef}
-                defaultValue={message.text}
-                onInput={(e) => { setEditRowCounter(e.target.value.length/75) }}
-              />
-            </div>
-          ) : (
-            <div onDoubleClick={(event) => handleEditMessage(event, index)}>
-              <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
-            </div>
-          )}
-          {message.image && (
-            <img className="sent-image" src={message.image} alt="User image"/>
-          )}
-        </div>
-      </div>
+        <Message
+          key={index}
+          message={message}
+          index={index}
+          editedMessageIndex={editedMessageIndex}
+          handleEditMessage={handleEditMessage}
+          handleTextEdit={handleTextEdit}
+          handleMessageKeyDown={handleMessageKeyDown}
+          editRowCounter={editRowCounter}
+          handleMoveUp={handleMoveUp}
+          handleMoveDown={handleMoveDown}
+          delMessage={delMessage}
+          handleReneration={handleReneration}
+          handleOpenCharacterProfile={handleOpenCharacterProfile}
+          selectedCharacter={selectedCharacter}
+          messages={messages}
+        />
       ))}
       <div ref={messagesEndRef}></div>
       </div>
-      <ChatboxInput onSend={handleUserMessage} impersonate={sendImpersonation}/>
-      {invalidActionPopup && (
-        <div className="modal-overlay">
-          <div className="modal-small-box">
-            <h2>No Character Selected!</h2>
-            <p>If only the void could speak back.</p>
-            <button className="select-button" onClick={() => handleInvalidAction()}>Select a Character</button>
-          </div>
-        </div>
-      )}
+      <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation}/>
     </div>
-    {showDeleteMessageModal && (
-    <div className="modal-overlay">
-      <div className="modal-small-box">
-        <h2 className="centered">Delete Message</h2>
-        <p className="centered">Are you sure you want to delete this message?</p>
-        <button className="submit-button" onClick={() => setShowDeleteMessageModal(false)}>Cancel</button>
-        <button className="cancel-button" onClick={() => handleDeleteMessage(deleteMessageIndex)}>Delete</button>
-      </div>
-    </div>
-   )}
+    <InvalidActionPopup isOpen={invalidActionPopup} handleInvalidAction={handleInvalidAction} />
+    <DeleteMessageModal isOpen={showDeleteMessageModal} handleCancel={() => setShowDeleteMessageModal(false)} handleDelete={() => handleDeleteMessage(deleteMessageIndex)} />
   {openCharacterProfile && (
     <UpdateCharacterForm
     character={selectedCharacter}
