@@ -5,6 +5,11 @@ import { saveConversation, fetchConversation } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
 import Message from "./chatcomponents/Message";
 import { updateCharacter } from "./api";
+import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
+import { characterTextGen, classifyEmotion } from "./chatapi";
+import { getBase64 } from "./miscfunctions";
+import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import Connect from "./Connect";
 import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
@@ -213,9 +218,10 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setOpenCharacterProfile(true);
   }
   const handleUpdateCharacterProfile = () => {
-    updateCharacter(selectedCharacter);
-    setOpenCharacterProfile(false);
+    window.location.reload();
+    handleCloseCharacterProfile();
   }
+
   const handleCloseCharacterProfile = () => {
     setOpenCharacterProfile(false);
   }
@@ -225,6 +231,9 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     {selectedCharacter && (
       <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
+      <div className={'connect-chat-box'}>
+        <Connect/>
+      </div>
     <div className="chatbox-wrapper">
       <div className="message-box">
       {messages.map((message, index) => (

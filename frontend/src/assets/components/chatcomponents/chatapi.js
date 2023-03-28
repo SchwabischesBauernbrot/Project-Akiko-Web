@@ -81,5 +81,5 @@ function parseTextEnd(text) {
     var endpoint = localStorage.getItem('endpoint');
     var endpointType = localStorage.getItem('endpointType');
     const response = await axios.post(API_URL + '/textgen/status', { endpoint: endpoint, endpointType: endpointType});
-    return response.data;
+    return response.data['result'];
   };

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
+const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
 const USER_AVATARS_FOLDER = 'src/shared_data/user_avatars';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
@@ -54,11 +55,11 @@ export async function createCharacter(newCharacter) {
 }
 
 export function getCharacterImageUrl(avatar) {
-  return `/${AVATARS_FOLDER}/${avatar}`;
+  return `${CURRENT_URL}/${AVATARS_FOLDER}/${avatar}`;
 }
 
 export function getUserImageUrl(avatar) {
-  return `/${USER_AVATARS_FOLDER}/${avatar}`;
+  return `${CURRENT_URL}/${USER_AVATARS_FOLDER}/${avatar}`;
 }
 
 export async function deleteCharacter(charId) {

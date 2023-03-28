@@ -5,13 +5,27 @@ const Connect = () => {
     const [connectionStatus, setConnectionStatus] = useState(false);
     
     useEffect(() => {
-        if (localStorage.getItem('endpointType') != null){
-            setConnectionStatus(true);
-        };
+        const fetchStatus = async () => {
+            if (localStorage.getItem('endpointType') != null){
+                const status = await getModelStatus();
+                if(status !== null){
+                    setConnectionStatus(status);
+                    console.log('Connection status: ' + status);
+                }
+            }
+        }
+        fetchStatus();
     }, []);
 
     return (
-        <div className='connect-panel'>
-        </div>
+        <>
+        {connectionStatus ? (
+        <p className='connected'>Connected: {connectionStatus}</p>
+        ) : (
+        <p className='disconnected'>Disconnected</p>
+        )}
+    </>
     )
 };
+
+export default Connect;
