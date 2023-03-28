@@ -13,6 +13,7 @@ const [characterAvatar, setCharacterAvatar] = useState(null);
 const [selectedConversation, setSelectedConversation] = useState('');
 const [configuredEndpoint, setconfiguredEndpoint] = useState('http://localhost:5100/');
 const [configuredEndpointType, setconfiguredEndpointType] = useState('AkikoBackend');
+const [ConversationMenuIsOpen, setConversationMenuIsOpen] = useState(false);
 
 const handleConversationSelect = (conversationName) => {
   setSelectedConversation(conversationName || null); // Set to null if conversationName is empty
@@ -52,7 +53,7 @@ const handleDelete = () => {
     setSelectedConversation('')
     window.location.reload();
 }
-const [ConversationMenuIsOpen, setConversationMenuIsOpen] = useState(false);
+
 return (
     <>
     {ConversationMenuIsOpen && (

@@ -81,7 +81,6 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   }
   
   const handleUserMessage = async (text, image, avatar) => {
-    console.log('text:', text);
     if (text.startsWith('/')) {
       const [command, argument] = text.split(' ');
       console.log('command:', command);
@@ -281,9 +280,10 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setOpenCharacterProfile(true);
   }
   const handleUpdateCharacterProfile = () => {
-    updateCharacter(selectedCharacter);
-    setOpenCharacterProfile(false);
+    window.location.reload();
+    handleCloseCharacterProfile();
   }
+
   const handleCloseCharacterProfile = () => {
     setOpenCharacterProfile(false);
   }

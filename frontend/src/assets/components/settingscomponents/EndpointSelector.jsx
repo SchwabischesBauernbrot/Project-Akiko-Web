@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
+import Connect from '../Connect';
 
 const EndpointSelector = () => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -53,8 +54,8 @@ const EndpointSelector = () => {
     
     const options = [
         { value: 'Kobold', label: 'Kobold' },
-        { value: 'OobaTextUI', label: 'OobaTextUI' },
-        { value: 'AkikoBackend', label: 'AkikoBackend' },
+        { value: 'Ooba', label: 'OobaTextUI' },
+        { value: 'AkikoBackend', label: 'AkikoTextgen' },
     ];
   
     return (
@@ -82,6 +83,7 @@ const EndpointSelector = () => {
             <button className="connect-button" type="submit">Connect</button>
         )}
         </form>
+        <Connect/>
         </div>
         </div>
     );

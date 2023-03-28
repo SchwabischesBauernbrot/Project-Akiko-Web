@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { getCharacterImageUrl, exportTavernCharacter } from "../api";
+import { getCharacterImageUrl, exportTavernCharacter, updateCharacter } from "../api";
 import { FiSave, FiDownload } from "react-icons/fi";
+
 export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) => {
   const [characterName, setCharacterName] = useState(character.name);
   const [characterPersonality, setcharacterPersonality] = useState(character.personality);
@@ -36,7 +37,7 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
     setImageUrl(null);
   }, [character]);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const updatedCharacter = {
@@ -51,10 +52,15 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
       avatar: characterAvatar || character.avatar,
       // Other form input values
     };
-    onUpdateCharacter(updatedCharacter);
+    await editCharacter(updatedCharacter);
     onClose();
   };
 
+  const editCharacter = async (updatedCharacter) => {
+    await updateCharacter(updatedCharacter)
+    onUpdateCharacter(updatedCharacter)
+  };
+  
   const handleDownload = () => {
     exportTavernCharacter(character.char_id)
   };
