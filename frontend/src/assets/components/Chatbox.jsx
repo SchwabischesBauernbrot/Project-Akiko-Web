@@ -163,7 +163,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     };
     const updatedMessages = [...chatHistory, newIncomingMessage];
     setMessages(updatedMessages);
-    saveConversation(selectedCharacter, updatedMessages)
+    saveConversation(selectedCharacter, updatedMessages);
   };
 
   const handleTextEdit = (index, newText) => {
@@ -203,11 +203,37 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     setShowDeleteMessageModal(true);
   };
 
-  const handleDeleteConversation = () => {
-    clearMessages(setMessages);
-    localStorage.removeItem('convoName');
-    setShowDeleteConversationModal(false);
+  // Add these new functions inside the Chatbox component
+  const handleMoveUp = (index) => {
+    if (index > 0) {
+      const updatedMessages = messages.map((msg, i) => {
+        if (i === index - 1) {
+          return messages[index];
+        } else if (i === index) {
+          return messages[index - 1];
+        }
+        return msg;
+      });
+      setMessages(updatedMessages);
+      saveConversation(selectedCharacter, updatedMessages);
+    }
   };
+
+  const handleMoveDown = (index) => {
+    if (index < messages.length - 1) {
+      const updatedMessages = messages.map((msg, i) => {
+        if (i === index) {
+          return messages[index + 1];
+        } else if (i === index + 1) {
+          return messages[index];
+        }
+        return msg;
+      });
+      setMessages(updatedMessages);
+      saveConversation(selectedCharacter, updatedMessages);
+    }
+  };
+
 
   return (
     <>
@@ -224,8 +250,8 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         <div className="message-info">
           <div className="message-buttons">
             <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)}><FiEdit/></button>
-            <button className="message-button" id={'move-up'}><FiArrowUp/></button>
-            <button className="message-button" id={'move-down'} ><FiArrowDown/></button>
+            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)}><FiArrowUp/></button>
+            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)}><FiArrowDown/></button>
             <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
           </div>
           <p className="sender-name">{message.sender}</p>
