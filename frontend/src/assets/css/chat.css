@@ -77,6 +77,10 @@
 		display: inline-flex;
 		object-fit: cover;
 	}
+
+	.incoming-avatar img:hover {
+		cursor: pointer;
+	}
 	
 	.incoming-avatar img,
 	.outgoing-avatar img {
