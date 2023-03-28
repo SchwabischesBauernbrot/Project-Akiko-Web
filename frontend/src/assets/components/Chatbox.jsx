@@ -7,6 +7,8 @@ import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fet
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
 import { FiArrowDown, FiArrowUp, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import { updateCharacter } from "./api";
+import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -21,6 +23,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
   const [activateImpersonation, setActivateImpersonation] = useState(false);
+  const [openCharacterProfile, setOpenCharacterProfile] = useState(false);
   const editedMessageRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -263,6 +266,16 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     handleChatbotResponse(updatedMessages);
   }
 
+  const handleOpenCharacterProfile = () => {
+    setOpenCharacterProfile(true);
+  }
+  const handleUpdateCharacterProfile = () => {
+    updateCharacter(selectedCharacter);
+    setOpenCharacterProfile(false);
+  }
+  const handleCloseCharacterProfile = () => {
+    setOpenCharacterProfile(false);
+  }
   return (
     <>
     {selectedCharacter && (
@@ -273,7 +286,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       {messages.map((message, index) => (
       <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
         <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-          <img src={message.avatar} alt={`${message.sender}'s avatar`} />
+          <img src={message.avatar} onClick={message.sender === selectedCharacter.name && (handleOpenCharacterProfile)}alt={`${message.sender}'s avatar`} />
         </div>
         <div className="message-info">
           <div className="message-buttons">
@@ -333,6 +346,13 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         <button className="cancel-button" onClick={() => handleDeleteMessage(deleteMessageIndex)}>Delete</button>
       </div>
     </div>
+   )}
+  {openCharacterProfile && (
+    <UpdateCharacterForm
+    character={selectedCharacter}
+    onUpdateCharacter={handleUpdateCharacterProfile}
+    onClose={handleCloseCharacterProfile}
+    />
    )}
     </>
   );
