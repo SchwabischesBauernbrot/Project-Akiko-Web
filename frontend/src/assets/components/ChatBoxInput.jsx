@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FiUsers, FiSliders, FiImage } from "react-icons/fi";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
-import { BsPersonCheck } from "react-icons/bs";
+import { BsPersonCheck, BsPersonCheckFill } from "react-icons/bs";
 import GenSettingsMenu from "./GenSettingsMenu";
 
 function ChatboxInput({ onSend, impersonate }) {
@@ -10,7 +10,8 @@ function ChatboxInput({ onSend, impersonate }) {
   const textAreaRef = useRef(null);
   const [GenSettingsMenuIsOpen, setGenSettingsMenuIsOpen] = useState(false);
   const [imageCaptioning, setImageCaptioning] = useState(false);
-
+  const [isImpersonating, setIsImpersonating] = useState(false);
+  
   useEffect(() => {
     if (localStorage.getItem('imageCaptioning') !== null) {
       setImageCaptioning(localStorage.getItem('imageCaptioning') === 'true');
@@ -29,9 +30,11 @@ function ChatboxInput({ onSend, impersonate }) {
     onSend(text, messageImage);
     setText("");
     setMessageImage(null);
+    setIsImpersonating(false);
   };
 
   const handleImpersonateClick = () => {
+    setIsImpersonating(!isImpersonating);
     impersonate();
   };
 
@@ -60,7 +63,7 @@ function ChatboxInput({ onSend, impersonate }) {
           <FiSliders />
         </div>
         <div id="FiImage" onClick={() => handleImpersonateClick()} title={'Impersonate Selected Character'}>
-          <BsPersonCheck/>
+          {isImpersonating ? <BsPersonCheckFill/> : <BsPersonCheck/>}
         </div>
         {imageCaptioning == true && (
           <>

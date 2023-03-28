@@ -1,9 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { deleteConversation } from './api';
 
-const DeleteChatButton = ({ conversationName, onDelete }) => {
+const DeleteChatButton = ({ onDelete }) => {
   const [showDeleteConversationModal, setShowDeleteConversationModal] = useState(false);
+  const [conversationName, setConversationName] = useState(null)
 
+  useEffect(() => { 
+    const convoName = localStorage.getItem('convoName');
+    if(convoName !== null){
+      setConversationName(convoName);
+    }
+  }, []);
+  
   const handleClick = async () => {
     setShowDeleteConversationModal(true)
   };

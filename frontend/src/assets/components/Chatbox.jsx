@@ -6,7 +6,9 @@ import Avatar from './Avatar';
 import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
-import { FiArrowDown, FiArrowUp, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import { updateCharacter } from "./api";
+import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -21,6 +23,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
   const [activateImpersonation, setActivateImpersonation] = useState(false);
+  const [openCharacterProfile, setOpenCharacterProfile] = useState(false);
   const editedMessageRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -152,6 +155,17 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   };  
   
   const handleChatbotResponse = async (chatHistory, image) => {
+    const isTypingNow = new Date();
+    const isTyping = {
+      conversationName: conversationName,
+      sender: selectedCharacter.name,
+      text: `*${selectedCharacter.name} is typing...*`,
+      avatar: characterAvatar,
+      isIncoming: true,
+      timestamp: isTypingNow.getTime(),
+    };
+    const isTypingHistory = [...chatHistory, isTyping];
+    setMessages(isTypingHistory);
     const history = chatHistory
     .map((message) => `${message.sender}: ${message.text}`)
     .join('\n');
@@ -253,7 +267,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   };
 
   const sendImpersonation = () => {
-    setActivateImpersonation(true);
+    setActivateImpersonation(!activateImpersonation);
   };
 
   const handleReneration = () => {
@@ -261,6 +275,17 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     const updatedMessages = messages.filter((_, i) => i !== currentIndex);
     setMessages(updatedMessages);
     handleChatbotResponse(updatedMessages);
+  }
+
+  const handleOpenCharacterProfile = () => {
+    setOpenCharacterProfile(true);
+  }
+  const handleUpdateCharacterProfile = () => {
+    updateCharacter(selectedCharacter);
+    setOpenCharacterProfile(false);
+  }
+  const handleCloseCharacterProfile = () => {
+    setOpenCharacterProfile(false);
   }
 
   return (
@@ -273,16 +298,16 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       {messages.map((message, index) => (
       <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
         <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-          <img src={message.avatar} alt={`${message.sender}'s avatar`} />
+          <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? handleOpenCharacterProfile : undefined}alt={`${message.sender}'s avatar`} />
         </div>
         <div className="message-info">
           <div className="message-buttons">
-            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)}><FiEdit/></button>
-            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)}><FiArrowUp/></button>
-            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)}><FiArrowDown/></button>
-            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
+            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)} title={'Edit Message'}>{editedMessageIndex === index ? <FiCheck/> : <FiEdit/>}</button>
+            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)} title={'Move Message Up One'}><FiArrowUp/></button>
+            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)} title={'Move Message Down One'}><FiArrowDown/></button>
+            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)} title={'Remove Message from Conversation'}><FiTrash2/></button>
             {index === Math.ceil(messages.length - 1) && message.sender === selectedCharacter.name && (
-              <button className="message-button" id={'regenerate'} onClick={() => handleReneration()}><FiRefreshCw/></button>
+              <button className="message-button" id={'regenerate'} onClick={() => handleReneration()} title={'Regenerate Message'}><FiRefreshCw/></button>
             )}
           </div>
           <p className="sender-name">{message.sender}</p>
@@ -333,6 +358,13 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         <button className="cancel-button" onClick={() => handleDeleteMessage(deleteMessageIndex)}>Delete</button>
       </div>
     </div>
+   )}
+  {openCharacterProfile && (
+    <UpdateCharacterForm
+    character={selectedCharacter}
+    onUpdateCharacter={handleUpdateCharacterProfile}
+    onClose={handleCloseCharacterProfile}
+    />
    )}
     </>
   );

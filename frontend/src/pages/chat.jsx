@@ -63,7 +63,6 @@ return (
         <ConversationSelector onConversationSelect={handleConversationSelect} characterName={selectedCharacter} charAvatar={characterAvatar}/>
         {selectedConversation && (
             <DeleteChatButton
-                conversationName={selectedConversation}
                 onDelete={handleDelete}
             />
         )};
