@@ -7,16 +7,27 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
-	border-top-right-radius: 10px;
-	border-top-left-radius: 10px;
 	background-color: rgba(18, 18, 18, 0.737);
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
 	backdrop-filter: blur(15px);
 }
-
 .connect-chat-box {
-	z-index: 4;
-	word-wrap: break-word;
+	overflow-x: break-word;
+	display: flex;
+	flex-direction: row;
+	gap: 10%;
+	max-width: 720px;
+	padding: .55rem;
+	background-color: rgba(11, 11, 11, 0.737);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+	backdrop-filter: blur(15px);
+	margin-right: 0;
+	margin-left: 0px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	margin-bottom: 4px;
+	height: 3rem;
 }
 
 #dropdown {

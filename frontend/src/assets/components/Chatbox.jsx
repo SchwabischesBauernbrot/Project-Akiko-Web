@@ -293,11 +293,11 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     {selectedCharacter && (
       <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
-    <div className="chatbox-wrapper">
-      <div className="message-box">
       <div className={'connect-chat-box'}>
         <Connect/>
       </div>
+    <div className="chatbox-wrapper">
+      <div className="message-box">
       {messages.map((message, index) => (
       <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"} >
         <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
