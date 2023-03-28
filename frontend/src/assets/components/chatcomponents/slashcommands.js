@@ -77,4 +77,5 @@ export async function setEmotion(emotion, setCurrentEmotion, selectedCharacter) 
     }
   }
 }
-  
+
+export default scanSlash

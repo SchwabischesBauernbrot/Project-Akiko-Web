@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import ChatboxInput from './ChatBoxInput';
-import Avatar from './Avatar';
 import { saveConversation, fetchConversation } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
+import ChatboxInput from './ChatBoxInput';
+import Avatar from './Avatar';
 import Message from "./chatcomponents/Message";
-import { updateCharacter } from "./api";
-import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
-import { characterTextGen, classifyEmotion } from "./chatapi";
-import { getBase64 } from "./miscfunctions";
-import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 import Connect from "./Connect";
-import { UpdateCharacterForm } from "./charactercomponents/UpdateCharacterForm";
+import UpdateCharacterForm from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
-import { handleUserMessage } from './chatcomponents/HandleUserMessage';
-import { scanSlash } from './chatcomponents/slashcommands';
+import {createUserMessage} from './chatcomponents/MessageHandling';
+import scanSlash from './chatcomponents/slashcommands';
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -31,6 +26,8 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [activateImpersonation, setActivateImpersonation] = useState(false);
   const [openCharacterProfile, setOpenCharacterProfile] = useState(false);
   const [userAvatar, setUserAvatar] = useState(null);
+  const [messageSender, setMessageSender] = useState(null);
+  const [participantsArray, setParticipantsArray] = useState([]);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -71,7 +68,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
       }
     };
     fetchData();
-  }, [selectedCharacter, convoName, charAvatar]);
+  }, [selectedCharacter]);
 
   useEffect(() => {
     // scroll to last message when messages state updates
@@ -84,14 +81,33 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     if(await scanSlash(text, setMessages, setconfiguredName, selectedCharacter, setCurrentEmotion)){
       return;
     }
-    await handleUserMessage(text, image, userAvatar, selectedCharacter, conversationName, messages, setMessages, setInvalidActionPopup, handleChatbotResponse, setActivateImpersonation, configuredName, characterAvatar, activateImpersonation);
+    if (!selectedCharacter){
+      setInvalidActionPopup(true)
+      return;
+    }
+    if (text.length < 1 && image == null) {
+      handleChatbotResponse(messages);
+      return;
+    }
+    if(activateImpersonation === true){
+      let message = await createUserMessage(text, image, conversationName, selectedCharacter)
+      setMessages([...messages, message]);
+      setActivateImpersonation(false);
+    }
+    else{
+      let message = await createUserMessage(text, image, conversationName, messageSender)
+      setMessages([...messages, message]);
+    }
+    saveConversation(convoName, messages, participantsArray);
+    handleChatbotResponse(messages, image, selectedCharacter);
   }
+
   const handleInvalidAction = () => {
     setInvalidActionPopup(false)
     window.location.href = '/characters'
   } 
   
-  const handleChatbotResponse = async (chatHistory, image) => {
+  const handleChatbotResponse = async (chatHistory, image, selectedCharacter) => {
     const isTypingNow = new Date();
     const isTyping = {
       conversationName: conversationName,

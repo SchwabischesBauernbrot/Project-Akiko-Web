@@ -170,3 +170,5 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
   </div>
   );
 };
+
+export default UpdateCharacterForm;

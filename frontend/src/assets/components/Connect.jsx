@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {getModelStatus} from './chatapi';
+import {getModelStatus} from './chatcomponents/chatapi';
 
 const Connect = () => {
     const [connectionStatus, setConnectionStatus] = useState(false);
