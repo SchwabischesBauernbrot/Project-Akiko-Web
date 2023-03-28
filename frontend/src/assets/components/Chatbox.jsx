@@ -6,7 +6,7 @@ import Avatar from './Avatar';
 import { saveConversation, fetchConversation, fetchAdvancedCharacterEmotion, fetchAdvancedCharacterEmotions } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatapi";
 import { getBase64 } from "./miscfunctions";
-import { FiArrowDown, FiArrowUp, FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiArrowDown, FiArrowUp, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 
 function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
   const [messages, setMessages] = useState([]);
@@ -255,6 +255,14 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const sendImpersonation = () => {
     setActivateImpersonation(true);
   };
+
+  const handleReneration = () => {
+    let currentIndex = messages.length - 1;
+    const updatedMessages = messages.filter((_, i) => i !== currentIndex);
+    setMessages(updatedMessages);
+    handleChatbotResponse(updatedMessages);
+  }
+
   return (
     <>
     {selectedCharacter && (
@@ -273,6 +281,9 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
             <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)}><FiArrowUp/></button>
             <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)}><FiArrowDown/></button>
             <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
+            {index === Math.ceil(messages.length - 1) && message.sender === selectedCharacter.name && (
+              <button className="message-button" id={'regenerate'} onClick={() => handleReneration()}><FiRefreshCw/></button>
+            )}
           </div>
           <p className="sender-name">{message.sender}</p>
           {editedMessageIndex === index ? (
