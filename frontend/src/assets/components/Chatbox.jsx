@@ -277,12 +277,12 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         </div>
         <div className="message-info">
           <div className="message-buttons">
-            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)}><FiEdit/></button>
-            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)}><FiArrowUp/></button>
-            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)}><FiArrowDown/></button>
-            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)}><FiTrash2/></button>
+            <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)} title={'Edit Message'}><FiEdit/></button>
+            <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)} title={'Move Message Up One'}><FiArrowUp/></button>
+            <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)} title={'Move Message Down One'}><FiArrowDown/></button>
+            <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)} title={'Remove Message from Conversation'}><FiTrash2/></button>
             {index === Math.ceil(messages.length - 1) && message.sender === selectedCharacter.name && (
-              <button className="message-button" id={'regenerate'} onClick={() => handleReneration()}><FiRefreshCw/></button>
+              <button className="message-button" id={'regenerate'} onClick={() => handleReneration()} title={'Regenerate Message'}><FiRefreshCw/></button>
             )}
           </div>
           <p className="sender-name">{message.sender}</p>
