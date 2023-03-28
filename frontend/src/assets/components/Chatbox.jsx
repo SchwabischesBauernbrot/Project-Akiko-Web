@@ -18,10 +18,10 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [currentEmotion, setCurrentEmotion] = useState('default');
   const [editRowCounter, setEditRowCounter] = useState(1);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
-  const editedMessageRef = useRef(null);
-  const messagesEndRef = useRef(null);
   const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
+  const editedMessageRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
 
   useEffect(() => {
@@ -201,6 +201,12 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const delMessage = async (index) => {
     setDeleteMessageIndex(index);
     setShowDeleteMessageModal(true);
+  };
+
+  const handleDeleteConversation = () => {
+    clearMessages(setMessages);
+    localStorage.removeItem('convoName');
+    setShowDeleteConversationModal(false);
   };
 
   return (
