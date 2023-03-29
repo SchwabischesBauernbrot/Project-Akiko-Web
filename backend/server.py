@@ -574,9 +574,6 @@ def update_character(char_id):
 @cross_origin()
 def save_conversation():
     conversation_data = request.get_json()
-    if not conversation_data['messages']:
-        print("The messages list is empty.")
-        return jsonify({'status': 'error', 'message': 'The messages list is empty.'}), 400
 
     chatName = conversation_data['conversationName']
     

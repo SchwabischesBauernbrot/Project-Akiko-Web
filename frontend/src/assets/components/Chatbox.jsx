@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { fetchCharacter, getCharacterImageUrl, fetchConversation } from "./api";
+import { fetchCharacter, getCharacterImageUrl, fetchConversation, saveConversation, deleteConversation } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
@@ -8,7 +8,7 @@ import Connect from "./Connect";
 import UpdateCharacterForm from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
-import { createUserMessage, handleSaveConversation } from './chatcomponents/MessageHandling';
+import { createUserMessage } from './chatcomponents/MessageHandling';
 import scanSlash from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 
@@ -36,17 +36,13 @@ function Chatbox({ endpoint, endpointType }) {
         const character = await fetchCharacter(localStorage.getItem("selectedCharacter"));
         setSelectedCharacter(character);
       }
-      if (localStorage.getItem("conversationName") !== null) {
-        const convo = await fetchConversation(localStorage.getItem("conversationName"));
-        setConversation(convo);
-      }
       if(localStorage.getItem("configuredName") !== null) {
         setconfiguredName(localStorage.getItem("configuredName"));
       }
     })();
   }, []);
-  
-  useEffect(() => {
+
+  const getCharacterStatus = async (selectedCharacter) => {
     if (selectedCharacter !== null && conversation === null) {
       const defaultMessage = {
         sender: selectedCharacter.name,
@@ -61,7 +57,23 @@ function Chatbox({ endpoint, endpointType }) {
         messages: [defaultMessage],
         participants: [selectedCharacter.char_id],
       });
+      localStorage.setItem("conversationName", `${selectedCharacter.name}_${Date.now()}`)
+    } else if (conversation !== null) {
+      setMessages(conversation.messages);
     }
+  };
+
+  useEffect(() => {
+    const getConvoname = async () => {
+      if (localStorage.getItem("conversationName") !== null) {
+        const convo = await fetchConversation(localStorage.getItem("conversationName"));
+        setConversation(convo);
+        setMessages(convo.messages);
+      }else{
+        getCharacterStatus(selectedCharacter);
+      }
+    };
+    getConvoname();
     setUserCharacter({ name: configuredName, avatar: getCharacterImageUrl('default.png')});
   }, [selectedCharacter]);
 
@@ -73,10 +85,17 @@ function Chatbox({ endpoint, endpointType }) {
   }, [messages]);
 
   const handleUserSend = async (text, image) => {
-    if (await scanSlash(text, setMessages, setconfiguredName, selectedCharacter, setCurrentEmotion)) {
+    let currentCharacter;
+    if(conversation.participants.length > 1) {
+      const randomIndex = Math.floor(Math.random() * conversation.participants.length);
+      currentCharacter = await fetchCharacter(conversation.participants[randomIndex]);
+    }else {
+      currentCharacter = await fetchCharacter(conversation.participants[0]); 
+    }
+    if (await scanSlash(text, setMessages, setconfiguredName, currentCharacter, setCurrentEmotion)) {
       return;
     }
-    if (!selectedCharacter) {
+    if (!currentCharacter) {
       setInvalidActionPopup(true);
       return;
     }
@@ -87,19 +106,17 @@ function Chatbox({ endpoint, endpointType }) {
   
     let newMessage;
     if (activateImpersonation === true) {
-      newMessage = await createUserMessage(text, image, selectedCharacter);
+      newMessage = await createUserMessage(text, image, currentCharacter);
       setActivateImpersonation(false);
     } else {
       newMessage = await createUserMessage(text, image, userCharacter);
     }
-  
+
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages); // Update messages state with the new user message
-  
-    handleChatbotResponse(updatedMessages, image, selectedCharacter); // Pass updatedMessages instead of messages
+    saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
+    handleChatbotResponse(updatedMessages, image, currentCharacter); // Pass updatedMessages instead of messages
   };
-  
-  
 
   const handleInvalidAction = () => {
     setInvalidActionPopup(false)
@@ -145,7 +162,7 @@ function Chatbox({ endpoint, endpointType }) {
     };
     const updatedMessages = [...chatHistory, newIncomingMessage];
     setMessages(updatedMessages);
-    handleSaveConversation(conversationName, participants, updatedMessages);
+    saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
   };
 
   const handleTextEdit = (index, newText) => {
@@ -177,7 +194,7 @@ function Chatbox({ endpoint, endpointType }) {
     setMessages(updatedMessages);
     setDeleteMessageIndex(-1);
     setShowDeleteMessageModal(false);
-    handleSaveConversation(conversationName, participants, messages);
+    saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
   };
   
   const delMessage = (index) => {
@@ -197,7 +214,7 @@ function Chatbox({ endpoint, endpointType }) {
         return msg;
       });
       setMessages(updatedMessages);
-      handleSaveConversation(conversationName, participants, messages);
+      saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
     }
   };
 
@@ -212,7 +229,7 @@ function Chatbox({ endpoint, endpointType }) {
         return msg;
       });
       setMessages(updatedMessages);
-      handleSaveConversation(conversationName, participants, messages);
+      saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
     }
   };
 
@@ -239,17 +256,41 @@ function Chatbox({ endpoint, endpointType }) {
     setOpenCharacterProfile(false);
   }
 
+  const handleSetConversation = (conversation) => {
+    setConversation(conversation);
+    setMessages(conversation.messages);
+    setOpenConvoSelector(false);
+  }
+
+  const handleConversationDelete = async (convo) => {
+    localStorage.removeItem('conversationName');
+    await deleteConversation(convo);
+    setConversation(null);
+    setMessages([]);
+    getCharacterStatus(selectedCharacter);
+    setOpenConvoSelector(false);
+  }
+
+  const handleNewConversation = async () => {
+    localStorage.removeItem('conversationName');
+    setConversation(null);
+    setMessages([]);
+    getCharacterStatus(selectedCharacter);
+  }
+
   return (
     <>
     {selectedCharacter && (
       <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
     {openConvoSelector && (
-      <ConversationSelectionMenu setConvo={setConversation}/>
+      <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>
     )}
       <div className={'connect-chat-box'}>
         <Connect/>
-        <button onClick={() => setOpenConvoSelector(true)}>Manage Chats</button>
+        <button className={'button'} id={'submit'} onClick={() => setOpenConvoSelector(true)}>Manage Chats</button>
+        <button className={'button'} id={'cancel'} onClick={() => handleConversationDelete(conversation.conversationName)}>Delete Chat</button>
+        <button className={'button'} id={'submit'} onClick={() => handleNewConversation()}>New Chat</button>
       </div>
     <div className="chatbox-wrapper">
       <div className="message-box">
@@ -268,7 +309,7 @@ function Chatbox({ endpoint, endpointType }) {
           delMessage={delMessage}
           handleReneration={handleReneration}
           handleOpenCharacterProfile={handleOpenCharacterProfile}
-          selectedCharacter={selectedCharacter}
+          selectedCharacter={userCharacter}
           messages={messages}
         />
       ))}

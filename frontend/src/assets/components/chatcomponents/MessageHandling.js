@@ -1,5 +1,4 @@
 import { getBase64 } from '../miscfunctions';
-import { saveConversation } from '../api';
 
 export const createUserMessage = async (text, image, messageSender) => {
     const now = new Date();
@@ -13,16 +12,3 @@ export const createUserMessage = async (text, image, messageSender) => {
     };
     return newMessage;
 };
-
-export const handleSaveConversation = async (conversationName, participants, messages) => {
-    if(!conversationName) {
-        console.log("No conversation name provided");
-        return;
-    }
-    const NewConvo = {
-        conversationName: conversationName,
-        participants: participants,
-        messages: messages,
-    }
-    await saveConversation(NewConvo);
-}

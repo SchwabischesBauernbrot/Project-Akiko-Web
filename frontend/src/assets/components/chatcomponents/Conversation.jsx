@@ -1,39 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { fetchConversation } from "../api";
+import ReactMarkdown from "react-markdown";
 
-const Conversation = ({ conversationName }) => {
-    const [conversation, setConversation] = useState(null);
-    const [lastMessage, setLastMessage] = useState(null);
+const Conversation = ({ conversation }) => {
+  const [lastMessage, setLastMessage] = useState(null);
+  const [convo, setConvo] = useState(null);
+
   useEffect(() => {
     const getConversation = async () => {
-      const data = await fetchConversation(conversationName);
-      setConversation(data);
-      if(!data.messages.length == 0){
-        setLastMessage(data.messages[data.messages.length - 1]);
+      const convo = await fetchConversation(conversation);
+      setConvo(convo);
+      if (convo && convo.messages && convo.messages.length !== 0) {
+        setLastMessage(convo.messages[convo.messages.length - 1]);
       }
     };
     getConversation();
-  }, [conversationName]);
+  }, [conversation]);
 
-  if (!conversation) {
-    return <div>Loading...</div>;
+  if (convo === null) {
+    return <p>Loading...</p>;
   }
 
   return (
     <>
-      <div className="conversation-container">
-        <h2>{conversationName}</h2>
-        <p>
-          <b>Participants:</b>
-        </p>
-        {conversation.participants.map((participant, index) => (
-          <p key={index}>{participant.name}</p>
+      <div className="conversation-info">
+        <p className="sender-name">{convo.conversationName}</p>
+          <p>Participants:</p>
+        {convo.participants && convo.participants.map((participant, index) => (
+          <p key={index}>{participant}</p>
         ))}
-        <h3>Last Message:</h3>
-        <p>
-          <b>{lastMessage.sender}:</b>
-        </p>
-        <p>{lastMessage.text}</p>
+        {lastMessage ? (
+          <>
+            <b>{lastMessage.sender}:</b>
+            <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{lastMessage.text}</ReactMarkdown>
+          </>
+        ) : (
+          <p>No messages in this conversation</p>
+        )}
       </div>
     </>
   );

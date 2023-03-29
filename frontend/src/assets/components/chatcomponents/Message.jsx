@@ -1,9 +1,10 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState} from 'react';
 import ReactMarkdown from 'react-markdown';
 import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 
-function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, editRowCounter, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages }) {
+function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages }) {
     const editedMessageRef = useRef(null);
+    const [editRowCounter, setEditRowCounter] = useState(1);
     return (
       <div key={index} className={message.isIncoming ? "incoming-message" : "outgoing-message"}>
         <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
@@ -15,7 +16,7 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
             <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)} title={'Move Message Up One'}><FiArrowUp/></button>
             <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)} title={'Move Message Down One'}><FiArrowDown/></button>
             <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)} title={'Remove Message from Conversation'}><FiTrash2/></button>
-            {index === Math.ceil(messages.length - 1) && message.sender === selectedCharacter.name && (
+            {index === Math.ceil(messages.length - 1) && message.sender !== selectedCharacter.name && (
               <button className="message-button" id={'regenerate'} onClick={() => handleReneration()} title={'Regenerate Message'}><FiRefreshCw/></button>
             )}
           </div>

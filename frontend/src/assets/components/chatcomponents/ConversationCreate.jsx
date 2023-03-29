@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import { getCharacterImageUrl } from "../api";
+import { getCharacterImageUrl, fetchCharacters } from "../api";
 import { FiSave } from "react-icons/fi";
 import { ImCancelCircle } from "react-icons/im";
 
@@ -27,22 +27,26 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
     };
 
     const handleParticipantsChange = (selectedOptions) => {
-    setSelectedParticipants(selectedOptions);
+        setSelectedParticipants(selectedOptions);
     };
 
     const handleCancelCreateConversation = () => {
-    setCreateMenuOn(false);
+        setCreateMenuOn(false);
     };
 
-    const handleCreateConversationSubmit = () => {
+    const handleCreateConversationSubmit = (event) => {
+    const participants = selectedParticipants.map(option => option.value);
+    event.preventDefault();
     const NewConvo = {
         conversationName: conversationName,
-        participants: selectedParticipants,
+        participants: participants,
         messages: [],
     }
-    CreateConvo(NewConvo)
+    CreateConvo(NewConvo);
+    localStorage.setItem('conversationName', conversationName);
     setCreateMenuOn(false);
     };
+    
 
     // Map characters to the format required by react-select
     const characterOptions = characters.map((character) => ({
@@ -117,12 +121,12 @@ return (
             styles={customStyles}
             />
             <div className="form-bottom-buttons">
-                <button className='icon-button-small' id='cancel' onClick={handleCancelCreateConversation}>
-                    <ImCancelCircle className='react-icon'/>
-                </button>
-                <button className='icon-button-small' id='submit' onClick={handleCreateConversationSubmit}>
-                    <FiSave className='react-icon'/>
-                </button>
+            <button className='icon-button-small' type="button" id='cancel' onClick={handleCancelCreateConversation}>
+            <ImCancelCircle className='react-icon'/>
+            </button>
+            <button className='icon-button-small' id='submit' type="submit" onClick={handleCreateConversationSubmit}>
+            <FiSave className='react-icon'/>
+            </button>
             </div>
         </form>
     </div>
