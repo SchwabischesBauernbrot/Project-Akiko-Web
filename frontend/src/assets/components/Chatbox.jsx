@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { saveConversation, fetchConversation } from "./api";
+import { fetchCharacter, getCharacterImageUrl, fetchConversation } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
@@ -8,13 +8,12 @@ import Connect from "./Connect";
 import UpdateCharacterForm from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
-import {createUserMessage} from './chatcomponents/MessageHandling';
+import { createUserMessage, handleSaveConversation } from './chatcomponents/MessageHandling';
 import scanSlash from './chatcomponents/slashcommands';
+import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 
-function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAvatar}) {
+function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
-  const [characterAvatar, setCharacterAvatar] = useState(null);
-  const [conversationName, setConversationName] = useState('');
   const [configuredName, setconfiguredName] = useState('You');
   const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
@@ -25,49 +24,45 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const [deleteMessageIndex, setDeleteMessageIndex ] = useState(-1);
   const [activateImpersonation, setActivateImpersonation] = useState(false);
   const [openCharacterProfile, setOpenCharacterProfile] = useState(false);
-  const [userAvatar, setUserAvatar] = useState(null);
-  const [messageSender, setMessageSender] = useState(null);
-  const [participantsArray, setParticipantsArray] = useState([]);
+  const [openConvoSelector, setOpenConvoSelector] = useState(false);
+  const [userCharacter, setUserCharacter] = useState(null);
   const messagesEndRef = useRef(null);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [conversation, setConversation] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if(localStorage.getItem('useEmotionClassifier') !== null){
-        setUseEmotionClassifier(localStorage.getItem('useEmotionClassifier'));
+    (async () => {
+      if (localStorage.getItem("selectedCharacter") !== null) {
+        const character = await fetchCharacter(localStorage.getItem("selectedCharacter"));
+        setSelectedCharacter(character);
       }
-      if (!localStorage.getItem('configuredName') == null){
-        setconfiguredName(localStorage.getItem('configuredName'));
+      if (localStorage.getItem("conversationName") !== null) {
+        const convo = await fetchConversation(localStorage.getItem("conversationName"));
+        setConversation(convo);
       }
-      if (selectedCharacter && selectedCharacter.avatar) {
-        setCharacterAvatar(charAvatar);
-        console.log(selectedCharacter.name, "is selected.");
-      }else{
-        return;
+      if(localStorage.getItem("configuredName") !== null) {
+        setconfiguredName(localStorage.getItem("configuredName"));
       }
-      if (convoName !== null) {
-        setConversationName(convoName);
-        localStorage.setItem('convoName', convoName);
-        const conversation = await fetchConversation(convoName);
-        setMessages(conversation.messages);
-      }else {
-        const now = new Date();
-        const newName = selectedCharacter.name + "_" + now.getTime();
-        localStorage.setItem('convoName', newName);
-        setConversationName(newName);
-        if (selectedCharacter && selectedCharacter.name) {
-          const defaultMessage = {
-            conversationName: newName,
-            sender: selectedCharacter.name,
-            text: selectedCharacter.first_mes.replace('<USER>', configuredName),
-            avatar: characterAvatar,
-            isIncoming: true,
-            timestamp: Date.now(),
-          };
-          setMessages([defaultMessage]);
-        }
-      }
-    };
-    fetchData();
+    })();
+  }, []);
+  
+  useEffect(() => {
+    if (selectedCharacter !== null && conversation === null) {
+      const defaultMessage = {
+        sender: selectedCharacter.name,
+        text: selectedCharacter.first_mes.replace("<USER>", configuredName),
+        avatar: getCharacterImageUrl(selectedCharacter.avatar),
+        isIncoming: true,
+        timestamp: Date.now(),
+      };
+      setMessages([defaultMessage]);
+      setConversation({
+        conversationName: `${selectedCharacter.name}_${Date.now()}`,
+        messages: [defaultMessage],
+        participants: [selectedCharacter.char_id],
+      });
+    }
+    setUserCharacter({ name: configuredName, avatar: getCharacterImageUrl('default.png')});
   }, [selectedCharacter]);
 
   useEffect(() => {
@@ -78,42 +73,45 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   }, [messages]);
 
   const handleUserSend = async (text, image) => {
-    if(await scanSlash(text, setMessages, setconfiguredName, selectedCharacter, setCurrentEmotion)){
+    if (await scanSlash(text, setMessages, setconfiguredName, selectedCharacter, setCurrentEmotion)) {
       return;
     }
-    if (!selectedCharacter){
-      setInvalidActionPopup(true)
+    if (!selectedCharacter) {
+      setInvalidActionPopup(true);
       return;
     }
     if (text.length < 1 && image == null) {
       handleChatbotResponse(messages);
       return;
     }
-    if(activateImpersonation === true){
-      let message = await createUserMessage(text, image, conversationName, selectedCharacter)
-      setMessages([...messages, message]);
+  
+    let newMessage;
+    if (activateImpersonation === true) {
+      newMessage = await createUserMessage(text, image, selectedCharacter);
       setActivateImpersonation(false);
+    } else {
+      newMessage = await createUserMessage(text, image, userCharacter);
     }
-    else{
-      let message = await createUserMessage(text, image, conversationName, messageSender)
-      setMessages([...messages, message]);
-    }
-    saveConversation(convoName, messages, participantsArray);
-    handleChatbotResponse(messages, image, selectedCharacter);
-  }
+  
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages); // Update messages state with the new user message
+  
+    handleChatbotResponse(updatedMessages, image, selectedCharacter); // Pass updatedMessages instead of messages
+  };
+  
+  
 
   const handleInvalidAction = () => {
     setInvalidActionPopup(false)
     window.location.href = '/characters'
   } 
   
-  const handleChatbotResponse = async (chatHistory, image, selectedCharacter) => {
+  const handleChatbotResponse = async (chatHistory, image, currentCharacter) => {
     const isTypingNow = new Date();
     const isTyping = {
-      conversationName: conversationName,
-      sender: selectedCharacter.name,
-      text: `*${selectedCharacter.name} is typing...*`,
-      avatar: characterAvatar,
+      sender: currentCharacter.name,
+      text: `*${currentCharacter.name} is typing...*`,
+      avatar: getCharacterImageUrl(currentCharacter.avatar),
       isIncoming: true,
       timestamp: isTypingNow.getTime(),
     };
@@ -124,7 +122,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     .join('\n');
 
     // Make API call
-    const generatedText = await characterTextGen(selectedCharacter, history, endpoint, endpointType, image, configuredName);
+    const generatedText = await characterTextGen(currentCharacter, history, endpoint, endpointType, image, configuredName);
     if (generatedText !== null) {
       if(useEmotionClassifier === 'true'){
       const classification = await classifyEmotion(generatedText);
@@ -139,16 +137,15 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {
-      conversationName: conversationName,
-      sender: selectedCharacter.name,
+      sender: currentCharacter.name,
       text: generatedText.replace('<USER>', configuredName),
-      avatar: characterAvatar,
+      avatar: getCharacterImageUrl(currentCharacter.avatar),
       isIncoming: true,
       timestamp: now.getTime(),
     };
     const updatedMessages = [...chatHistory, newIncomingMessage];
     setMessages(updatedMessages);
-    saveConversation(selectedCharacter, updatedMessages);
+    handleSaveConversation(conversationName, participants, updatedMessages);
   };
 
   const handleTextEdit = (index, newText) => {
@@ -178,12 +175,12 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
   const handleDeleteMessage = (index) => {
     const updatedMessages = messages.filter((_, i) => i !== index);
     setMessages(updatedMessages);
-    saveConversation(selectedCharacter, updatedMessages);
     setDeleteMessageIndex(-1);
     setShowDeleteMessageModal(false);
+    handleSaveConversation(conversationName, participants, messages);
   };
   
-  const delMessage = async (index) => {
+  const delMessage = (index) => {
     setDeleteMessageIndex(index);
     setShowDeleteMessageModal(true);
   };
@@ -200,7 +197,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         return msg;
       });
       setMessages(updatedMessages);
-      saveConversation(selectedCharacter, updatedMessages);
+      handleSaveConversation(conversationName, participants, messages);
     }
   };
 
@@ -215,7 +212,7 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
         return msg;
       });
       setMessages(updatedMessages);
-      saveConversation(selectedCharacter, updatedMessages);
+      handleSaveConversation(conversationName, participants, messages);
     }
   };
 
@@ -247,8 +244,12 @@ function Chatbox({ selectedCharacter, endpoint, endpointType, convoName, charAva
     {selectedCharacter && (
       <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
+    {openConvoSelector && (
+      <ConversationSelectionMenu setConvo={setConversation}/>
+    )}
       <div className={'connect-chat-box'}>
         <Connect/>
+        <button onClick={() => setOpenConvoSelector(true)}>Manage Chats</button>
       </div>
     <div className="chatbox-wrapper">
       <div className="message-box">

@@ -83,11 +83,9 @@ export async function updateCharacter(updatedCharacter) {
   return response.data;
 }
 
-export const saveConversation = async (convoName, updatedMessages, participantArray) => {
-  const newConversation = { conversationName: convoName, participants: participantArray, messages: updatedMessages };
-  localStorage.setItem(`conversation_${convoName}`, JSON.stringify(newConversation));
+export const saveConversation = async (convo) => {
   try {
-    const response = await axios.post(`${API_URL}/conversation`, newConversation);
+    const response = await axios.post(`${API_URL}/conversation`, convo);
     if (response.data.status === 'success') {
       console.log('Conversation saved');
     } else {

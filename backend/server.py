@@ -575,14 +575,15 @@ def update_character(char_id):
 def save_conversation():
     conversation_data = request.get_json()
     if not conversation_data['messages']:
+        print("The messages list is empty.")
         return jsonify({'status': 'error', 'message': 'The messages list is empty.'}), 400
 
-    char_name = conversation_data['messages'][0]['conversationName']
+    chatName = conversation_data['conversationName']
     
     # Create the 'conversations' directory if it doesn't exist
     if not os.path.exists(app.config['CONVERSATIONS_FOLDER']):
         os.makedirs(app.config['CONVERSATIONS_FOLDER'])
-    file_path = app.config['CONVERSATIONS_FOLDER'] + str(char_name) + '.json'
+    file_path = app.config['CONVERSATIONS_FOLDER'] + str(chatName) + '.json'
     try:
         with open(file_path, 'w') as file:
             json.dump(conversation_data, file)
@@ -598,7 +599,6 @@ def get_conversation_names():
     conversations_folder = app.config['CONVERSATIONS_FOLDER']
     if not os.path.exists(conversations_folder):
         return jsonify({"conversations": []})
-
     conversation_files = os.listdir(conversations_folder)
     conversation_names = [os.path.splitext(file)[0] for file in conversation_files]
     return jsonify({"conversations": conversation_names})
