@@ -13,6 +13,18 @@
   cursor: pointer;
   display: block;
   margin: 0 auto;
+  margin-bottom: 2rem;
+}
+
+.discord-button-confirm {
+  background-color: green;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 2rem;
+  outline: none;
+  width: auto;
 }
 
 .discord-button:hover {
@@ -43,11 +55,6 @@
   }
 }
 
-@media (min-width: 641px) {
-  .discord-logo {
-    font-size: 3rem;
-  }
-}
 
 .settings-panel {
   display: flex;
@@ -58,8 +65,122 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 
 }
+
+.settings-box .input-group {
+  display: flex;
+  align-items: center;
+}
+
+.settings-box input[type="text"] {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 2rem;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.2rem;
+}
+
+.settings-box input[type="text"]:focus {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.settings-box input[type="text"]:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.settings-box input[type="text"]:active {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.settings-box input[type="password"] {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.2rem;
+}
+
+
+.settings-box input[type="password"]:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.settings-box input[type="password"]:active {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.channels-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+
+.channels-box input[type="text"] {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.2rem;
+}
+
+.channels-box input[type="text"]:focus {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.channels-box input[type="text"]:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.channels-box input[type="text"]:active {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+
+
+.settings-panel {
+  /* your styles */
+  position: relative;
+}
+
+.save-box {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: green;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+}
+
+.save-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+
 
 @media (max-width: 640px) {
   .settings-panel {
@@ -74,4 +195,10 @@
   .discord-logo {
     font-size: 4rem;
   }
+}
+
+
+
+.input-group button {
+  margin-left: 1rem;
 }

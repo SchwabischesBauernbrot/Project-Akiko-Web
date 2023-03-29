@@ -387,6 +387,37 @@ def api_keywords():
     return jsonify({'keywords': keywords})
 
 
+@app.route('/api/discord-bot/token', methods=['POST'])
+def save_discord_bot_token():
+    bot_token = request.json.get('botToken')
+
+    # Read the .config file and remove the previous token value
+    with open('.config', 'r') as config_file:
+        lines = config_file.readlines()
+    with open('.config', 'w') as config_file:
+        config_file.write(f'DISCORD_BOT_TOKEN="{bot_token}"\n')
+        for line in lines:
+            if not line.startswith('DISCORD_BOT_TOKEN='):
+                config_file.write(line)
+
+    return 'Token configuration saved successfully', 200
+
+@app.route('/api/discord-bot/channel', methods=['POST'])
+def save_discord_bot_channel():
+    channels = request.json.get('channels')
+
+    # Read the .config file and remove the previous channel value
+    with open('.config', 'r') as config_file:
+        lines = config_file.readlines()
+    with open('.config', 'w') as config_file:
+        for line in lines:
+            if not line.startswith('CHANNEL_ID='):
+                config_file.write(line)
+        config_file.write(f'CHANNEL_ID={channels}\n')
+
+    return 'Channel configuration saved successfully', 200
+
+
 ##############################
 ##### END OF CORE ROUTES #####
 ##############################
@@ -800,4 +831,4 @@ if args.share:
         cloudflare = _run_cloudflared(port)
     print("Running on", cloudflare)
 
-app.run(host=host, port=port)
+app.run(host=host, port=port, debug=True)
