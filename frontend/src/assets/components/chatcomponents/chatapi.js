@@ -24,6 +24,22 @@ const kobold_defaults = {
 		5
 	],
 }
+const ooba_defaults = {
+  'max_new_tokens': 200,
+  'do_sample': True,
+  'temperature': 0.5,
+  'top_p': 0.9,
+  'typical_p': 1,
+  'repetition_penalty': 1.05,
+  'encoder_repetition_penalty': 1.0,
+  'top_k': 0,
+  'min_length': 0,
+  'no_repeat_ngram_size': 0,
+  'num_beams': 1,
+  'penalty_alpha': 0,
+  'length_penalty': 1,
+  'early_stopping': False,
+};
 
 function parseTextEnd(text) {
     return text.split("\n").map(line => line.trim());
@@ -31,25 +47,33 @@ function parseTextEnd(text) {
   
   export async function characterTextGen(character, history, endpoint, endpointType, image, configuredName) {
     let customSettings = null;
-    try{
+    if(localStorage.getItem('customSettings') !== null){
       customSettings = localStorage.getItem('customSettings');
-      if(customSettings){
-        const parsedSettings = JSON.parse(customSettings);
+      const parsedSettings = JSON.parse(customSettings);
+      if(endpointType === 'Kobold'){
+      Object.keys(parsedSettings).forEach(key => {
+        kobold_defaults[key] = parsedSettings[key];
+      })
+      } else if(endpointType === 'Ooba'){
         Object.keys(parsedSettings).forEach(key => {
-          kobold_defaults[key] = parsedSettings[key];
+          ooba_defaults[key] = parsedSettings[key];
         })
       }
-    } catch (error) {
-      console.log(error);
+    }else if(endpointType === 'Kobold'){
+      customSettings = kobold_defaults;
+    } else if(endpointType === 'Ooba'){
+      customSettings = ooba_defaults;
+    } else if(endpointType === 'AkikoBackend'){
+      customSettings = ooba_defaults;
     }
-    let imgText = null;
+  let imgText = null;
     if(image !== null){
       imgText = await handleImageSend(image, configuredName)
     }
     const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
     const convo = 'Current Conversation:\n' + history + (imgText ? imgText : '') +'\n';
     const createdPrompt = basePrompt + convo + character.name + ':';
-    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings === null ? kobold_defaults : customSettings });
+    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings});
 
     const generatedText = response.data.results[0];
     const parsedText = parseTextEnd(generatedText.text);

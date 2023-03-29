@@ -43,7 +43,7 @@ const EndpointSelector = () => {
         switch (option) {
           case 'Kobold':
             return 'http://localhost:5000/';
-          case 'OobaTextUI':
+          case 'Ooba':
             return 'http://localhost:7861/';
           case 'AkikoBackend':
             return 'http://localhost:5100/' ;

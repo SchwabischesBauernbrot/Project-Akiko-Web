@@ -410,7 +410,26 @@ def textgen(endpointType):
             results = response.json()
             return jsonify(results)
     elif(endpointType == 'Ooba'):
-        requests.put(f"{endpoint}/config", json={data})
+        response = requests.put(f"{endpoint}/run/textgen", json={    
+        "data": [
+        data['prompt'],
+        data['settings']['max_new_tokens'],
+        data['settings']['do_sample'],
+        data['settings']['temperature'],
+        data['settings']['top_p'],
+        data['settings']['typical_p'],
+        data['settings']['repetition_penalty'],
+        data['settings']['encoder_repetition_penalty'],
+        data['settings']['top_k'],
+        data['settings']['min_length'],
+        data['settings']['no_repeat_ngram_size'],
+        data['settings']['num_beams'],
+        data['settings']['penalty_alpha'],
+        data['settings']['length_penalty'],
+        data['settings']['early_stopping'],
+        ]})
+        reply = {'results': response["data"][0]}
+        return jsonify(reply)
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
         return jsonify(results)
