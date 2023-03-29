@@ -101,11 +101,7 @@ export const saveConversation = async (convoName, updatedMessages, participantAr
 export async function fetchConversations() {
   const response = await axios.get(`${API_URL}/conversations`);
   const allConversations = response.data.conversations;
-  if (!character || !character.name) {
-    return allConversations;
-  }
-  const characterConversations = allConversations.filter(conversation => conversation.startsWith(character.name));
-  return characterConversations;
+  return allConversations;
 }
 
 

@@ -8,7 +8,7 @@ const InvalidActionPopup = ({ isOpen, handleInvalidAction }) => {
       <div className="modal-small-box">
         <h2>No Character Selected!</h2>
         <p>If only the void could speak back.</p>
-        <button className="select-button" onClick={handleInvalidAction}>
+        <button className="select-button" id='submit'onClick={handleInvalidAction}>
           Select a Character
         </button>
       </div>
