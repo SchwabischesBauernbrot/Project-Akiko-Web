@@ -29,6 +29,7 @@ function Chatbox({ endpoint, endpointType }) {
   const messagesEndRef = useRef(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [conversation, setConversation] = useState(null);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -38,6 +39,9 @@ function Chatbox({ endpoint, endpointType }) {
       }
       if(localStorage.getItem("configuredName") !== null) {
         setconfiguredName(localStorage.getItem("configuredName"));
+      }
+      if(localStorage.getItem('settings') !== null) {
+        setSettings(JSON.parse(localStorage.getItem('settings')));
       }
     })();
   }, []);
@@ -100,7 +104,7 @@ function Chatbox({ endpoint, endpointType }) {
       return;
     }
     if (text.length < 1 && image == null) {
-      handleChatbotResponse(messages);
+      handleChatbotResponse(messages, image, currentCharacter);
       return;
     }
   
@@ -163,6 +167,15 @@ function Chatbox({ endpoint, endpointType }) {
     const updatedMessages = [...chatHistory, newIncomingMessage];
     setMessages(updatedMessages);
     saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
+    //settings.GroupChatSettings.RandomReply === true &&
+    if(conversation.participants.length > 1){
+      const randomChance = Math.floor(Math.random() * 100);
+      if(randomChance < 60){
+        const randomIndex = Math.floor(Math.random() * conversation.participants.length);
+        currentCharacter = await fetchCharacter(conversation.participants[randomIndex]);
+        handleChatbotResponse(updatedMessages, image, currentCharacter);
+      }
+    }
   };
 
   const handleTextEdit = (index, newText) => {

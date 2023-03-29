@@ -776,12 +776,23 @@ def get_modules():
 @cross_origin()
 def get_settings():
     settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
-    try:
+    if(os.path.exists(settings_path)):
         with open(settings_path) as f:
             settngs_data = json.load(f)
-    except FileNotFoundError:
-        return jsonify({'error': 'Settings not found'}), 404
-    return jsonify(settngs_data)
+        return jsonify(settngs_data)
+    else:
+        os.makedirs(app.config['SETTINGS_FOLDER'], exist_ok=True)
+        with open(settings_path, 'w') as f:
+            json.dump({'GeneralSettings' : [], 'GroupChatSettings' : [],  'EndpointSettings' : [], 'AvatarSettings' : [], 'MultiUserSettings' : []}, f)
+        return jsonify({})
+
+@app.route('/api/settings', methods=['POST'])
+@cross_origin()
+def save_settings():
+    settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
+    with open(settings_path, 'w') as f:
+        json.dump(request.json, f)
+    return jsonify({'success': 'Settings saved'})
 
 
 
