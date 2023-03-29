@@ -401,9 +401,10 @@ def textgen(endpointType):
     data = request.get_json()
     endpoint = data['endpoint']
     if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
-    requests.put(f"{endpoint}/config", json=data['settings'])
     if(endpointType == 'Kobold'):
-        response = requests.post(f"{endpoint}/api/v1/generate", json={'prompt': data['prompt']})
+        # Update the payload for the Kobold endpoint
+        payload = {'prompt': data['prompt'], **data['settings']}
+        response = requests.post(f"{endpoint}/api/v1/generate", json=payload)
         if response.status_code == 200:
             # Get the results from the response
             results = response.json()
@@ -412,6 +413,8 @@ def textgen(endpointType):
         requests.put(f"{endpoint}/config", json={data})
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
+        return jsonify(results)
+    return jsonify({'error': 'Invalid endpoint type or endpoint.'})
 
 @app.route('/api/textgen/status', methods=['POST'])
 @cross_origin()

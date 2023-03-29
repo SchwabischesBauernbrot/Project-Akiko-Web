@@ -3,19 +3,26 @@ import axios from 'axios';
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
 
 const kobold_defaults = {
-  'max_new_tokens': 200,
-  'do_sample': true,
-  'temperature': 0.6,
-  'top_p': 0.9,
-  'typical_p': 1,
-  'repetition_penalty': 1.05,
-  'top_k': 40,
-  'min_length': 10,
-  'no_repeat_ngram_size': 0,
-  'num_beams': 1,
-  'penalty_alpha': 0,
-  'length_penalty': 1,
-  'early_stopping': false,
+  "max_context_length": 2048,
+  "max_length": 180,
+	"rep_pen": 1.01,
+	"rep_pen_slope": 0.9,
+	"rep_pen_range": 1024,
+	"temperature": 1.0,
+	"top_p": 0.9,
+	"top_k": 40,
+	"top_a": 0.0,
+	"tfs": 0.9,
+	"typical": 1.0,
+	"sampler_order": [
+		6,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5
+	],
 }
 
 function parseTextEnd(text) {

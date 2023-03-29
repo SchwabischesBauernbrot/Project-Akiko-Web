@@ -280,7 +280,6 @@ function Chatbox({ endpoint, endpointType }) {
     await deleteConversation(convo);
     setConversation(null);
     setMessages([]);
-    getCharacterStatus(selectedCharacter);
     setOpenConvoSelector(false);
   }
 
@@ -288,7 +287,6 @@ function Chatbox({ endpoint, endpointType }) {
     localStorage.removeItem('conversationName');
     setConversation(null);
     setMessages([]);
-    getCharacterStatus(selectedCharacter);
   }
 
   return (
