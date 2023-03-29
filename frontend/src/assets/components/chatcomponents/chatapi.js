@@ -26,7 +26,7 @@ const kobold_defaults = {
 }
 const ooba_defaults = {
   'max_new_tokens': 200,
-  'do_sample': True,
+  'do_sample': true,
   'temperature': 0.5,
   'top_p': 0.9,
   'typical_p': 1,
@@ -38,7 +38,7 @@ const ooba_defaults = {
   'num_beams': 1,
   'penalty_alpha': 0,
   'length_penalty': 1,
-  'early_stopping': False,
+  'early_stopping': false,
 };
 
 function parseTextEnd(text) {
@@ -65,7 +65,7 @@ function parseTextEnd(text) {
       customSettings = ooba_defaults;
     } else if(endpointType === 'AkikoBackend'){
       customSettings = ooba_defaults;
-    }
+    } 
   let imgText = null;
     if(image !== null){
       imgText = await handleImageSend(image, configuredName)

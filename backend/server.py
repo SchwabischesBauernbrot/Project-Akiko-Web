@@ -430,6 +430,8 @@ def textgen(endpointType):
         ]})
         reply = {'results': response["data"][0]}
         return jsonify(reply)
+    elif(endpointType == 'OAI'):
+        return jsonify({'error': 'OAI is not yet supported.'})
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
         return jsonify(results)
