@@ -377,6 +377,26 @@ body {
 .icon-button-small:hover {
     background-color: rgb(6, 136, 168);
 }
+
+.Live2D-canvas {
+	object-fit: none;
+	object-position: right;
+    width: 30rem;
+    height: 51.25rem;
+    position: fixed;
+    bottom: 0;
+    right: 200px;
+    margin-bottom: 0%;
+    z-index: 3;
+	background-color: transparent;
+	border-radius: 10px;
+	border-style: inset;
+	border-width: .4rem;
+	border-color: #aaaaaa;
+	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+	backdrop-filter: blur(10px);
+}
+
 @media only screen and (min-width: 281px) and (max-width: 896px) {
 	#model {
 		width: auto;

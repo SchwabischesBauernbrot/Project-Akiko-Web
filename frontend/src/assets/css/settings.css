@@ -65,16 +65,41 @@
 	color: white;
 	justify-content: center;
 	width: 30%;
-  }
+	height: max-content;
+}
   
 .settings-box-content {
 	color: white;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 1%;
+	margin-bottom: 2rem;
 }
 
 .settings-box h2{
-	margin: auto;
+	margin-top: 0;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 3%;
+	width: fit-content;
+	color: white;
+	justify-content: center;
+}
+
+.settings-box-large {
+	margin-top: .5rem;
+	background-color: none;
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
+	padding: 2rem;
+	color: white;
+	justify-content: center;
+	width: 50rem;
+}
+.settings-box-large h2{
+	margin-top: 0;
+	margin-left: auto;
+	margin-right: auto;
 	padding: 3%;
 	width: fit-content;
 	color: white;

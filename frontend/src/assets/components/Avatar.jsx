@@ -8,7 +8,7 @@ function Avatar({ selectedCharacter, emotion }) {
   const [initialY, setInitialY] = useState(0);
   const [xOffset, setXOffset] = useState(0);
   const [yOffset, setYOffset] = useState(0);
-
+  
   useEffect(() => {
     const findAvatar = async () => {
       const data = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion);

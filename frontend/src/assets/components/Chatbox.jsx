@@ -12,6 +12,7 @@ import { createUserMessage } from './chatcomponents/MessageHandling';
 import scanSlash from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 import {FiList, FiPlusCircle, FiTrash2} from 'react-icons/fi';
+import Model from "./Model";
 
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
@@ -328,7 +329,8 @@ function Chatbox({ endpoint, endpointType }) {
   return (
     <>
     {selectedCharacter && (
-      <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
+      <Model character={selectedCharacter}/>
+      //<Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
     )}
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>

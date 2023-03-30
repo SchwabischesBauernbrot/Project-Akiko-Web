@@ -72,7 +72,7 @@ const EndpointSelector = () => {
     return (
         <div className="settings-box" id='endpoint'>
           <h2 className='settings-box'>Text Generation Endpoint</h2>
-          <div id='endpoint-container'>
+        <div className='settings-box-content' id='endpoint-container'>
         <form onSubmit={handleConnectClick}>
         <Select
         id="options"
@@ -96,10 +96,10 @@ const EndpointSelector = () => {
         )}
         </form>
         <Connect/>
-        </div>
         {selectedOption && selectedOption.value === 'Horde' && (
           <HordeModelSelector/>
           )}
+        </div >
         </div>
     );
   };
