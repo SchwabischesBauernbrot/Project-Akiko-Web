@@ -5,16 +5,11 @@ import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "
 function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages }) {
   const editedMessageRef = useRef(null);
   const [editRowCounter, setEditRowCounter] = useState(1);
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setShow(true);
-  }, [index]);
   
   const isTyping = message.text.includes("is typing");
 
   return (
-    <div key={index} className={`${message.isIncoming ? "incoming-message" : "outgoing-message"} ${show ? 'pop-in' : ''}`}>
+    <div key={index} className={`${message.isIncoming ? "incoming-message" : "outgoing-message"} ${'pop-in'}`}>
       <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
         <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? handleOpenCharacterProfile : undefined}alt={`${message.sender}'s avatar`} />
       </div>
