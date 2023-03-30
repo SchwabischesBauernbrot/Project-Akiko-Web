@@ -432,6 +432,35 @@ def textgen(endpointType):
         return jsonify(reply)
     elif(endpointType == 'OAI'):
         return jsonify({'error': 'OAI is not yet supported.'})
+    elif(endpointType == 'Horde'):
+        if(data['endpoint'] == ''):
+            api_key = 0000000000
+        else:
+            api_key = data['endpoint']
+        payload = {"prompt": data['prompt'], "params": data['settings'], "trusted_workers": False, "slow_workers": True, "models": [data['hordeModel']]}
+        response = requests.post(
+                "https://stablehorde.net/api/v2/generate/text/async",
+                headers={"Content-Type": "application/json", "apikey": api_key},
+                data=json.dumps(payload)
+            )
+        task_id = json.loads(response.content.decode("utf-8"))['id']
+        while True:
+                time.sleep(5)
+                status_check = requests.get(
+                    'https://stablehorde.net/api' + f"/v2/generate/text/status/{task_id}", 
+                    headers={"Content-Type": "application/json", "apikey": data['endpoint']}
+                )
+                status_check_json = json.loads(status_check.content.decode("utf-8"))
+                print(status_check_json)
+                if status_check_json.get('done') == True:
+                    get_text = requests.get(
+                    'https://stablehorde.net/api' + f"/v2/generate/text/status/{task_id}", 
+                    headers={"Content-Type": "application/json", "apikey": data['endpoint']}
+                    )
+                    text_response_json = json.loads(get_text.content.decode("utf-8"))
+                    generated_text = text_response_json['generations'][0]['text']
+                    results = {'results': generated_text}
+                    return jsonify(results)
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
         return jsonify(results)
@@ -451,6 +480,13 @@ def textgen_status():
             return jsonify(results)
     elif(endpointType == 'Ooba'):
         requests.put(f"{endpoint}/config", json={data})
+    elif(endpointType == 'OAI'):
+        return jsonify({'error': 'OAI is not yet supported.'})
+    elif(endpointType == 'Horde'):
+        response = requests.get('https://stablehorde.net/api' + f"/v2/status/heartbeat")
+        if response.status_code == 200:
+            return jsonify({'result': 'Horde heartbeat is steady.'})
+        return jsonify({'error': 'Horde heartbeat failed.'})
     elif(endpointType == 'AkikoBackend'):
         results = {'result': text_model}
 

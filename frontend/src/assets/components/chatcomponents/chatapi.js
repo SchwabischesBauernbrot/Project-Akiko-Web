@@ -8,7 +8,7 @@ const kobold_defaults = {
 	"rep_pen": 1.01,
 	"rep_pen_slope": 0.9,
 	"rep_pen_range": 1024,
-	"temperature": 1.0,
+	"temperature": 0.7,
 	"top_p": 0.9,
 	"top_k": 40,
 	"top_a": 0.0,
@@ -47,6 +47,7 @@ function parseTextEnd(text) {
   
   export async function characterTextGen(character, history, endpoint, endpointType, image, configuredName) {
     let customSettings = null;
+    let hordeModel = null;
     if(localStorage.getItem('customSettings') !== null){
       customSettings = localStorage.getItem('customSettings');
       const parsedSettings = JSON.parse(customSettings);
@@ -65,7 +66,10 @@ function parseTextEnd(text) {
       customSettings = ooba_defaults;
     } else if(endpointType === 'AkikoBackend'){
       customSettings = ooba_defaults;
-    } 
+    } else if(endpointType === 'Horde'){
+      customSettings = kobold_defaults;
+      hordeModel = localStorage.getItem('hordeModel');
+    }
   let imgText = null;
     if(image !== null){
       imgText = await handleImageSend(image, configuredName)
@@ -73,7 +77,7 @@ function parseTextEnd(text) {
     const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
     const convo = 'Current Conversation:\n' + history + (imgText ? imgText : '') +'\n';
     const createdPrompt = basePrompt + convo + character.name + ':';
-    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings});
+    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings, hordeModel: hordeModel ? hordeModel : 'PygmalionAI/pygmalion-6b'});
 
     const generatedText = response.data.results[0];
     const parsedText = parseTextEnd(generatedText.text);

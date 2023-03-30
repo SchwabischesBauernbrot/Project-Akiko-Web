@@ -37,8 +37,9 @@ function Chatbox({ endpoint, endpointType }) {
         const character = await fetchCharacter(localStorage.getItem("selectedCharacter"));
         setSelectedCharacter(character);
       }
-      if(localStorage.getItem("configuredName") !== null) {
-        setconfiguredName(localStorage.getItem("configuredName"));
+      if (localStorage.getItem("conversationName") !== null) {
+        const conversation = await fetchConversation(localStorage.getItem("conversationName"));
+        setConversation(conversation);
       }
       if(localStorage.getItem('settings') !== null) {
         setSettings(JSON.parse(localStorage.getItem('settings')));
@@ -61,6 +62,7 @@ function Chatbox({ endpoint, endpointType }) {
         messages: [defaultMessage],
         participants: [selectedCharacter.char_id],
       });
+      saveConversation({conversationName: `${selectedCharacter.name}_${Date.now()}`, messages: [defaultMessage], participants: [selectedCharacter.char_id],});
       localStorage.setItem("conversationName", `${selectedCharacter.name}_${Date.now()}`)
     } else if (conversation !== null) {
       setMessages(conversation.messages);
@@ -68,16 +70,7 @@ function Chatbox({ endpoint, endpointType }) {
   };
 
   useEffect(() => {
-    const getConvoname = async () => {
-      if (localStorage.getItem("conversationName") !== null) {
-        const convo = await fetchConversation(localStorage.getItem("conversationName"));
-        setConversation(convo);
-        setMessages(convo.messages);
-      }else{
-        getCharacterStatus(selectedCharacter);
-      }
-    };
-    getConvoname();
+    getCharacterStatus(selectedCharacter);
     setUserCharacter({ name: configuredName, avatar: getCharacterImageUrl('default.png')});
   }, [selectedCharacter]);
 
@@ -250,11 +243,11 @@ function Chatbox({ endpoint, endpointType }) {
     setActivateImpersonation(!activateImpersonation);
   };
 
-  const handleReneration = () => {
+  const handleReneration = async () => {
     let currentIndex = messages.length - 1;
     const updatedMessages = messages.filter((_, i) => i !== currentIndex);
     setMessages(updatedMessages);
-    handleChatbotResponse(updatedMessages);
+    handleChatbotResponse(updatedMessages, null, selectedCharacter);
   }
 
   const handleOpenCharacterProfile = () => {
@@ -277,16 +270,18 @@ function Chatbox({ endpoint, endpointType }) {
 
   const handleConversationDelete = async (convo) => {
     localStorage.removeItem('conversationName');
-    await deleteConversation(convo);
     setConversation(null);
     setMessages([]);
     setOpenConvoSelector(false);
+    getCharacterStatus(selectedCharacter);
+    await deleteConversation(convo);
   }
 
   const handleNewConversation = async () => {
     localStorage.removeItem('conversationName');
     setConversation(null);
     setMessages([]);
+    getCharacterStatus(selectedCharacter);
   }
 
   return (
@@ -300,7 +295,7 @@ function Chatbox({ endpoint, endpointType }) {
       <div className={'connect-chat-box'}>
         <Connect/>
         <button className={'button'} id={'submit'} onClick={() => setOpenConvoSelector(true)}>Manage Chats</button>
-        <button className={'button'} id={'cancel'} onClick={() => handleConversationDelete(conversation.conversationName)}>Delete Chat</button>
+        <button className={'button'} id={'cancel'} onClick={() => handleConversationDelete()}>Delete Chat</button>
         <button className={'button'} id={'submit'} onClick={() => handleNewConversation()}>New Chat</button>
       </div>
     <div className="chatbox-wrapper">

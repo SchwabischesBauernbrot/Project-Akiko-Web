@@ -37,6 +37,18 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
     const handleCreateConversationSubmit = (event) => {
     const participants = selectedParticipants.map(option => option.value);
     event.preventDefault();
+    if(conversationName === '' || participants.length <= 0){
+        return;
+    }
+    if(participants.length > 1){
+        const groupChatMessage = {
+            sender: 'ProjectAkiko',
+            avatar: 'system',
+            text: 'This is a group chat. You can add more participants by clicking the + button in the top right corner.',
+            image: null,
+            timestamp: new Date().getTime(),
+        }
+    }
     const NewConvo = {
         conversationName: conversationName,
         participants: participants,
@@ -132,5 +144,5 @@ return (
     </div>
 </div>
 );
-};
+}
 export default ConversationCreate;

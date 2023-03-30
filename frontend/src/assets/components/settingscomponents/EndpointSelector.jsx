@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Connect from '../Connect';
+import HordeModelSelector from './HordeModelSelector';
 
 const EndpointSelector = () => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -20,11 +21,17 @@ const EndpointSelector = () => {
     };
     
     const handleConnectClick = () => {
+      if(selectedOption.value === 'Horde') {
+        localStorage.setItem('endpoint', inputValue);
+        localStorage.setItem('endpointType', selectedOption.value);
+        setSelectedOption(localStorage.getItem('endpointType'), localStorage.getItem('endpoint'));
+      } else {
         const url = ensureUrlFormat(inputValue)
         setInputValue(url);
         localStorage.setItem('endpointType', selectedOption.value);
         localStorage.setItem('endpoint', inputValue);
         setSelectedOption(localStorage.getItem('endpointType'), localStorage.getItem('endpoint'));
+      }
       };
 
     function ensureUrlFormat(str) {
@@ -47,8 +54,10 @@ const EndpointSelector = () => {
             return 'http://localhost:7861/';
           case 'AkikoBackend':
             return 'http://localhost:5100/' ;
+          case 'Horde':
+            return '0000000000';
           default:
-            return 'http://localhost:5100/';
+            return '';
         }
       };
     
@@ -56,7 +65,8 @@ const EndpointSelector = () => {
         { value: 'Kobold', label: 'Kobold' },
         { value: 'Ooba', label: 'OobaTextUI' },
         { value: 'AkikoBackend', label: 'AkikoTextgen' },
-        { value: 'OAI', label: 'OpenAI (API-KEY)' }
+        { value: 'OAI', label: 'OpenAI (API-KEY)' },
+        { value: 'Horde', label: 'Horde' }
     ];
   
     return (
@@ -75,6 +85,7 @@ const EndpointSelector = () => {
             <input
             id="inputValue"
             type="text"
+            label="If using the Kobold or Ooba endpoint, enter the URL here. If using the OpenAI endpoint, enter your API key here. If using Horde, enter your API key or leave empty for anonymous mode."
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
             placeholder={getDefaultInputValue(selectedOption.value)}
@@ -86,6 +97,9 @@ const EndpointSelector = () => {
         </form>
         <Connect/>
         </div>
+        {selectedOption && selectedOption.value === 'Horde' && (
+          <HordeModelSelector/>
+          )}
         </div>
     );
   };

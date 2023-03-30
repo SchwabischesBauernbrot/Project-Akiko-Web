@@ -28,7 +28,7 @@ export async function fetchSettings() {
     const response = await axios.get(`${API_URL}/settings`);
     return response.data;
   } catch {
-    console.log('No settings file found.')
+    console.log('No settings file found')
   }
 }
 

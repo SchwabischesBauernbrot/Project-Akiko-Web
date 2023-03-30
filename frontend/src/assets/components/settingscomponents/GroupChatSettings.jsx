@@ -5,7 +5,7 @@ const GroupChatSettings = ({settings}) => {
     
     useEffect(() => {
         const fetchGroupChatSettings = async () => {
-            const groupChatSettings = settings.GroupChatSettings
+            const groupChatSettings = settings['GroupChatSettings']
             setGroupChatSettings(groupChatSettings);
         };
         fetchGroupChatSettings();
