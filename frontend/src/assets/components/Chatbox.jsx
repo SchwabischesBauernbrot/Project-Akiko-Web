@@ -31,23 +31,12 @@ function Chatbox({ endpoint, endpointType }) {
   const [conversation, setConversation] = useState(null);
   const [settings, setSettings] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      if (localStorage.getItem("selectedCharacter") !== null) {
-        const character = await fetchCharacter(localStorage.getItem("selectedCharacter"));
-        setSelectedCharacter(character);
-      }
-      if (localStorage.getItem("conversationName") !== null) {
-        const conversation = await fetchConversation(localStorage.getItem("conversationName"));
-        setConversation(conversation);
-      }
-      if(localStorage.getItem('settings') !== null) {
-        setSettings(JSON.parse(localStorage.getItem('settings')));
-      }
-    })();
-  }, []);
-
   const getCharacterStatus = async (selectedCharacter) => {
+    if (localStorage.getItem("conversationName") !== null) {
+      const conversation = await fetchConversation(localStorage.getItem("conversationName"));
+      setConversation(conversation);
+      setMessages(conversation.messages);
+    }
     if (selectedCharacter !== null && conversation === null) {
       const defaultMessage = {
         sender: selectedCharacter.name,
@@ -57,17 +46,29 @@ function Chatbox({ endpoint, endpointType }) {
         timestamp: Date.now(),
       };
       setMessages([defaultMessage]);
+      let newConvoName = `${selectedCharacter.name}_${Date.now()}`;
       setConversation({
-        conversationName: `${selectedCharacter.name}_${Date.now()}`,
+        conversationName: newConvoName,
         messages: [defaultMessage],
         participants: [selectedCharacter.char_id],
       });
-      saveConversation({conversationName: `${selectedCharacter.name}_${Date.now()}`, messages: [defaultMessage], participants: [selectedCharacter.char_id],});
-      localStorage.setItem("conversationName", `${selectedCharacter.name}_${Date.now()}`)
+      localStorage.setItem("conversationName", newConvoName)
     } else if (conversation !== null) {
       setMessages(conversation.messages);
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      if (localStorage.getItem("selectedCharacter") !== null) {
+        const character = await fetchCharacter(localStorage.getItem("selectedCharacter"));
+        setSelectedCharacter(character);
+      }
+      if(localStorage.getItem('settings') !== null) {
+        setSettings(JSON.parse(localStorage.getItem('settings')));
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     getCharacterStatus(selectedCharacter);
@@ -108,7 +109,6 @@ function Chatbox({ endpoint, endpointType }) {
     } else {
       newMessage = await createUserMessage(text, image, userCharacter);
     }
-
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages); // Update messages state with the new user message
     saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
@@ -124,13 +124,15 @@ function Chatbox({ endpoint, endpointType }) {
     const isTypingNow = new Date();
     const isTyping = {
       sender: currentCharacter.name,
-      text: `*${currentCharacter.name} is typing...*`,
+      text: `*${currentCharacter.name} is typing*`,
       avatar: getCharacterImageUrl(currentCharacter.avatar),
       isIncoming: true,
       timestamp: isTypingNow.getTime(),
     };
     const isTypingHistory = [...chatHistory, isTyping];
-    setMessages(isTypingHistory);
+    setTimeout(() => {
+      setMessages(isTypingHistory);
+    }, 2000);
     const history = chatHistory
     .map((message) => `${message.sender}: ${message.text}`)
     .join('\n');
@@ -269,19 +271,19 @@ function Chatbox({ endpoint, endpointType }) {
   }
 
   const handleConversationDelete = async (convo) => {
-    localStorage.removeItem('conversationName');
+    await deleteConversation(convo);
     setConversation(null);
     setMessages([]);
+    localStorage.removeItem('conversationName');
     setOpenConvoSelector(false);
-    getCharacterStatus(selectedCharacter);
-    await deleteConversation(convo);
+    await getCharacterStatus(selectedCharacter);
   }
 
   const handleNewConversation = async () => {
     localStorage.removeItem('conversationName');
     setConversation(null);
     setMessages([]);
-    getCharacterStatus(selectedCharacter);
+    await getCharacterStatus(selectedCharacter);
   }
 
   return (
