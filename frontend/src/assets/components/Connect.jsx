@@ -10,7 +10,9 @@ const Connect = () => {
                 const status = await getModelStatus();
                 if(status !== null){
                     setConnectionStatus(status);
-                    console.log('Connection status: ' + status);
+                }
+                if(localStorage.getItem('endpointType') === 'Horde'){
+                    setConnectionStatus(localStorage.getItem('hordeModel'));
                 }
             }
         }

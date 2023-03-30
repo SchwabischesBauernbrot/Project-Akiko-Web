@@ -81,7 +81,6 @@ const Characters = () => {
   const editCharacter = (updatedCharacter) => {
     const updatedCharacters = characters.map((c) => c.char_id === updatedCharacter.char_id ? updatedCharacter : c);
     setCharacters(updatedCharacters);
-    window.location.reload();
   };
 
   const delCharacter = async (character) => {
@@ -96,8 +95,6 @@ const Characters = () => {
       setCharacters(updatedCharacters);
       setShowDeleteModal(false);
       setCharacterToDelete(null);
-      fetchAndSetCharacters();
-      window.location.reload();
     } catch (error) {
       console.error(error);
     }

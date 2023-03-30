@@ -3,19 +3,12 @@ import "../css/nav.css";
 import { HomeIcon, WrenchScrewdriverIcon, UserGroupIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { RxDiscordLogo } from 'react-icons/rx';
 import { HiChevronDoubleRight } from 'react-icons/hi2'
-import { FiMessageCircle } from 'react-icons/fi'
-import BackgroundSelect from './BackgroundSelector';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const [ConversationMenuIsOpen, setConversationMenuIsOpen] = useState(false);
   return (
     <>
-    {ConversationMenuIsOpen && (
-      <ConversationMenu onClose={() => setConversationMenuIsOpen(false)}/>
-    )}
     <div id='nav-container'>
-    <BackgroundSelect/>
       <div className="nav">
         <Link title='Home' id={'nav-button'} to='/'>
           <HomeIcon className="heroicon"/>

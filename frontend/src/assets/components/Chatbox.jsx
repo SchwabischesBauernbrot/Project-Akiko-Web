@@ -11,6 +11,7 @@ import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
 import { createUserMessage } from './chatcomponents/MessageHandling';
 import scanSlash from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
+import {FiList, FiPlusCircle, FiTrash2} from 'react-icons/fi';
 
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
@@ -52,11 +53,13 @@ function Chatbox({ endpoint, endpointType }) {
   };
 
   const deleteCurrentConversation = async () => {
-    await deleteConversation(conversation.conversationName);
-    localStorage.setItem("conversationName", null);
-    setConversation(null);
-    setMessages([]);
-    await createNewConversation();
+    try{
+      await deleteConversation(conversation.conversationName);
+      localStorage.setItem("conversationName", null);
+    }catch(e) {
+      console.log(e);
+    }
+    createNewConversation();
   };
 
   useEffect(() => {
@@ -69,18 +72,25 @@ function Chatbox({ endpoint, endpointType }) {
         if(!selectedCharacter) return;
         createNewConversation();
       }else{
-        const previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
-        if(!previousConversation) {
+        try{
+          const previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
+          setConversation(previousConversation);
+          setMessages(previousConversation.messages);
+          return;
+        }catch(e) {
+          console.log(e);
           createNewConversation();
           return;
         }
-        setConversation(previousConversation);
-        setMessages(previousConversation.messages);
       }
     };
     fetchConfig();
-    setUserCharacter({ name: configuredName, avatar: getCharacterImageUrl('default.png')});
+    setUserCharacter({ name: configuredName, avatar: 'default.png'});
   }, []);
+
+  useEffect(() => {
+    setUserCharacter({ name: configuredName, avatar: 'default.png'});
+  }, [configuredName]);
 
   useEffect(() => {
     // scroll to last message when messages state updates
@@ -189,6 +199,7 @@ function Chatbox({ endpoint, endpointType }) {
     });
     setEditedMessageIndex(-1);
     setMessages(updatedMessages);
+    saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
   };  
 
   const handleEditMessage = (event, index) => {
@@ -277,7 +288,7 @@ function Chatbox({ endpoint, endpointType }) {
   }
 
   const handleConversationDelete = async (convo) => {
-    if(convo){
+    if(convo !== null){
       await deleteConversation(convo);
       if(convo === conversation.conversationName){
         deleteCurrentConversation();
@@ -285,8 +296,34 @@ function Chatbox({ endpoint, endpointType }) {
       setOpenConvoSelector(false);
       return;
     }
-    deleteCurrentConversation();
   }
+
+  const handleTitleEdit = async (newText) => {
+    if(newText === conversation.conversationName){
+      return;
+    }
+    if(newText === ''){
+      newText = 'Untitled Conversation';
+    }
+    try{
+      const convo = await fetchConversation(newText);
+      if(convo){
+        alert('Conversation with this name already exists. Please choose a different name.');
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    try{
+      await deleteConversation(conversation.conversationName);
+    } catch (e) {
+      console.error(e);
+    }
+    const renamedConvo = {conversationName: newText, participants: conversation.participants, messages: conversation.messages,}
+    await saveConversation(renamedConvo);
+    localStorage.setItem("conversationName", newText);
+    setConversation(renamedConvo);
+  };
 
   return (
     <>
@@ -298,9 +335,14 @@ function Chatbox({ endpoint, endpointType }) {
     )}
       <div className={'connect-chat-box'}>
         <Connect/>
-        <button className={'button'} id={'submit'} onClick={() => setOpenConvoSelector(true)}>Manage Chats</button>
-        <button className={'button'} id={'cancel'} onClick={() => handleConversationDelete()}>Delete Chat</button>
-        <button className={'button'} id={'submit'} onClick={() => createNewConversation()}>New Chat</button>
+        {conversation && (
+        <h4 className={'chat-title'} contentEditable suppressContentEditableWarning={true} onBlur={(e) => handleTitleEdit(e.target.innerText)} onKeyDown={(e) => handleMessageKeyDown(e)}>{conversation.conversationName}</h4>
+        )}
+        <div className='chat-management-buttons'>
+          <button className={'chat-button'} id={'submit'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
+          <button className={'chat-button'} id={'cancel'} onClick={() => handleConversationDelete()}><FiTrash2 className="react-icon"/></button>
+          <button className={'chat-button'} id={'submit'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
+        </div>
       </div>
     <div className="chatbox-wrapper">
       <div className="message-box">

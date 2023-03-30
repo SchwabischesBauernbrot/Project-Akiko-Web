@@ -489,6 +489,7 @@ def textgen_status():
         return jsonify({'error': 'Horde heartbeat failed.'})
     elif(endpointType == 'AkikoBackend'):
         results = {'result': text_model}
+        return jsonify(results)
 
 ##############################################
 ##### END OF TXT GEN API HANDLING ROUTES #####

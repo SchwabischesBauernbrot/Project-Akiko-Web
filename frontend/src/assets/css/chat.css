@@ -17,7 +17,7 @@
 	flex-direction: row;
 	gap: 5%;
 	max-width: 720px;
-	padding: .55rem;
+	padding: 5px;
 	background-color: rgba(11, 11, 11, 0.737);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
@@ -27,7 +27,7 @@
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 	margin-bottom: 4px;
-	height: 3rem;
+	height: auto;
 }
 
 #dropdown {
@@ -238,48 +238,6 @@
 	cursor:text;
 }
 
-.chat-delete {
-	margin-top: 10px;
-	background-color: rgba(11, 11, 11, 0.636);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	padding: 10px;
-	border: none;
-	outline: none;
-	color: white;
-	word-wrap: normal;
-	justify-content: center;
-	cursor: pointer;
-}
-.chat-delete:hover {
-	background-color: rgba(179, 6, 6, 0.636);
-}
-
-.chat-create {
-	background-color: rgba(11, 11, 11, 0.636);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	border-radius: 10px;
-	padding: 15px;
-	width: 5%;
-	border: none;
-	outline: none;
-	color: white;
-	word-wrap: normal;
-	justify-content: center;
-	cursor: pointer;
-}
-.chat-create:hover {
-	background-color: rgb(6, 136, 168);
-}
-
-.chat-buttons {
-	display: flex;
-	margin-top: 30px;
-	gap: 20px; 
-}
 .sent-image {
 	padding: 10px;
 	word-wrap:break-word;
@@ -329,6 +287,29 @@
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	width: fit-content;
 	height: fit-content;
+}
+
+.chat-management-buttons {
+	position: absolute;
+	margin-top: 1rem;
+	right: .5rem;
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+}
+.chat-button {
+	background-color: transparent;
+	backdrop-filter: blur(100%);
+	border-radius: 10px;
+	color: white;
+	border: none;
+	outline: none;
+	width: 2.5rem;
+}
+
+.message-button:hover {
+	cursor: pointer;
+	background-color: rgba(255, 255, 255, 0.2);
 }
 /* For tablets and smaller devices */
 @media only screen and (min-width: 417px) and (max-width: 896px) {
