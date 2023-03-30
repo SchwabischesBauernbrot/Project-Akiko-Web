@@ -12,7 +12,7 @@ const Connect = () => {
                     setConnectionStatus(status);
                 }
                 if(localStorage.getItem('endpointType') === 'Horde'){
-                    setConnectionStatus(localStorage.getItem('hordeModel'));
+                    setConnectionStatus(`${localStorage.getItem('hordeModel')} (Horde)`);
                 }
             }
         }
