@@ -28,6 +28,7 @@ export async function fetchSettings() {
     const response = await axios.get(`${API_URL}/settings`);
     return response.data;
   } catch {
+    console.log('No settings file found')
   }
 }
 
@@ -109,14 +110,11 @@ export async function updateCharacter(updatedCharacter) {
   return response.data;
 }
 
-export const saveConversation = async (selectedCharacter, updatedMessages) => {
-  const newConversation = { messages: updatedMessages };
-  localStorage.setItem(`conversation_${selectedCharacter.char_id}`, JSON.stringify(newConversation));
-
+export const saveConversation = async (convo) => {
   try {
-    const response = await axios.post(`${API_URL}/conversation`, newConversation);
+    const response = await axios.post(`${API_URL}/conversation`, convo);
     if (response.data.status === 'success') {
-      console.log(`The conversation with ${selectedCharacter.name} has been saved!`);
+      console.log('Conversation saved');
     } else {
       console.error('Error saving conversation');
     }
@@ -125,14 +123,10 @@ export const saveConversation = async (selectedCharacter, updatedMessages) => {
   }
 }
 
-export async function fetchConversations(character) {
+export async function fetchConversations() {
   const response = await axios.get(`${API_URL}/conversations`);
   const allConversations = response.data.conversations;
-  if (!character || !character.name) {
-    return allConversations;
-  }
-  const characterConversations = allConversations.filter(conversation => conversation.startsWith(character.name));
-  return characterConversations;
+  return allConversations;
 }
 
 

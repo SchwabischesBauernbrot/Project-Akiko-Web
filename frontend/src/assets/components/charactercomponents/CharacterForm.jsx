@@ -134,3 +134,5 @@ function handleSubmit(event) {
     </div>
   );
 };
+
+export default CharacterForm;

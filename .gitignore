@@ -1,5 +1,2 @@
 conda/
 venv/
-frontend/src/shared_data/exports/
-frontend/src/shared_data/conversations/
-backend/.config

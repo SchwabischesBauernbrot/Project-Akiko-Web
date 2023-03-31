@@ -7,27 +7,27 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
-	background-color: rgba(18, 18, 18, 0.737);
+	background-color: var(--selected-bb-color);
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(15px);
+	backdrop-filter: var(--selected-blur);
 }
 .connect-chat-box {
 	overflow-x: break-word;
 	display: flex;
 	flex-direction: row;
-	gap: 10%;
+	gap: 5%;
 	max-width: 720px;
-	padding: .55rem;
-	background-color: rgba(11, 11, 11, 0.737);
+	padding: 5px;
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(15px);
+	backdrop-filter: var(--selected-blur);
 	margin-right: 0;
 	margin-left: 0px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 	margin-bottom: 4px;
-	height: 3rem;
+	height: auto;
 }
 
 #dropdown {
@@ -49,10 +49,10 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
-	background-color: rgba(11, 11, 11, 0.737);
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(15px);
+	backdrop-filter: var(--selected-blur);
 	margin-right: 0;
 	margin-left: 0px;
 	border-top-right-radius: 0px;
@@ -62,14 +62,24 @@
 }
 
 .chat-selection-menu {
-	width: min-content;
-	background-color: rgba(11, 11, 11, 0.636);
+	width: 50%;
+	background-color: var(--selected-color);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: var(--selected-blur);
+	padding: 15px;
+	color: var(--selected-text-color);
+	flex-shrink: 0;
+}
+
+.create-conversation-menu {
+	width: max-content;
+	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 15px;
-	color: white;
-	overflow-y: scroll;
+	color: var(--selected-text-color);
 	flex-shrink: 0;
 }
 
@@ -77,7 +87,7 @@
 .outgoing-message {
 	min-width: 80px;
 	display: inline-flex;
-	color: rgb(255, 255, 255) !important;
+	color: var(--selected-text-color) !important;
 	text-align: left;
 }
 
@@ -118,7 +128,6 @@
 	margin: 15px 0 0 0;
 }
 
-
 .message-text {
 	margin: 0rem 0 0px 0;
 	padding: 0px 0px;
@@ -147,12 +156,12 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	}
+}
 	
 #message-edit {
 	margin: 0;
 	background-color: transparent;
-	color: white;
+	color: var(--selected-text-color);
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	font-size: 15.5px;
 	line-height: 1.45rem;
@@ -177,14 +186,14 @@
 	background-color: transparent;
 	backdrop-filter: blur(100%);
 	border-radius: 10px;
-	color: white;
+	color: var(--selected-text-color);
 	border: none;
 	outline: none;
 }
 
 .message-button:hover {
 	cursor: pointer;
-	background-color: rgba(255, 255, 255, 0.2);
+	font-size: 21px;
 }	
 .send-input {
 	display: flex;
@@ -200,7 +209,7 @@
 	flex-direction: row;
 	width: 18px;
 	cursor: pointer;
-	color: rgb(255, 255, 255);
+	color: var(--selected-text-color);
 	font-size: 21px;
 }
 
@@ -211,7 +220,7 @@
 	padding: 10px;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	overflow: hidden;
 	justify-content: flex-start;
 	margin-left: 10px;
@@ -229,48 +238,6 @@
 	cursor:text;
 }
 
-.chat-delete {
-	margin-top: 10px;
-	background-color: rgba(11, 11, 11, 0.636);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	padding: 10px;
-	border: none;
-	outline: none;
-	color: white;
-	word-wrap: normal;
-	justify-content: center;
-	cursor: pointer;
-}
-.chat-delete:hover {
-	background-color: rgba(179, 6, 6, 0.636);
-}
-
-.chat-create {
-	background-color: rgba(11, 11, 11, 0.636);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	border-radius: 10px;
-	padding: 15px;
-	width: 5%;
-	border: none;
-	outline: none;
-	color: white;
-	word-wrap: normal;
-	justify-content: center;
-	cursor: pointer;
-}
-.chat-create:hover {
-	background-color: rgb(6, 136, 168);
-}
-
-.chat-buttons {
-	display: flex;
-	margin-top: 30px;
-	gap: 20px; 
-}
 .sent-image {
 	padding: 10px;
 	word-wrap:break-word;
@@ -292,7 +259,7 @@
 	padding: 15px;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	cursor: pointer;
@@ -301,6 +268,49 @@
 	background-color: rgb(6, 136, 168);
 }
 
+.conversation-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+.conversation-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	margin: 0;
+	border-radius: .25rem;
+	border-style: ridge;
+	border-color: #7272726c;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	width: fit-content;
+	height: fit-content;
+}
+
+.chat-management-buttons {
+	position: relative;
+	margin-top: 1rem;
+	margin-right: 0;
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+}
+.chat-button {
+	background-color: transparent;
+	backdrop-filter: blur(100%);
+	border-radius: 10px;
+	color: var(--selected-text-color);
+	border: none;
+	outline: none;
+	width: 2.5rem;
+}
+
+.message-button:hover {
+	cursor: pointer;
+	font-size: 21px;
+}
 /* For tablets and smaller devices */
 @media only screen and (min-width: 417px) and (max-width: 896px) {
 	#input {

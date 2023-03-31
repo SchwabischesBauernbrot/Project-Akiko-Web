@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {getModelStatus} from './chatapi';
+import {getModelStatus} from './chatcomponents/chatapi';
 
 const Connect = () => {
     const [connectionStatus, setConnectionStatus] = useState(false);
@@ -10,7 +10,9 @@ const Connect = () => {
                 const status = await getModelStatus();
                 if(status !== null){
                     setConnectionStatus(status);
-                    console.log('Connection status: ' + status);
+                }
+                if(localStorage.getItem('endpointType') === 'Horde'){
+                    setConnectionStatus(`${localStorage.getItem('hordeModel')} (Horde)`);
                 }
             }
         }

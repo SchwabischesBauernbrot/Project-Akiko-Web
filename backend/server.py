@@ -432,17 +432,70 @@ def textgen(endpointType):
     data = request.get_json()
     endpoint = data['endpoint']
     if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
-    requests.put(f"{endpoint}/config", json=data['settings'])
     if(endpointType == 'Kobold'):
-        response = requests.post(f"{endpoint}/api/v1/generate", json={'prompt': data['prompt']})
+        # Update the payload for the Kobold endpoint
+        payload = {'prompt': data['prompt'], **data['settings']}
+        response = requests.post(f"{endpoint}/api/v1/generate", json=payload)
         if response.status_code == 200:
             # Get the results from the response
             results = response.json()
             return jsonify(results)
     elif(endpointType == 'Ooba'):
-        requests.put(f"{endpoint}/config", json={data})
+        response = requests.put(f"{endpoint}/run/textgen", json={    
+        "data": [
+        data['prompt'],
+        data['settings']['max_new_tokens'],
+        data['settings']['do_sample'],
+        data['settings']['temperature'],
+        data['settings']['top_p'],
+        data['settings']['typical_p'],
+        data['settings']['repetition_penalty'],
+        data['settings']['encoder_repetition_penalty'],
+        data['settings']['top_k'],
+        data['settings']['min_length'],
+        data['settings']['no_repeat_ngram_size'],
+        data['settings']['num_beams'],
+        data['settings']['penalty_alpha'],
+        data['settings']['length_penalty'],
+        data['settings']['early_stopping'],
+        ]})
+        reply = {'results': response["data"][0]}
+        return jsonify(reply)
+    elif(endpointType == 'OAI'):
+        return jsonify({'error': 'OAI is not yet supported.'})
+    elif(endpointType == 'Horde'):
+        if(data['endpoint'] == ''):
+            api_key = 0000000000
+        else:
+            api_key = data['endpoint']
+        payload = {"prompt": data['prompt'], "params": data['settings'], "trusted_workers": False, "slow_workers": True, "models": [data['hordeModel']]}
+        response = requests.post(
+                "https://stablehorde.net/api/v2/generate/text/async",
+                headers={"Content-Type": "application/json", "apikey": api_key},
+                data=json.dumps(payload)
+            )
+        task_id = json.loads(response.content.decode("utf-8"))['id']
+        while True:
+                time.sleep(5)
+                status_check = requests.get(
+                    'https://stablehorde.net/api' + f"/v2/generate/text/status/{task_id}", 
+                    headers={"Content-Type": "application/json", "apikey": data['endpoint']}
+                )
+                status_check_json = json.loads(status_check.content.decode("utf-8"))
+                print(status_check_json)
+                if status_check_json.get('done') == True:
+                    get_text = requests.get(
+                    'https://stablehorde.net/api' + f"/v2/generate/text/status/{task_id}", 
+                    headers={"Content-Type": "application/json", "apikey": data['endpoint']}
+                    )
+                    text_response_json = json.loads(get_text.content.decode("utf-8"))
+                    generated_text = text_response_json['generations'][0]['text']
+                    results = {'results': generated_text}
+                    return jsonify(results)
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
+        return jsonify(results)
+    return jsonify({'error': 'Invalid endpoint type or endpoint.'})
 
 @app.route('/api/textgen/status', methods=['POST'])
 @cross_origin()
@@ -458,8 +511,16 @@ def textgen_status():
             return jsonify(results)
     elif(endpointType == 'Ooba'):
         requests.put(f"{endpoint}/config", json={data})
+    elif(endpointType == 'OAI'):
+        return jsonify({'error': 'OAI is not yet supported.'})
+    elif(endpointType == 'Horde'):
+        response = requests.get('https://stablehorde.net/api' + f"/v2/status/heartbeat")
+        if response.status_code == 200:
+            return jsonify({'result': 'Horde heartbeat is steady.'})
+        return jsonify({'error': 'Horde heartbeat failed.'})
     elif(endpointType == 'AkikoBackend'):
         results = {'result': text_model}
+        return jsonify(results)
 
 ##############################################
 ##### END OF TXT GEN API HANDLING ROUTES #####
@@ -605,15 +666,13 @@ def update_character(char_id):
 @cross_origin()
 def save_conversation():
     conversation_data = request.get_json()
-    if not conversation_data['messages']:
-        return jsonify({'status': 'error', 'message': 'The messages list is empty.'}), 400
 
-    char_name = conversation_data['messages'][0]['conversationName']
+    chatName = conversation_data['conversationName']
     
     # Create the 'conversations' directory if it doesn't exist
     if not os.path.exists(app.config['CONVERSATIONS_FOLDER']):
         os.makedirs(app.config['CONVERSATIONS_FOLDER'])
-    file_path = app.config['CONVERSATIONS_FOLDER'] + str(char_name) + '.json'
+    file_path = app.config['CONVERSATIONS_FOLDER'] + str(chatName) + '.json'
     try:
         with open(file_path, 'w') as file:
             json.dump(conversation_data, file)
@@ -629,7 +688,6 @@ def get_conversation_names():
     conversations_folder = app.config['CONVERSATIONS_FOLDER']
     if not os.path.exists(conversations_folder):
         return jsonify({"conversations": []})
-
     conversation_files = os.listdir(conversations_folder)
     conversation_names = [os.path.splitext(file)[0] for file in conversation_files]
     return jsonify({"conversations": conversation_names})
@@ -810,12 +868,23 @@ def get_modules():
 @cross_origin()
 def get_settings():
     settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
-    try:
+    if(os.path.exists(settings_path)):
         with open(settings_path) as f:
             settngs_data = json.load(f)
-    except FileNotFoundError:
-        return jsonify({'error': 'Settings not found'}), 404
-    return jsonify(settngs_data)
+        return jsonify(settngs_data)
+    else:
+        os.makedirs(app.config['SETTINGS_FOLDER'], exist_ok=True)
+        with open(settings_path, 'w') as f:
+            json.dump({'GeneralSettings' : [], 'GroupChatSettings' : [],  'EndpointSettings' : [], 'AvatarSettings' : [], 'MultiUserSettings' : []}, f)
+        return jsonify({})
+
+@app.route('/api/settings', methods=['POST'])
+@cross_origin()
+def save_settings():
+    settings_path = app.config['SETTINGS_FOLDER'] + 'settings.json'
+    with open(settings_path, 'w') as f:
+        json.dump(request.json, f)
+    return jsonify({'success': 'Settings saved'})
 
 
 
