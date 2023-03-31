@@ -11,46 +11,50 @@ const Model = ({ character }) => {
   const [initialY, setInitialY] = useState(0);
   const [xOffset, setXOffset] = useState(0);
   const [yOffset, setYOffset] = useState(0);
+  const [model, setModel] = useState(false);
 
   useEffect(() => {
-    var model = File(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/${character.char_id}.model3.json`);
-    if(model.exists()){
-      console.log("Model exists");
-    }else{
-      console.log("Model does not exist");
-      return;
-    }
-    // play sound for motions
-    config.sound = true;
+    const modelUrl = `/src/shared_data/advanced_characters/${character.char_id}/Live2D/${character.char_id}.model3.json`;
+    fetch(modelUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        // play sound for motions
+        config.sound = true;
 
-    // defer the playback of a motion and its sound until both are loaded
-    config.motionSync = true;
-    config.cubism4.supportMoreMaskDivisions = true;
-    config.motionFadingDuration = 500;
-    config.idleMotionFadingDuration = 500;
-    config.expressionFadingDuration = 500;
-    const app = new PIXI.Application({
-      view: document.getElementById("canvas"),
-      autoStart: true,
-      backgroundAlpha: 0,
-      width: 500,
-      height: window.innerHeight-200,
-    });
-  
-    Live2DModel.from(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/Aqua.model3.json`, { idleMotionGroup: 'main_idle' }).then((model) => {
-      app.stage.addChild(model);
-      model.anchor.set(.5, 0.37);
-      model.scale.set(.25, .25);
-      model.interactive = true;
-      model.motion('tap_body', 0);
-      model.x = app.screen.width / 2;
-      model.y = app.screen.height / 2;
-      model.on('hit', (hitAreaNames) => {
-        if (hitAreaNames.includes('body')) {
-            // body is hit
-        }
-    });
-    });
+        // defer the playback of a motion and its sound until both are loaded
+        config.motionSync = true;
+        config.cubism4.supportMoreMaskDivisions = true;
+        config.motionFadingDuration = 500;
+        config.idleMotionFadingDuration = 500;
+        config.expressionFadingDuration = 500;
+        const app = new PIXI.Application({
+          view: avatarRef.current,
+          autoStart: true,
+          backgroundAlpha: 0,
+          width: 500,
+          height: window.innerHeight - 200,
+        });
+
+        Live2DModel.from(blob, { idleMotionGroup: 'main_idle' }).then((model) => {
+          app.stage.addChild(model);
+          model.anchor.set(.5, 0.37);
+          model.scale.set(.25, .25);
+          model.interactive = true;
+          model.motion('tap_body', 0);
+          model.x = app.screen.width / 2;
+          model.y = app.screen.height / 2;
+          model.on('hit', (hitAreaNames) => {
+            if (hitAreaNames.includes('body')) {
+                // body is hit
+            }
+          });
+        });
+        setModel(true);
+      })
+      .catch(error => {
+        console.error(`Error loading model ${modelUrl}: ${error}`);
+        setModel(false);
+      });
   }, []);
 
   const avatarRef = useRef(null);
@@ -112,7 +116,8 @@ const Model = ({ character }) => {
   };
   return (
     <>
-      <div>
+      {model !== false && (
+      <>
       <canvas className='Live2D-canvas'id="canvas"           
         ref={avatarRef}
         draggable={false}
@@ -122,7 +127,8 @@ const Model = ({ character }) => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}/>
-    </div>
+      </>
+    )}
     </>
   )
 }
