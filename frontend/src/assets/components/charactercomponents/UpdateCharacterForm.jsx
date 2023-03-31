@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getCharacterImageUrl, exportTavernCharacter, updateCharacter } from "../api";
 import { FiSave, FiDownload } from "react-icons/fi";
 
-export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) => {
+export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, download }) => {
   const [characterName, setCharacterName] = useState(character.name);
   const [characterPersonality, setcharacterPersonality] = useState(character.personality);
   const [characterDescription, setCharacterDescription] = useState(character.description);
@@ -170,3 +170,5 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose }) =
   </div>
   );
 };
+
+export default UpdateCharacterForm;

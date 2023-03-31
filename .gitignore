@@ -1,4 +1,4 @@
 conda/
 venv/
-frontend/src/shared_data/exports/
-frontend/src/shared_data/conversations/
+frontend/src/shared_data/
+frontend/src/shared_data/

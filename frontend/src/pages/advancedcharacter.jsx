@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import "../assets/css/character.css";
 import "../assets/css/settings.css";
 import { getCharacterImageUrl, fetchCharacter, updateAdvancedCharacter, fetchAdvancedCharacterEmotion } from "../assets/components/api";
+import EmotionSprites from "../assets/components/advancedcharactercomponents/EmotionSprites";
 
 const AdvancedCharacter = () => {
     const [character, setCharacter] = useState(null);
@@ -24,9 +25,7 @@ const AdvancedCharacter = () => {
         {character && (
         <>
             <h1 className="settings-panel-header">{character === null ? 'Placeholder' : character.name} - Advanced Settings</h1><div className="settings-panel">
-                <div className="settings-box-large" id="emotion-sprites">
-                    <h2>Emotion Sprites</h2>
-                </div>
+            <EmotionSprites />
             </div>
         </>
         )}
