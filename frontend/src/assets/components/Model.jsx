@@ -13,7 +13,13 @@ const Model = ({ character }) => {
   const [yOffset, setYOffset] = useState(0);
 
   useEffect(() => {
-
+    var model = File(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/${character.char_id}.model3.json`);
+    if(model.exists()){
+      console.log("Model exists");
+    }else{
+      console.log("Model does not exist");
+      return;
+    }
     // play sound for motions
     config.sound = true;
 
@@ -30,7 +36,7 @@ const Model = ({ character }) => {
       width: 500,
       height: window.innerHeight-200,
     });
-
+  
     Live2DModel.from(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/Aqua.model3.json`, { idleMotionGroup: 'main_idle' }).then((model) => {
       app.stage.addChild(model);
       model.anchor.set(.5, 0.37);
