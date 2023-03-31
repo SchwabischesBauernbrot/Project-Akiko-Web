@@ -36,7 +36,7 @@ function Chatbox({ endpoint, endpointType }) {
   const createNewConversation = async () => {
     const defaultMessage = {
       sender: selectedCharacter.name,
-      text: selectedCharacter.first_mes.replace('<USER>', configuredName).replace('{{char}}', currentCharacter.name).replace('{{user}}', configuredName).replace('{{CHAR}}', currentCharacter.name).replace('{{USER}}', configuredName),
+      text: selectedCharacter.first_mes.replace('<USER>', configuredName).replace('{{char}}', selectedCharacter.name).replace('{{user}}', configuredName).replace('{{CHAR}}', selectedCharacter.name).replace('{{USER}}', configuredName),
       avatar: getCharacterImageUrl(selectedCharacter.avatar),
       isIncoming: true,
       timestamp: Date.now(),
