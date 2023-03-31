@@ -36,7 +36,7 @@ function Chatbox({ endpoint, endpointType }) {
   const createNewConversation = async () => {
     const defaultMessage = {
       sender: selectedCharacter.name,
-      text: selectedCharacter.first_mes.replace("<USER>", configuredName),
+      text: selectedCharacter.first_mes.replace('<USER>', configuredName).replace('{{char}}', currentCharacter.name).replace('{{user}}', configuredName).replace('{{CHAR}}', currentCharacter.name).replace('{{USER}}', configuredName),
       avatar: getCharacterImageUrl(selectedCharacter.avatar),
       isIncoming: true,
       timestamp: Date.now(),
@@ -172,7 +172,7 @@ function Chatbox({ endpoint, endpointType }) {
     const now = new Date();
     const newIncomingMessage = {
       sender: currentCharacter.name,
-      text: generatedText.replace('<USER>', configuredName),
+      text: generatedText.replace('<USER>', configuredName).replace('{{char}}', currentCharacter.name).replace('{{user}}', configuredName).replace('{{CHAR}}', currentCharacter.name).replace('{{USER}}', configuredName),
       avatar: getCharacterImageUrl(currentCharacter.avatar),
       isIncoming: true,
       timestamp: now.getTime(),
