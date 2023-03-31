@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ChromePicker } from "react-color";
 
 function ColorPicker() {
-  const [blurToggle, setBlurToggle] = useState(false);
   const [colorBackdrop, setColorBackdrop] = useState({
     r: 255,
     g: 255,
