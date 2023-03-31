@@ -1,4 +1,2 @@
 conda/
 venv/
-*.png
-frontend/src/shared_data/advanced_characters/
