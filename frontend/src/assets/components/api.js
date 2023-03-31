@@ -38,6 +38,32 @@ export async function fetchCharacter(charId) {
   return response.data;
 }
 
+export async function handleSaveToken(botToken) {
+  const config = {
+    botToken: botToken,
+  };
+  try {
+    const response = await axios.post('http://localhost:5100/api/discord-bot/token', config);
+    console.log('Token configuration saved successfully');
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export async function handleSaveChannel(channels) {
+  const config = {
+    channels: channels,
+  };
+  try {
+    const response = await axios.post('http://localhost:5100/api/discord-bot/channel', config);
+
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 
 export async function createCharacter(newCharacter) {
   const formData = new FormData();
@@ -177,6 +203,7 @@ export async function getAvailableModules() {
     }
   }
 
+  
   // Check if both caption and classify are present, otherwise set to false
   const hasCaption = modules.includes('caption');
   const hasClassify = modules.includes('classify');

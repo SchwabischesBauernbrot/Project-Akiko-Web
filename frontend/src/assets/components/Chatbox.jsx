@@ -329,8 +329,10 @@ function Chatbox({ endpoint, endpointType }) {
   return (
     <>
     {selectedCharacter && (
+      <>
       <Model character={selectedCharacter}/>
-      //<Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
+      <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
+      </>
     )}
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>

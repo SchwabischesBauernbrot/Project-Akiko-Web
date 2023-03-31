@@ -44,19 +44,30 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
         const groupChatMessage = {
             sender: 'ProjectAkiko',
             avatar: 'system',
-            text: 'This is a group chat. You can add more participants by clicking the + button in the top right corner.',
+            text: 'This is a group chat. Say hi to everyone!',
             image: null,
             timestamp: new Date().getTime(),
         }
+        const NewConvo = {
+            conversationName: conversationName,
+            participants: participants,
+            messages: [groupChatMessage],
+        }
+        CreateConvo(NewConvo);
+        localStorage.setItem('conversationName', conversationName);
+        setCreateMenuOn(false);
+        return;
+    }else{
+        const NewConvo = {
+            conversationName: conversationName,
+            participants: participants,
+            messages: [],
+        }
+        CreateConvo(NewConvo);
+        localStorage.setItem('conversationName', conversationName);
+        setCreateMenuOn(false);
+        return;
     }
-    const NewConvo = {
-        conversationName: conversationName,
-        participants: participants,
-        messages: [],
-    }
-    CreateConvo(NewConvo);
-    localStorage.setItem('conversationName', conversationName);
-    setCreateMenuOn(false);
     };
     
 
