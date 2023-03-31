@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import * as PIXI from "pixi.js";
+import { config } from 'pixi-live2d-display';
 import { Live2DModel } from "pixi-live2d-display/cubism4";
 
 window.PIXI = PIXI;
@@ -12,18 +13,28 @@ const Model = ({ character }) => {
   const [yOffset, setYOffset] = useState(0);
 
   useEffect(() => {
+
+    // play sound for motions
+    config.sound = true;
+
+    // defer the playback of a motion and its sound until both are loaded
+    config.motionSync = true;
+    config.cubism4.supportMoreMaskDivisions = true;
+    config.motionFadingDuration = 500;
+    config.idleMotionFadingDuration = 500;
+    config.expressionFadingDuration = 500;
     const app = new PIXI.Application({
       view: document.getElementById("canvas"),
       autoStart: true,
       backgroundAlpha: 0,
-      width: 1000,
+      width: 500,
       height: 1000,
     });
 
     Live2DModel.from(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/Aqua.model3.json`, { idleMotionGroup: 'main_idle' }).then((model) => {
       app.stage.addChild(model);
-      model.anchor.set(0.2, 0.3);
-      model.scale.set(.3, .3);
+      model.anchor.set(.5, 0.3);
+      model.scale.set(.25, .25);
       model.interactive = true;
       model.motion('tap_body', 0);
       model.x = app.screen.width / 2;
