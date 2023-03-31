@@ -2,94 +2,65 @@ import React, { useState } from "react";
 import { ChromePicker } from "react-color";
 
 function ColorPicker() {
-  const [colorBackdrop, setColorBackdrop] = useState({
+  const [selectedColor, setSelectedColor] = useState({
     r: 255,
     g: 255,
     b: 255,
     a: 1
   });
-  const [colorBoxButton, setColorBoxButton] = useState({
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 1
-  });
-  const [colorTextIcon, setColorTextIcon] = useState({
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 1
-  });
-  const [colorTextItalic, setColorTextItalic] = useState({
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 1
-  });
-  const [colorBackground, setColorBackground] = useState({
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 1
-  });
+  const [selectedElement, setSelectedElement] = useState("central-backdrop");
 
-  function handleCentralColorChange(newColor) {
-    setColorBackdrop(newColor.rgb);
+  function handleColorChange(newColor) {
+    setSelectedColor(newColor.rgb);
     const root = document.documentElement;
-    root.style.setProperty("--selected-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+    switch (selectedElement) {
+      case "central-backdrop":
+        root.style.setProperty("--selected-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+        break;
+      case "button-box":
+        root.style.setProperty("--selected-bb-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+        break;
+      case "text-icon":
+        root.style.setProperty("--selected-text-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+        break;
+      case "text-italic":
+        root.style.setProperty("--selected-italic-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+        break;
+      case "background":
+        root.style.setProperty("--selected-background", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+        root.style.setProperty("--selected-background-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+        break;
+      default:
+        break;
+    }
   }
 
-  function handleBBColorChange(newColor) {
-    setColorBoxButton(newColor.rgb);
-    const root = document.documentElement;
-    root.style.setProperty("--selected-bb-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
-  }
-
-  function handleTextIconColorChange(newColor) {
-    setColorTextIcon(newColor.rgb);
-    const root = document.documentElement;
-    root.style.setProperty("--selected-text-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
-  }
-
-  function handleTextItalicColorChange(newColor) {
-    setColorTextItalic(newColor.rgb);
-    const root = document.documentElement;
-    root.style.setProperty("--selected-italic-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
-  }
-
-  function handleBackgroundColorChange(newColor) {
-    setColorBackground(newColor.rgb);
-    const root = document.documentElement;
-    root.style.setProperty("--selected-background", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
-    root.style.setProperty("--selected-background-color", `rgba(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b}, ${newColor.rgb.a})`);
+  function handleElementChange(event) {
+    setSelectedElement(event.target.value);
   }
 
   function clearBackgroundColor() {
-    setColorBackground(    
-      {r: 255,
-      g: 255,
-      b: 255,
-      a: 1});
     const root = document.documentElement;
     root.style.setProperty("--selected-background-color", `rgba(255, 255, 255, 1)`);
     root.style.setProperty("--selected-background", 'url("https://i.imgur.com/jf9w6NO.png")');;
   }
+
   return (
     <div className="settings-box" id='colors'>
       <h2 className='settings-box'>Custom UI Options</h2>
-      <h3>Central UI Backing Colors</h3>
-      <ChromePicker color={colorBackdrop} onChange={handleCentralColorChange} />
-      <h3>Buttons/Boxes</h3>
-      <ChromePicker color={colorBoxButton} onChange={handleBBColorChange} />
-      <h3>Normal Text/Icons</h3>
-      <ChromePicker color={colorTextIcon} onChange={handleTextIconColorChange} />
-      <h3>Italic Text</h3>
-      <ChromePicker color={colorTextItalic} onChange={handleTextItalicColorChange} />
-      <h3>Background Color</h3>
-      <span>NOTE: This will override any background image.<br/></span>
-      <ChromePicker color={colorBackground} onChange={handleBackgroundColorChange} />
+      <h3>Element to Change:</h3>
+      <select value={selectedElement} onChange={handleElementChange}>
+        <option value="central-backdrop">Central UI Backdrop</option>
+        <option value="button-box">Buttons/Boxes</option>
+        <option value="text-icon">Normal Text/Icons</option>
+        <option value="text-italic">Italic Text</option>
+        <option value="background">Background Color</option>
+      </select>
+      <h3>Selected Color:</h3>
+      <ChromePicker color={selectedColor} onChange={handleColorChange} />
       <button className="connect-button" onClick={() => clearBackgroundColor()}>Clear Background Color</button>
     </div>
   );
 }
+
 export default ColorPicker;

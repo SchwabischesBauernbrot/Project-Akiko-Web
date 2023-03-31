@@ -37,13 +37,14 @@ const ConversationSelectionMenu = ({setConvo, handleDelete, handleChatMenuClose}
     <>
       <div className="modal-overlay">
         <div className="chat-selection-menu">
-        <span className="close" onClick={handleChatMenuClose} style={{cursor: 'pointer'}}>&times;</span>
             {conversations.length == 0 ? (
               <>
+              <span id='convo-close' className="close" onClick={handleChatMenuClose} style={{cursor: 'pointer'}}>&times;</span>
               <h2 className="centered">No Previous Conversations Found</h2>
               </>
             ) : (
               <>
+              <span id='convo-close' className="close" onClick={handleChatMenuClose} style={{cursor: 'pointer'}}>&times;</span>
                 <h2 className="centered">Select a Conversation</h2>
                 <div className="conversation-list">
                   {conversations.map((conversation, index) => (

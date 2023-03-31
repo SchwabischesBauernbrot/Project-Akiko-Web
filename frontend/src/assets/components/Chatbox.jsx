@@ -342,7 +342,7 @@ function Chatbox({ endpoint, endpointType }) {
         )}
         <div className='chat-management-buttons'>
           <button className={'chat-button'} id={'submit'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
-          <button className={'chat-button'} id={'cancel'} onClick={() => handleConversationDelete()}><FiTrash2 className="react-icon"/></button>
+          <button className={'chat-button'} id={'cancel'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
           <button className={'chat-button'} id={'submit'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
         </div>
       </div>
