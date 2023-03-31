@@ -16,7 +16,15 @@ const Model = ({ character }) => {
   useEffect(() => {
     const modelUrl = `/src/shared_data/advanced_characters/${character.char_id}/Live2D/${character.char_id}.model3.json`;
     fetch(modelUrl)
-      .then(response => response.blob())
+      .then(response => {
+        if (response.ok) {
+          setModel(true);
+          return response.blob();
+        } else {
+          setModel(false);
+          throw new Error(`Response error: ${response.status} ${response.statusText}`);
+        }
+      })
       .then(blob => {
         // play sound for motions
         config.sound = true;
@@ -116,7 +124,7 @@ const Model = ({ character }) => {
   };
   return (
     <>
-      {model !== false && (
+      {model && (
       <>
       <canvas className='Live2D-canvas'id="canvas"           
         ref={avatarRef}
