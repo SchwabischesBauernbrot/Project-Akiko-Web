@@ -1,12 +1,12 @@
 .settings-panel {
 	margin-top: 3%;
 	display: flex;
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 1%;
-	color: white;
+	color: var(--selected-text-color);
 	margin-left: 5%;
 	margin-right: 5%;
 	gap: 5%;
@@ -23,27 +23,27 @@
 	margin-right: auto;
 	margin-left: auto;
 	width: 70%;
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 20px;
-	color: white;
+	color: var(--selected-text-color);
 }
 .gen-settings-header {
 	width: fit-content;
 	margin: 2% auto;
-	color: white;
+	color: var(--selected-text-color);
 }
 .settings-panel-header {
 	width: fit-content;
 	margin: 2% auto;
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 1%;
-	color: white;
+	color: var(--selected-text-color);
 }
 .settings-panel h1{
 	position: absolute; /* add position property */
@@ -52,24 +52,24 @@
 	left: 10px;
 	right: 10px;
 	text-align: center;
-	color: white;
+	color: var(--selected-text-color);
 	font-size: 24px;
 	text-shadow: 0 0 5px black;
 }
 .settings-box {
 	margin-top: .5rem;
-	background-color: none;
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 	padding: 2rem;
-	color: white;
+	color: var(--selected-text-color);
 	justify-content: center;
 	width: 30%;
 	height: max-content;
 }
   
 .settings-box-content {
-	color: white;
+	color: var(--selected-text-color);
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 1%;
@@ -82,7 +82,7 @@
 	margin-right: auto;
 	padding: 3%;
 	width: fit-content;
-	color: white;
+	color: var(--selected-text-color);
 	justify-content: center;
 }
 
@@ -92,7 +92,7 @@
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 	padding: 2rem;
-	color: white;
+	color: var(--selected-text-color);
 	justify-content: center;
 	width: 50rem;
 }
@@ -102,7 +102,7 @@
 	margin-right: auto;
 	padding: 3%;
 	width: fit-content;
-	color: white;
+	color: var(--selected-text-color);
 	justify-content: center;
 }
 
@@ -114,8 +114,8 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
-	background-color: rgba(11, 11, 11, 0.737);
-	color: white;
+	background-color: var(--selected-bb-color);
+	color: var(--selected-text-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
 	backdrop-filter: blur(10px);
@@ -123,7 +123,7 @@
 
 .connect-button{
 	margin-top: 15px;
-	background-color: rgba(11, 11, 11, 0.737);
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
@@ -131,7 +131,7 @@
 	width: min-content;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	height: auto;

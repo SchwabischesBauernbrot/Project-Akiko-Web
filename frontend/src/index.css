@@ -5,7 +5,6 @@
 
 :root {
 	--transparent:	rgba(0,0,0,0);
-	--bg-image: url('https://i.imgur.com/jf9w6NO.png');
 	--black30a:		rgba(0,0,0,0.3);
 	--black50a:		rgba(0,0,0,0.5);
 	--black70a:		rgba(0,0,0,0.7);
@@ -29,11 +28,21 @@
 	--greyCAIbg:	rgb(36,36,37);
 	--ivory:		rgba(229,224,216,1);
 }
+
+:root {
+	--selected-italic-color: rgba(255, 255, 255, 0.636);
+	--selected-background: url('https://i.imgur.com/jf9w6NO.png');
+	--selected-color: rgba(11, 11, 11, 0.636);
+	--selected-text-color: white;
+	--selected-bb-color: rgba(11, 11, 11, 0.636);
+}
+
 .loading {
 margin-top: .5rem;
 display: flex;
 flex-direction: row;
 }
+
 .loading__letter {
 font-weight: bolder;
 letter-spacing: .5rem;
@@ -108,18 +117,18 @@ animation-delay: .2s;
 }
 
 body {
-  background-image: var(--bg-image);
+  background-image: var(--selected-background);
   margin: 0;
 	padding:0;
 	width: 100%;
   height: 100%;
-  background-color: var(--greyCAIbg);
+  background-color: var(--selected-background-color);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
 	font-family: "Noto Sans", "Noto Color Emoji", sans-serif; 
 	font-size:16px; /*1rem*/
-	color: var(--ivory);
+	color: var(--selected-text-color);
 	
 }
 @media (max-width: 900px) {
@@ -167,17 +176,11 @@ body {
     margin-bottom: 0%;
     z-index: 3;
 	background-color: transparent;
-	border-radius: 10px;
-	border-style: inset;
-	border-width: .4rem;
-	border-color: #aaaaaa;
-	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(10px);
 }
 .centered{
 	width: fit-content;
 	margin: 1.5rem auto;
-	color: white;
+	color: var(--selected-text-color);
 }
 
 .modal-small-box {
@@ -187,7 +190,7 @@ body {
 	max-width: 25rem; /* set a maximum width */
 	height: auto; /* use auto to maintain aspect ratio */
 	min-height: 10rem;
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
@@ -202,7 +205,7 @@ body {
 	width: auto;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	height: auto;
@@ -224,7 +227,7 @@ body {
 	width: auto;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	height: auto;
@@ -246,7 +249,7 @@ body {
 	width: auto;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	height: auto;
 	cursor: pointer;
@@ -284,7 +287,7 @@ body {
 	position: absolute;
 	top: 1.5rem;
 	right: 2rem;
-	color: #aaaaaa;
+	color: var(--selected-text-color);
 	font-size: 28px;
 	font-weight: bold;
 }
@@ -351,7 +354,7 @@ body {
 	width: 4rem;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	cursor: pointer;
@@ -369,7 +372,7 @@ body {
 	width: 2.5rem;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	cursor: pointer;
@@ -389,12 +392,6 @@ body {
     margin-bottom: 0%;
     z-index: 3;
 	background-color: transparent;
-	border-radius: 10px;
-	border-style: inset;
-	border-width: .4rem;
-	border-color: #aaaaaa;
-	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(10px);
 }
 
 @media only screen and (min-width: 281px) and (max-width: 896px) {

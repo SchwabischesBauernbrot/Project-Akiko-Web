@@ -4,6 +4,7 @@ import EndpointSelector from '../assets/components/settingscomponents/EndpointSe
 import AvailableModules from '../assets/components/settingscomponents/AvailableModules'
 import { fetchSettings } from '../assets/components/api';
 import GroupChatSettings from '../assets/components/settingscomponents/GroupChatSettings';
+import ColorPicker from '../assets/components/menucomponents/ColorPickers';
 
 function Settings() {
   const [settings, setSettings] = useState(null);
@@ -32,6 +33,7 @@ function Settings() {
           <EndpointSelector/>
           <AvailableModules/>
           <GroupChatSettings settings={settings}/>
+          <ColorPicker/>
       </div>
     </>
   );

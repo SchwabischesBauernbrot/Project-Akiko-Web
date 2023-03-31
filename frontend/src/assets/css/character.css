@@ -1,13 +1,13 @@
 .character-field {
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	background-color: rgb(48, 46, 46);
+	background-color: var(--selected-bb-color);
 	backdrop-filter: blur(10px);
 	border-radius: 10px;
 	padding: 10px;
 	margin-bottom: 15px;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	overflow-wrap: break-word;
 	justify-content: flex-start;
@@ -23,7 +23,7 @@
 	overflow-y: auto;
 	background-color: transparent;
 	border: none;
-	color: white;
+	color: var(--selected-text-color);
 	outline: none;
 	margin-top: 10px;
 	resize: none;
@@ -86,12 +86,12 @@
   margin-right: auto;
   margin-left: auto;
   width: 40%;
-  background-color: rgba(11, 11, 11, 0.636);
+  background-color: var(--selected-color);
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   padding: 20px;
-  color: white;
+  color: var(--selected-text-color);
 }
 
 #character-avatar {
@@ -140,7 +140,7 @@
 	display: flex;
   	align-items: center;
   	justify-content: center;
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-color);
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -164,13 +164,13 @@
 	margin-right: auto;
 	margin-left: auto;
 	border-radius: 10%;
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-bb-color);
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 }
 
 .character-info-box h2{
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
@@ -185,7 +185,7 @@
 	left: 10px;
 	right: 10px;
 	text-align: center;
-	color: white;
+	color: var(--selected-text-color);
 	font-size: 24px;
 	text-shadow: 0 0 5px black;
 }
@@ -200,7 +200,7 @@
 }
 
 .character-button {
-	background-color: rgba(11, 11, 11, 0.636);
+	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
@@ -208,7 +208,7 @@
 	width: 4rem;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--selected-text-color);
 	word-wrap: normal;
 	justify-content: center;
 	cursor: pointer;

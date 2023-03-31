@@ -49,7 +49,11 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
                 </div>
               </>
             ) : (
-              <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{message.text}</ReactMarkdown>
+              <ReactMarkdown className="message-text" 
+              components={{
+                em: ({ node, ...props }) => <i style={{ color: "var(--selected-italic-color)" }} {...props} />,
+              }}
+              >{message.text}</ReactMarkdown>
             )}
           </div>
         )}
