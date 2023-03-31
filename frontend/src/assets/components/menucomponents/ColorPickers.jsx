@@ -8,6 +8,7 @@ function getLocalStorageColor(key, defaultColor) {
 
 function ColorPicker() {
   const [selectedElement, setSelectedElement] = useState("backdrop");
+  const [fontSize, setFontSize] = useState(16);
 
   const [backdropColor, setBackdropColor] = useState(() =>
     getLocalStorageColor("backdropColor", { r: 255, g: 255, b: 255, a: 1 })
@@ -93,6 +94,12 @@ function ColorPicker() {
     setSelectedElement(event.target.value);
   }
 
+  function handleFontSizeChange(event) {
+    const newFontSize = parseInt(event.target.value);
+    setFontSize(newFontSize);
+    document.documentElement.style.setProperty("--font-size", newFontSize + "px");
+  }  
+
   function handleBackgroundUrlChange(event) {
     setBackgroundColor((prevColor) => {
       const newColors = { ...prevColor, url: event.target.value };
@@ -137,6 +144,10 @@ function ColorPicker() {
         color={colors[selectedElement]}
         onChange={handleColorChange}
       />
+      <h3>Font Size:</h3>
+      <input type="range" min="12" max="32" step="1" value={fontSize} onChange={handleFontSizeChange} />
+      <label htmlFor="font-size-input">Font Size (px): </label>
+      <input type="number" id="font-size-input" min="12" max="32" step="1" value={fontSize} onChange={handleFontSizeChange} />
       <button className="connect-button" onClick={clearBackgroundColor}>
         Clear Background Color
       </button>
