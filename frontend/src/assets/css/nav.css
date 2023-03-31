@@ -1,4 +1,5 @@
 #nav-container {
+    z-index: 999;
     max-width: 100%;
     background-color: var(--selected-color);
     border-top-right-radius: 0px;
@@ -26,6 +27,7 @@
 
 .nav {
     width: 40rem;
+    z-index: 999;
     background-color: transparent;
     border-radius: 10px;
     backdrop-filter: blur(100%);

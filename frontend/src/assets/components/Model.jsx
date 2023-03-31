@@ -28,12 +28,12 @@ const Model = ({ character }) => {
       autoStart: true,
       backgroundAlpha: 0,
       width: 500,
-      height: 1000,
+      height: window.innerHeight-200,
     });
 
     Live2DModel.from(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/Aqua.model3.json`, { idleMotionGroup: 'main_idle' }).then((model) => {
       app.stage.addChild(model);
-      model.anchor.set(.5, 0.3);
+      model.anchor.set(.5, 0.37);
       model.scale.set(.25, .25);
       model.interactive = true;
       model.motion('tap_body', 0);
@@ -105,7 +105,8 @@ const Model = ({ character }) => {
     el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
   };
   return (
-    <div>
+    <>
+      <div>
       <canvas className='Live2D-canvas'id="canvas"           
         ref={avatarRef}
         draggable={false}
@@ -116,6 +117,7 @@ const Model = ({ character }) => {
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}/>
     </div>
+    </>
   )
 }
 
