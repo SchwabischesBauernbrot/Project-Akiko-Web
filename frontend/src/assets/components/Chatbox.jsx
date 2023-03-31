@@ -343,9 +343,9 @@ function Chatbox({ endpoint, endpointType }) {
         <h4 className={'chat-title'} contentEditable suppressContentEditableWarning={true} onBlur={(e) => handleTitleEdit(e.target.innerText)} onKeyDown={(e) => handleMessageKeyDown(e)}>{conversation.conversationName}</h4>
         )}
         <div className='chat-management-buttons'>
-          <button className={'chat-button'} id={'submit'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
-          <button className={'chat-button'} id={'cancel'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
-          <button className={'chat-button'} id={'submit'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
+          <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
+          <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
+          <button className={'chat-button'} id={'submit'} title={'Create New Chat'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
         </div>
       </div>
     <div className="chatbox-wrapper">

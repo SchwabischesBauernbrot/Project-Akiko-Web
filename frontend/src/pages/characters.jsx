@@ -74,7 +74,6 @@ const Characters = () => {
       })
       .catch(error => {
         console.error(error);
-        //window.location.href = '/error';
       });
   };
   
