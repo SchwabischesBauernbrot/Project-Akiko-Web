@@ -40,28 +40,57 @@ const ooba_defaults = {
   'length_penalty': 1,
   'early_stopping': false,
 };
-
-function parseTextEnd(text) {
+  function getSettings(endpointType) {
+    const settings = localStorage.getItem('generationSettings');
+    if (endpointType === 'Kobold' || endpointType === 'Horde') {
+      if (settings) {
+        const parsedSettings = JSON.parse(settings);
+        const customSettings = {
+        'max_context_length': parsedSettings.max_context_length,
+        'max_length': parsedSettings.max_length,
+        'rep_pen': parsedSettings.rep_pen,
+        'rep_pen_slope': parsedSettings.rep_pen_range,
+        'rep_pen_range': parsedSettings.rep_pen_slope,
+        'sampler_full_determinism': parsedSettings.sampler_full_determinism,
+        'singleline': parsedSettings.singleline,
+        'temperature': parsedSettings.temperature,
+        'tfs': parsedSettings.tfs,
+        'top_a': parsedSettings.top_a,
+        'top_k': parsedSettings.top_k,
+        'top_p': parsedSettings.top_p,
+        'typical': parsedSettings.typical,
+        'sampler_order': [
+          6,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        }
+        return customSettings;
+      }
+    }else{
+      return;
+    }
+  }
+      
+  function parseTextEnd(text) {
     return text.split("\n").map(line => line.trim());
   }
   
   export async function characterTextGen(character, history, endpoint, endpointType, image, configuredName) {
     let customSettings = null;
     let hordeModel = null;
-    if(localStorage.getItem('customSettings') !== null){
-      customSettings = localStorage.getItem('customSettings');
-      const parsedSettings = JSON.parse(customSettings);
-      if(endpointType === 'Kobold'){
-      Object.keys(parsedSettings).forEach(key => {
-        kobold_defaults[key] = parsedSettings[key];
-      })
-      } else if(endpointType === 'Ooba'){
-        Object.keys(parsedSettings).forEach(key => {
-          ooba_defaults[key] = parsedSettings[key];
-        })
+    if(localStorage.getItem('generationSettings') !== null){
+      if(endpointType === 'Kobold' || endpointType === 'Horde'){
+        customSettings = getSettings(endpointType);
+        console.log(customSettings);
       }
     }else if(endpointType === 'Kobold'){
       customSettings = kobold_defaults;
+      console.log('Custom Settings failed. Using Kobold defaults.')
     } else if(endpointType === 'Ooba'){
       customSettings = ooba_defaults;
     } else if(endpointType === 'AkikoBackend'){
