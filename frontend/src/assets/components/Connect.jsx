@@ -22,9 +22,9 @@ const Connect = () => {
     return (
         <>
         {connectionStatus ? (
-        <p className='connected'>Connected: {connectionStatus}</p>
+        <p className='connected'><b>Connected: {connectionStatus}</b></p>
         ) : (
-        <p className='disconnected'>Disconnected</p>
+        <p className='disconnected'><b>Disconnected</b></p>
         )}
     </>
     )

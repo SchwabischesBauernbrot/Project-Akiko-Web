@@ -468,7 +468,7 @@ def textgen(endpointType):
             api_key = 0000000000
         else:
             api_key = data['endpoint']
-        payload = {"prompt": data['prompt'], "params": data['settings'], "trusted_workers": False, "slow_workers": True, "models": [data['hordeModel']]}
+        payload = {"prompt": data['prompt'], "params": data['settings'], "trusted_workers": False, "slow_workers": False, "models": [data['hordeModel']]}
         response = requests.post(
                 "https://stablehorde.net/api/v2/generate/text/async",
                 headers={"Content-Type": "application/json", "apikey": api_key},
@@ -489,8 +489,8 @@ def textgen(endpointType):
                     headers={"Content-Type": "application/json", "apikey": data['endpoint']}
                     )
                     text_response_json = json.loads(get_text.content.decode("utf-8"))
-                    generated_text = text_response_json['generations'][0]['text']
-                    results = {'results': generated_text}
+                    generated_text = text_response_json['generations'][0]
+                    results = {'results': [generated_text]}
                     return jsonify(results)
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
