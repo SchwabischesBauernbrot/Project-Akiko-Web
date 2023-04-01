@@ -1,6 +1,9 @@
 .settings-panel {
 	margin-top: 3%;
 	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 20rem;
 	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
@@ -9,7 +12,6 @@
 	color: var(--selected-text-color);
 	margin-left: 5%;
 	margin-right: 5%;
-	gap: 5%;
 }
 
 #endpoint-container {
@@ -57,33 +59,26 @@
 	text-shadow: 0 0 5px black;
 }
 .settings-box {
-	margin-top: .5rem;
+	width: 100%;
 	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 	padding: 2rem;
 	color: var(--selected-text-color);
 	justify-content: center;
-	width: 30%;
 	height: max-content;
 }
-  
+.settings-top-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
 .settings-box-content {
 	color: var(--selected-text-color);
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 1%;
 	margin-bottom: 2rem;
-}
-
-.settings-box h2{
-	margin-top: 0;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 3%;
-	width: fit-content;
-	color: var(--selected-text-color);
-	justify-content: center;
 }
 
 .settings-box-large {
@@ -145,24 +140,32 @@
 @media only screen and (min-width: 401px) and (max-width: 896px) {
 	.settings-panel {
 		flex-direction: row;
+		gap: 5rem;
 		margin-top: 3%;
 		border-radius: 0;
 		padding: 1%;
 		margin-left: 0;
 		margin-right: 0;
 	  }
-	  .settings-box {
-		margin-top: 5rem;
-		border-radius: 10px;
-		padding: 1%;
+	.settings-box {
 		width: 100%;
-	  }
+		background-color: var(--selected-bb-color);
+		border-radius: 10px;
+		backdrop-filter: blur(10px);
+		padding: 2rem;
+		padding-top: 20rem;
+		padding-bottom: 20rem;
+		color: var(--selected-text-color);
+		justify-content: center;
+	}
 }
 
 /* For mobile devices */
 @media only screen and (max-width: 400px) {
 	.settings-panel {
+		display: flex;
 		flex-direction: row;
+		gap: 5rem;
 		margin-top: 3%;
 		border-radius: 0;
 		padding: 1%;
@@ -170,9 +173,14 @@
 		margin-right: 0;
 	  }
 	  .settings-box {
-		margin-top: 5rem;
-		border-radius: 10px;
-		padding: 1%;
 		width: 100%;
-	  }
+		background-color: var(--selected-bb-color);
+		border-radius: 10px;
+		backdrop-filter: blur(10px);
+		padding: 2rem;
+		padding-top: 20rem;
+		padding-bottom: 20rem;
+		color: var(--selected-text-color);
+		justify-content: center;
+	}
 }

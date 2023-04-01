@@ -30,11 +30,17 @@ function Settings() {
     <>
       <h1 className='settings-panel-header'>Settings</h1>
       <div className='settings-panel'>
+        <div id='endpoint'>
           <EndpointSelector/>
+        </div>
+        <div>
           <AvailableModules/>
-          <GroupChatSettings settings={settings}/>
+        </div>
+        <div>
           <ColorPicker/>
-      </div>
+        </div>
+        <GroupChatSettings settings={settings}/>
+        </div>
     </>
   );
 }
