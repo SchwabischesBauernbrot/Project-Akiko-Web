@@ -32,7 +32,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [conversation, setConversation] = useState(null);
   const [settings, setSettings] = useState(null);
-  const [createdCharacterDefault, setCreatedCharacterDefault] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -77,40 +77,39 @@ function Chatbox({ endpoint, endpointType }) {
 
   useEffect(() => {
     (async () => {
-      if (selectedCharacter !== null) {
-        if (localStorage.getItem('conversationName') === null) {
-          await createNewConversation();
-        } else {
+      if (selectedCharacter !== null && !isInitialized) {
+        setIsInitialized(true);
         let previousConversation = null;
+        const existingConversationName = localStorage.getItem("conversationName");
+  
+        if (existingConversationName) {
           try {
-            previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
+            previousConversation = await fetchConversation(existingConversationName);
           } catch (e) {
-            localStorage.setItem("conversationName", null);
             console.log(e);
-            await createNewConversation();
-            return;
+            localStorage.setItem("conversationName", null);
           }
-          if (previousConversation.participants.length === 1) {
-            if (!previousConversation.participants.includes(selectedCharacter.char_id)) {
-              if(createdCharacterDefault === false){
-                await createNewConversation();
-                setCreatedCharacterDefault(true);
-                return;
-              }
-            }else{
-              setConversation(previousConversation);
-              setMessages(previousConversation.messages);
-              return;
-            }
-          }else{
-            setConversation(previousConversation);
-            setMessages(previousConversation.messages);
-            return;
-          }
+        }
+  
+        // Check if the previous conversation exists and has the selected character as its sole participant
+        if (
+          previousConversation &&
+          previousConversation.participants.length === 1 &&
+          previousConversation.participants.some(
+            (participant) => participant.char_id === selectedCharacter.char_id
+          )
+        ) {
+          setConversation(previousConversation);
+          setMessages(previousConversation.messages);
+        } else {
+          // If no suitable conversation was found, create a new one
+          await createNewConversation();
         }
       }
     })();
-  }, [selectedCharacter]);
+  }, [selectedCharacter, isInitialized]);
+  
+  
 
   useEffect(() => {
     setUserCharacter({ name: configuredName, avatar: 'default.png'});
