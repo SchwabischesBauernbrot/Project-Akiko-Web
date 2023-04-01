@@ -1,6 +1,4 @@
 conda/
 venv/
 frontend/src/shared_data/conversations
-frontend/src/shared_data/character_info
-frontend/src/shared_data/character_images
 frontend/src/shared_data/exports

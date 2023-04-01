@@ -19,7 +19,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [configuredName, setconfiguredName] = useState('You');
   const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
-  const [currentEmotion, setCurrentEmotion] = useState('default');
+  const [currentEmotion, setCurrentEmotion] = useState([]);
   const [editRowCounter, setEditRowCounter] = useState(1);
   const [editedMessageIndex, setEditedMessageIndex] = useState(-1);
   const [showDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
@@ -33,6 +33,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [conversation, setConversation] = useState(null);
   const [settings, setSettings] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
 
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -63,6 +64,27 @@ function Chatbox({ endpoint, endpointType }) {
     }
     await createNewConversation();
   };
+
+  useEffect(() => {
+    const getRandomParticipants = (participants, count) => {
+      const selectedIndices = new Set();
+  
+      while (selectedIndices.size < count) {
+        const randomIndex = Math.floor(Math.random() * participants.length);
+        selectedIndices.add(randomIndex);
+      }
+  
+      return Array.from(selectedIndices).map((index) => participants[index]);
+    };
+  
+    if (conversation && conversation.participants.length > 1) {
+      const participants = getRandomParticipants(conversation.participants, 2); // Randomly select two participants
+      setSelectedParticipants(participants);
+    } else if (conversation) {
+      setSelectedParticipants([conversation.participants[0]]); // Select the only participant
+    }
+  }, [conversation]);
+  
 
   useEffect(() => {
       const fetchConfig = async () => {
@@ -178,15 +200,30 @@ function Chatbox({ endpoint, endpointType }) {
     const generatedText = await characterTextGen(currentCharacter, history, endpoint, endpointType, image, configuredName);
     if (generatedText !== null) {
       if(useEmotionClassifier === 'true'){
-      const classification = await classifyEmotion(generatedText);
-      if (classification && classification.length > 0) {
-        const label = classification[0]['label'];
-        setCurrentEmotion(label);
-      } else {
-        console.error('Invalid classification data:', classification);
+        const classification = await classifyEmotion(generatedText);
+        if (classification && classification.length > 0) {
+          const label = classification[0]['label'];
+    
+          // Find the index of the currentCharacter's char_id in the currentEmotion array
+          const characterIndex = currentEmotion.findIndex(emotion => emotion.char_id === currentCharacter.char_id);
+    
+          let newEmotions;
+    
+          if (characterIndex !== -1) {
+            // If the character's char_id is found, update the emotion in the existing object
+            newEmotions = currentEmotion.map((emotion, index) =>
+              index === characterIndex ? { ...emotion, emotion: label } : emotion
+            );
+          } else {
+            // If the character's char_id is not found, add a new object to the array
+            newEmotions = [...currentEmotion, { char_id: currentCharacter.char_id, emotion: label }];
+          }
+          setCurrentEmotion(newEmotions);
+        } else {
+          console.error('Invalid classification data:', classification);
+        }
       }
-      }
-    }
+    }    
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {
@@ -347,39 +384,47 @@ function Chatbox({ endpoint, endpointType }) {
 
   return (
     <>
-    {selectedCharacter && (
-      <>
-      <Model character={selectedCharacter}/>
-      <Avatar selectedCharacter={selectedCharacter} emotion={currentEmotion}/>
-      </>
-    )}
+    <>
+    {selectedParticipants.map((participant, index) => (
+      <React.Fragment key={index}>
+        <Model character={participant} />
+        <Avatar
+          selectedCharacter={participant}
+          emotion={currentEmotion.find(
+            (emotion) => emotion.char_id === participant.char_id
+          )}
+          position={index}
+        />
+      </React.Fragment>
+    ))}
+    </>
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>
     )}
-      <div className='connect-chat-box'>
-        <div id="connect">
-          <Connect/>
-        </div>
-        <div className="title-wrapper"> {/* Add this wrapper div */}
-          {conversation && (
-            <h4
-              className={'chat-title'}
-              contentEditable
-              suppressContentEditableWarning={true}
-              onBlur={(e) => handleTitleEdit(e.target.innerText)}
-              onKeyDown={(e) => handleMessageKeyDown(e)}
-            >
-              {conversation.conversationName}
-            </h4>
-          )}
-        </div>
-        <div className='chat-management-buttons'>
-          <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
-          <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
-          <button className={'chat-button'} id={'submit'} title={'Create New Chat'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
-        </div>
-      </div>
     <div className="chatbox-wrapper">
+      <div className='connect-chat-box'>
+          <div id="connect">
+            <Connect/>
+          </div>
+          <div className="title-wrapper"> 
+            {conversation && (
+              <h4
+                className={'chat-title'}
+                contentEditable
+                suppressContentEditableWarning={true}
+                onBlur={(e) => handleTitleEdit(e.target.innerText)}
+                onKeyDown={(e) => handleMessageKeyDown(e)}
+              >
+                {conversation.conversationName}
+              </h4>
+            )}
+          </div>
+          <div className='chat-management-buttons'>
+            <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
+            <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
+            <button className={'chat-button'} id={'submit'} title={'Create New Chat'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
+          </div>
+        </div>
       <div className="message-box">
       {messages.map((message, index) => (
         <Message

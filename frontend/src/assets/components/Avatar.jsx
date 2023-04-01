@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { fetchAdvancedCharacterEmotion } from "./api";
 
-function Avatar({ selectedCharacter, emotion }) {
+function Avatar({ selectedCharacter, emotion, position }) {
   const [currentAvatarImage, setCurrentAvatarImage] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [initialX, setInitialX] = useState(0);
@@ -81,6 +81,7 @@ function Avatar({ selectedCharacter, emotion }) {
     <div>
       {currentAvatarImage && (
         <img
+          className={position === 0 ? "avatar-left" : "avatar-right"}
           id="model"
           ref={avatarRef}
           draggable={false}
