@@ -79,83 +79,100 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
       <span className="close" onClick={onClose} style={{cursor: 'pointer'}}>&times;</span>
       <h2 id='charactername-title'>{character.name}</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="avatar-field">          
-          {character.avatar && (
-          <>
-            {imageUrl !== null ? (
-              <img
-              src={imageUrl}
-              alt="New avatar"
-              id="character-avatar"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-            />
-            ) : (
-              <img
-              src={getCharacterImageUrl(character.avatar)}
-              title="Current avatar"
-              id="character-avatar-form"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-              />
+        <div className='character-form-top-box'>
+          <label htmlFor="avatar-field">          
+            {character.avatar && (
+              <>
+                {imageUrl !== null ? (
+                  <img
+                  src={imageUrl}
+                  alt="New avatar"
+                  id="character-avatar"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                />
+                ) : (
+                  <img
+                  src={getCharacterImageUrl(character.avatar)}
+                  title="Current avatar"
+                  id="character-avatar-form"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                  />
+                )}
+              </>
             )}
-          </>
-          )}
-        </label>
-        <input
-        id="avatar-field"
-        type="file"
-        name="characterAvatar"
-        accept="image/*"
-        onChange={handleImageChange}
-        />
-        <div className="character-input">
-          <label htmlFor="characterName"><b>Name:</b></label>
-          <textarea
-            className="character-field"
-            value={characterName}
-            type="text"
-            onChange={(event) => setCharacterName(event.target.value)}
-            required
+          </label>
+          <input
+          id="avatar-field"
+          type="file"
+          name="characterAvatar"
+          accept="image/*"
+          onChange={handleImageChange}
           />
-          <label htmlFor="characterPersonality"><b>Summary:</b></label>
-          <textarea
-            className="character-field"
-            value={characterPersonality}
-            name="characterPersonality"
-            type="text"
-            onChange={(event) => setcharacterPersonality(event.target.value)}
-          />
-          <label htmlFor="characterDescription"><b>Description:</b></label>
-          <textarea
-            className="character-field"
-            name="characterDescription"
-            value={characterDescription}
-            type="text"
-            onChange={(event) => setCharacterDescription(event.target.value)}
-          />
-          <label htmlFor="characterScenario"><b>Scenario:</b></label>
-          <textarea
-            className="character-field"
-            name="characterScenario"
-            value={characterScenario}
-            type="text"
-            onChange={(event) => setCharacterScenario(event.target.value)}
-          />
-          <label htmlFor="characterGreeting"><b>Greeting:</b></label>
-          <textarea
-            className="character-field"
-            name="characterGreeting"
-            value={characterGreeting}
-            type="text"
-            onChange={(event) => setCharacterGreeting(event.target.value)}
-          />
-          <label htmlFor="characterExamples"><b>Dialogue Examples:</b></label>
-          <textarea
-            className="character-field"
-            name="characterExamples"
-            value={characterExamples}
-            type="text"
-            onChange={(event) => setCharacterExamples(event.target.value)}
-          />
+            <div className="character-form-top-right">
+              <label htmlFor="characterName"><b>Name:</b></label>
+              <textarea
+                id="name-field"
+                className="character-field"
+                value={characterName}
+                type="text"
+                onChange={(event) => setCharacterName(event.target.value)}
+                required
+              />
+              <label htmlFor="characterPersonality"><b>Summary:</b></label>
+              <textarea
+                id="small-field"
+                className="character-field"
+                value={characterPersonality}
+                name="characterPersonality"
+                type="text"
+                onChange={(event) => setcharacterPersonality(event.target.value)}
+              />
+              <label htmlFor="characterScenario"><b>Scenario:</b></label>
+              <textarea
+                id="small-field"
+                className="character-field"
+                name="characterScenario"
+                value={characterScenario}
+                type="text"
+                onChange={(event) => setCharacterScenario(event.target.value)}
+              />
+            </div>
+            <div className="character-form-top-right">
+              <label htmlFor="characterGreeting"><b>Greeting:</b></label>
+              <textarea
+                id="large-field"
+                className="character-field"
+                name="characterGreeting"
+                value={characterGreeting}
+                type="text"
+                onChange={(event) => setCharacterGreeting(event.target.value)}
+              />
+            </div>
+          </div>
+          <div className="character-form-bottom">
+            <div className="character-form-bottom-box" id='description'>
+              <label htmlFor="characterDescription"><b>Description:</b></label>
+              <textarea
+                id="large-field"
+                className="character-field"
+                name="characterDescription"
+                value={characterDescription}
+                type="text"
+                onChange={(event) => setCharacterDescription(event.target.value)}
+              />
+            </div>
+            <div className="character-form-bottom-box" id='examples'>
+              <label htmlFor="characterExamples"><b>Dialogue Examples:</b></label>
+              <textarea
+                id="large-field"
+                className="character-field"
+                name="characterExamples"
+                value={characterExamples}
+                type="text"
+                onChange={(event) => setCharacterExamples(event.target.value)}
+              />
+            </div>
+          </div>
           <div className="form-bottom-buttons">            
             <button className="character-button" type="submit" id="character-submit">
               <FiSave className="react-icon"/>
@@ -164,7 +181,6 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
               <FiDownload className="react-icon"/>
             </button>
           </div>
-        </div>
       </form>
     </div>
   </div>

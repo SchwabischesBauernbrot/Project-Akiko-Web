@@ -24,7 +24,7 @@ const Conversation = ({ conversation }) => {
   return (
     <>
       <div className="conversation-info">
-        <p className="sender-name">{convo.conversationName}</p>
+          <b>{convo.conversationName}</b>
           <p>Participants:</p>
         {convo.participants && convo.participants.map((participant, index) => (
           <p key={index}>{participant}</p>

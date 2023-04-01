@@ -15,15 +15,13 @@
 	overflow-x: break-word;
 	display: flex;
 	flex-direction: row;
-	gap: 5%;
+	gap: 11%;
 	max-width: 720px;
 	padding: 5px;
 	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
 	backdrop-filter: var(--selected-blur);
-	margin-right: 0;
-	margin-left: 0px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 	margin-bottom: 4px;
@@ -62,6 +60,8 @@
 }
 
 .chat-selection-menu {
+	overflow-y: auto;
+	margin: auto;
 	width: 50%;
 	background-color: var(--selected-color);
 	border-radius: 10px;
@@ -307,18 +307,31 @@
 	border-style: ridge;
 	border-color: #7272726c;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	width: fit-content;
-	height: fit-content;
+	width: 100%;
+	height: 10rem;
+	overflow-y: hidden;
 }
 
 .chat-management-buttons {
-	position: relative;
-	margin-top: 1rem;
-	margin-right: 0;
 	display: flex;
+	justify-content: flex-end;
 	flex-direction: row;
 	gap: 1rem;
 }
+
+.chat-management-button {
+	background-color: rgba(11, 11, 11, 0.636);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	border: none;
+	outline: none;
+	color: var(--selected-text-color);
+	word-wrap: normal;
+	justify-content: center;
+	cursor: pointer;
+}
+
 .chat-button {
 	background-color: transparent;
 	backdrop-filter: blur(100%);
