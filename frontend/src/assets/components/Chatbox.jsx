@@ -32,7 +32,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [conversation, setConversation] = useState(null);
   const [settings, setSettings] = useState(null);
-
+  
   const createNewConversation = async () => {
     const defaultMessage = {
       sender: selectedCharacter.name,
@@ -60,34 +60,46 @@ function Chatbox({ endpoint, endpointType }) {
     }catch(e) {
       console.log(e);
     }
-    createNewConversation();
+    await createNewConversation();
   };
 
   useEffect(() => {
-    const fetchConfig = async () => {
-      if(localStorage.getItem('selectedCharacter') !== null) {
-        const character = await fetchCharacter(localStorage.getItem('selectedCharacter'));
-        setSelectedCharacter(character);
-      }
-      if(!localStorage.getItem('conversationName') || localStorage.getItem('conversationName') === 'null') {
-        if(!selectedCharacter) return;
-        createNewConversation();
-      }else{
-        try{
-          const previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
-          setConversation(previousConversation);
-          setMessages(previousConversation.messages);
-          return;
-        }catch(e) {
-          console.log(e);
-          createNewConversation();
-          return;
+    (async () => {
+      const fetchConfig = async () => {
+        if (localStorage.getItem('selectedCharacter') !== null) {
+          const character = await fetchCharacter(localStorage.getItem('selectedCharacter'));
+          setSelectedCharacter(character);
         }
-      }
-    };
-    fetchConfig();
-    setUserCharacter({ name: configuredName, avatar: 'default.png'});
+        if (!localStorage.getItem('conversationName') || localStorage.getItem('conversationName') === 'null') {
+          if (!selectedCharacter) return;
+          await createNewConversation();
+        } else {
+          try {
+            if (!selectedCharacter) return;
+            const previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
+            if (previousConversation.participants.length == 1) {
+              if (!previousConversation.participants.includes(selectedCharacter.char_id)) {
+                await createNewConversation();
+                return;
+              }
+            }
+            setConversation(previousConversation);
+            setMessages(previousConversation.messages);
+            return;
+          } catch (e) {
+            localStorage.setItem("conversationName", null);
+            if (!selectedCharacter) return;
+            console.log(e);
+            await createNewConversation();
+            return;
+          }
+        }
+      };
+      await fetchConfig();
+      setUserCharacter({ name: configuredName, avatar: 'default.png' });
+    })();
   }, []);
+  
 
   useEffect(() => {
     setUserCharacter({ name: configuredName, avatar: 'default.png'});

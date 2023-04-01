@@ -468,7 +468,7 @@ def textgen(endpointType):
             api_key = 0000000000
         else:
             api_key = data['endpoint']
-        payload = {"prompt": data['prompt'], "params": data['settings'], "trusted_workers": False, "slow_workers": True, "models": [data['hordeModel']]}
+        payload = {"prompt": data['prompt'], "params": data['settings'], "trusted_workers": False, "slow_workers": False, "models": [data['hordeModel']]}
         response = requests.post(
                 "https://stablehorde.net/api/v2/generate/text/async",
                 headers={"Content-Type": "application/json", "apikey": api_key},
