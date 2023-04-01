@@ -71,7 +71,7 @@ const EndpointSelector = () => {
   
     return (
         <div className="settings-box" id='endpoint'>
-          <h2 className='settings-box'>Text Generation Endpoint</h2>
+          <h2>Text Generation Endpoint</h2>
         <div className='settings-box-content' id='endpoint-container'>
         <form onSubmit={handleConnectClick}>
         <Select
