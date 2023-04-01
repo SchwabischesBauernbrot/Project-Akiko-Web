@@ -91,10 +91,9 @@ function Chatbox({ endpoint, endpointType }) {
           }
         }
   
-        // Check if the previous conversation exists and has the selected character as its sole participant
+        // Check if the previous conversation exists and includes the selected character
         if (
           previousConversation &&
-          previousConversation.participants.length === 1 &&
           previousConversation.participants.some(
             (participant) => participant.char_id === selectedCharacter.char_id
           )
@@ -107,9 +106,7 @@ function Chatbox({ endpoint, endpointType }) {
         }
       }
     })();
-  }, [selectedCharacter, isInitialized]);
-  
-  
+  }, [selectedCharacter, isInitialized]);  
 
   useEffect(() => {
     setUserCharacter({ name: configuredName, avatar: 'default.png'});

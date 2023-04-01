@@ -29,6 +29,7 @@
     overflow: hidden; /* Change this to hidden */
 }
 .chat-selection-menu {
+	position: relative;
 	overflow-y: auto;
 	margin: auto;
 	width: 50%;
