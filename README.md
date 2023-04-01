@@ -70,7 +70,8 @@ This feature and it's components will be optional.
 ![image](https://user-images.githubusercontent.com/26259870/229264713-62bd4895-5c09-487c-a780-f295cca96950.png)
 ![image](https://user-images.githubusercontent.com/26259870/229264719-b3446bc5-31ac-4f09-9cc4-50255e3b1aa0.png)
 ![image](https://user-images.githubusercontent.com/26259870/229264730-275c191e-8013-4318-a445-ac9f2dbb6890.png)
-## Chat Page: 
+## Chat Page:
+![image](https://user-images.githubusercontent.com/26259870/229265249-09794bea-14c1-45cb-be69-d30fab848a88.png)
 ![image](https://user-images.githubusercontent.com/26259870/229264860-5632fe81-af11-4463-8e46-9707296b4d51.png)
 ![image](https://user-images.githubusercontent.com/26259870/229264957-f6e906ff-91a0-46c0-b6a3-fce8f5c61345.png)
 ![image](https://user-images.githubusercontent.com/26259870/229264971-8a2cbbf7-e433-4c13-9700-f268b8aad6c6.png)
