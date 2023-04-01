@@ -490,7 +490,7 @@ def textgen(endpointType):
                     )
                     text_response_json = json.loads(get_text.content.decode("utf-8"))
                     generated_text = text_response_json['generations'][0]
-                    results = {'results': generated_text}
+                    results = {'results': [generated_text]}
                     return jsonify(results)
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
