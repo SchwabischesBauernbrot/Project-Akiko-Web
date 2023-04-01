@@ -14,16 +14,9 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
 
   useEffect(() => {
     const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
-    const closeOnOutsideClick = e => {
-        if (modalRef.current && !modalRef.current.contains(e.target)) {
-        onClose();
-        }
-    };
     document.body.addEventListener("keydown", closeOnEscapeKey);
-    window.addEventListener("mousedown", closeOnOutsideClick);
     return () => {
         document.body.removeEventListener("keydown", closeOnEscapeKey);
-        window.removeEventListener("mousedown", closeOnOutsideClick);
     };
     }, []);
 
@@ -83,13 +76,13 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
           <label htmlFor="avatar-field">          
             {character.avatar && (
               <>
-                {imageUrl !== null ? (
-                  <img
-                  src={imageUrl}
-                  alt="New avatar"
-                  id="character-avatar"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                />
+                  {imageUrl !== null ? (
+                    <img
+                    src={imageUrl}
+                    alt="New avatar"
+                    id="character-avatar"
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                  />
                 ) : (
                   <img
                   src={getCharacterImageUrl(character.avatar)}

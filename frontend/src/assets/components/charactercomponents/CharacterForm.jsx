@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FiSave, FiImage } from 'react-icons/fi';
-
+import { getCharacterImageUrl } from '../api';
 export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
   const [characterName, setCharacterName] = useState('');
   const [characterPersonality, setcharacterPersonality] = useState('');
@@ -8,39 +8,35 @@ export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
   const [characterScenario, setCharacterScenario] = useState('');
   const [characterGreeting, setCharacterGreeting] = useState('');
   const [characterExamples, setCharacterExamples] = useState('');
-const [characterAvatar, setCharacterAvatar] = useState(null);
-const [imageUrl, setImageUrl] = useState(null);
+  const [characterAvatar, setCharacterAvatar] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
 useEffect(() => {
   const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
-  const closeOnOutsideClick = e => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose();
-      }
-  };
   document.body.addEventListener("keydown", closeOnEscapeKey);
-  window.addEventListener("mousedown", closeOnOutsideClick);
   return () => {
       document.body.removeEventListener("keydown", closeOnEscapeKey);
-      window.removeEventListener("mousedown", closeOnOutsideClick);
   };
   }, []);
   
-function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-
+  
+    // Check for characterAvatar and call getDefaultImage() if necessary
+  
     const newCharacter = {
-    char_id: Date.now(),
-    name: characterName || "Default Name",
-    personality: characterPersonality || "",
-    description: characterDescription || "",
-    scenario: characterScenario || "",
-    first_mes: characterGreeting || "",
-    mes_example: characterExamples || "",
-    avatar: characterAvatar,
-    // Other form input values
+      char_id: Date.now(),
+      name: characterName || "Default Name",
+      personality: characterPersonality || "",
+      description: characterDescription || "",
+      scenario: characterScenario || "",
+      first_mes: characterGreeting || "",
+      mes_example: characterExamples || "",
+      avatar: characterAvatar,
     };
+  
     onCharacterSubmit(newCharacter);
+  
     // Reset form input values
     setCharacterName('');
     setCharacterDescription('');
@@ -51,7 +47,8 @@ function handleSubmit(event) {
     setCharacterAvatar(null);
     setImageUrl(null);
     onClose();
-  };
+  }
+  
 
   function handleImageChange(event) {
     const file = event.target.files[0];
@@ -79,7 +76,6 @@ function handleSubmit(event) {
               name="characterAvatar"
               accept="image/*"
               onChange={handleImageChange}
-              required
             />
             <div className="character-form-top-right">
               <label><b>Name:</b></label>

@@ -32,7 +32,8 @@ function Chatbox({ endpoint, endpointType }) {
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [conversation, setConversation] = useState(null);
   const [settings, setSettings] = useState(null);
-  
+  const [createdCharacterDefault, setCreatedCharacterDefault] = useState(false);
+
   const createNewConversation = async () => {
     const defaultMessage = {
       sender: selectedCharacter.name,
@@ -45,7 +46,7 @@ function Chatbox({ endpoint, endpointType }) {
     const newConversation = {
       conversationName: newConvoName,
       messages: [defaultMessage],
-      participants: [selectedCharacter.char_id],
+      participants: [{ characterName: selectedCharacter.name, char_id: selectedCharacter.char_id }],
     };
     setConversation(newConversation);
     setMessages(newConversation.messages);
@@ -77,7 +78,7 @@ function Chatbox({ endpoint, endpointType }) {
   useEffect(() => {
     (async () => {
       if (selectedCharacter !== null) {
-        if (!localStorage.getItem('conversationName') || localStorage.getItem('conversationName') === null) {
+        if (localStorage.getItem('conversationName') === null) {
           await createNewConversation();
         } else {
         let previousConversation = null;
@@ -91,8 +92,11 @@ function Chatbox({ endpoint, endpointType }) {
           }
           if (previousConversation.participants.length === 1) {
             if (!previousConversation.participants.includes(selectedCharacter.char_id)) {
-              await createNewConversation();
-              return;
+              if(createdCharacterDefault === false){
+                await createNewConversation();
+                setCreatedCharacterDefault(true);
+                return;
+              }
             }else{
               setConversation(previousConversation);
               setMessages(previousConversation.messages);
@@ -123,9 +127,9 @@ function Chatbox({ endpoint, endpointType }) {
     let currentCharacter;
     if(conversation.participants.length > 1) {
       const randomIndex = Math.floor(Math.random() * conversation.participants.length);
-      currentCharacter = await fetchCharacter(conversation.participants[randomIndex]);
+      currentCharacter = await fetchCharacter(conversation.participants[randomIndex]['char_id']);
     }else {
-      currentCharacter = await fetchCharacter(conversation.participants[0]); 
+      currentCharacter = await fetchCharacter(conversation.participants[0]['char_id']); 
     }
     if (await scanSlash(text, setMessages, setconfiguredName, currentCharacter, setCurrentEmotion)) {
       return;
@@ -360,10 +364,18 @@ function Chatbox({ endpoint, endpointType }) {
         <div id="connect">
           <Connect/>
         </div>
-        <div id="chat-name">
-        {conversation && (
-        <h4 className={'chat-title'} contentEditable suppressContentEditableWarning={true} onBlur={(e) => handleTitleEdit(e.target.innerText)} onKeyDown={(e) => handleMessageKeyDown(e)}>{conversation.conversationName}</h4>
-        )}
+        <div className="title-wrapper"> {/* Add this wrapper div */}
+          {conversation && (
+            <h4
+              className={'chat-title'}
+              contentEditable
+              suppressContentEditableWarning={true}
+              onBlur={(e) => handleTitleEdit(e.target.innerText)}
+              onKeyDown={(e) => handleMessageKeyDown(e)}
+            >
+              {conversation.conversationName}
+            </h4>
+          )}
         </div>
         <div className='chat-management-buttons'>
           <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>

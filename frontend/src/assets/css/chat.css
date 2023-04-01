@@ -11,21 +11,70 @@
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
 	backdrop-filter: var(--selected-blur);
 }
+
 .connect-chat-box {
-	overflow-x: break-word;
-	display: flex;
-	flex-direction: row;
-	gap: 11%;
-	max-width: 720px;
-	padding: 5px;
-	background-color: var(--selected-bb-color);
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Add this line to align items vertically */
+    max-width: 720px;
+    padding: 5px;
+    background-color: var(--selected-bb-color);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+    backdrop-filter: var(--selected-blur);
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    margin-bottom: 4px;
+    height: auto;
+    overflow: hidden; /* Change this to hidden */
+}
+.chat-selection-menu {
+	overflow-y: auto;
+	margin: auto;
+	width: 50%;
+	background-color: var(--selected-color);
 	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: var(--selected-blur);
-	border-bottom-right-radius: 0px;
-	border-bottom-left-radius: 0px;
-	margin-bottom: 4px;
-	height: auto;
+	padding: 15px;
+	color: var(--selected-text-color);
+}
+
+.chat-management-buttons {
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: row;
+	gap: 1rem;
+}
+
+.chat-management-button {
+	background-color: rgba(11, 11, 11, 0.636);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	border: none;
+	outline: none;
+	color: var(--selected-text-color);
+	word-wrap: normal;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.chat-title {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    margin: 0; /* Add this line to remove default margins */
+}
+
+.title-wrapper {
+    flex-grow: 1; /* Allows the wrapper to grow and fill available space */
+    padding-right: 1rem; /* Adds some padding between the title and buttons */
+    min-width: 0; /* Fixes an issue with flexbox and overflow */
+	display: flex; /* Add this line */
+    align-items: center; /* Add this line */
+    justify-content: center; /* Add this line */
 }
 
 #dropdown {
@@ -57,19 +106,6 @@
 	border-top-left-radius: 0px;
 	margin-top: 4px;
 	height: auto;
-}
-
-.chat-selection-menu {
-	overflow-y: auto;
-	margin: auto;
-	width: 50%;
-	background-color: var(--selected-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: var(--selected-blur);
-	padding: 15px;
-	color: var(--selected-text-color);
-	flex-shrink: 0;
 }
 
 .create-conversation-menu {
@@ -299,38 +335,37 @@
 	height: 100%;
 }
 .conversation-info {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	margin: 0;
-	border-radius: .25rem;
-	border-style: ridge;
-	border-color: #7272726c;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	width: 100%;
-	height: 10rem;
-	overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px; /* Reduce the gap between elements */
+    margin: 0;
+    padding: 4px; /* Reduce the padding around the content */
+    border-radius: 0.25rem;
+    border-style: ridge;
+    border-color: #7272726c;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 10rem;
+    overflow-y: auto;
 }
 
-.chat-management-buttons {
-	display: flex;
-	justify-content: flex-end;
-	flex-direction: row;
-	gap: 1rem;
+.conversation-info b {
+    margin-bottom: 2px; /* Reduce the margin below the conversation name */
 }
 
-.chat-management-button {
-	background-color: rgba(11, 11, 11, 0.636);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	border: none;
-	outline: none;
-	color: var(--selected-text-color);
-	word-wrap: normal;
-	justify-content: center;
-	cursor: pointer;
+.conversation-info p {
+    margin: 0; /* Remove margin from the p elements */
 }
+
+.participant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Reduce the gap between participants */
+    margin-top: 4px; /* Add a small margin between "Participants:" and the list */
+}
+
+
 
 .chat-button {
 	background-color: transparent;

@@ -559,21 +559,25 @@ def add_character():
         'first_mes': 'first_mes',
         'mes_example': 'mes_example'
     }
-    
-    avatar = request.files['avatar']
+    avatar = None
 
-    # Check if a file was uploaded and if it's allowed
-    if avatar and allowed_file(avatar.filename):
-        # Save the file with a secure filename
-        filename = secure_filename(str(request.form.get('char_id')) + '.png')
-        avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
-        # Add the file path to the character information
-        avatar = filename
+    # Use request.files.get() to avoid KeyError
+    if(request.files.get('avatar') is not None):
+        avatar = request.files['avatar']
+        # Check if a file was uploaded and if it's allowed
+        if avatar and allowed_file(avatar.filename):
+            # Save the file with a secure filename
+            filename = secure_filename(str(request.form.get('char_id')) + '.png')
+            avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
+            # Add the file path to the character information
+            avatar = filename
 
     # Save the character information to a JSON file
     character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
     character['avatar'] = avatar
-
+    if(avatar is None):
+        character['avatar'] = 'default.png'
+    print(character['avatar'])
     with open(os.path.join(app.config['CHARACTER_FOLDER'], f"{character['char_id']}.json"), 'a') as f:
         f.write(json.dumps(character))
 
@@ -599,7 +603,10 @@ def delete_character(char_id):
     image_path = app.config['CHARACTER_IMAGES_FOLDER'] + str(char_id) + '.png'
     try:
         os.remove(character_path)
-        os.remove(image_path)
+        if(os.path.exists(image_path)):
+            os.remove(image_path)
+        else:
+            print('No non-default image found for character ' + str(char_id))
     except FileNotFoundError:
         return jsonify({'error': 'Character not found'}), 404
     return jsonify({'message': 'Character deleted successfully'})
@@ -843,16 +850,6 @@ def get_backgrounds():
                 'imagePath': f'/api/design/background/{filename}.png'
             })
     return {'backgrounds': backgrounds}, 200
-
-@app.route('/api/design/background/<bg_select>', methods=['GET'])
-@cross_origin()
-def get_selected_background(bg_select):
-    filename, ext = os.path.splitext(bg_select)
-    if ext.lower() in ['.png', '.jpg']:
-        path = os.path.join(app.config['BACKGROUNDS_FOLDER'], f'{filename}{ext}')
-        if os.path.exists(path):
-            return send_file(path, mimetype='image')
-    return {'error': 'Invalid file type.'}, 400
 
 
 ##########################################

@@ -22,23 +22,24 @@ const Conversation = ({ conversation }) => {
   }
 
   return (
-    <>
-      <div className="conversation-info">
-          <b>{convo.conversationName}</b>
-          <p>Participants:</p>
-        {convo.participants && convo.participants.map((participant, index) => (
-          <p key={index}>{participant}</p>
-        ))}
-        {lastMessage ? (
-          <>
-            <b>{lastMessage.sender}:</b>
-            <ReactMarkdown className="message-text" components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{lastMessage.text}</ReactMarkdown>
-          </>
-        ) : (
-          <p>No messages in this conversation</p>
-        )}
+  <div className="conversation-info">
+      <b>{convo.conversationName}</b>
+      <p><b>Participants:</b></p>
+      <div className="participant-list">
+      {convo.participants && convo.participants.map((participant, index) => (
+          <p key={index}>{participant.characterName}</p>
+      ))}
       </div>
-    </>
+      {lastMessage ? (
+          <>
+            <p><b>Last message:</b></p>
+            <em>{lastMessage.sender}:</em>
+            <ReactMarkdown components={{em: ({node, ...props}) => <i style={{color: 'rgb(211, 211, 211)'}} {...props} />}}>{lastMessage.text}</ReactMarkdown>
+          </>
+      ) : (
+          <p>No messages in this conversation</p>
+      )}
+  </div>
   );
 };
 
