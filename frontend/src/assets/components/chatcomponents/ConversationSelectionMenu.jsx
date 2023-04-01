@@ -39,6 +39,7 @@ const ConversationSelectionMenu = ({setConvo, handleChatMenuClose}) => {
     <>
       <div className="modal-overlay">
         <div className="chat-selection-menu">
+          <div className="chat-menu-content">
             {conversations.length == 0 ? (
               <>
               <span id='convo-close' className="close" onClick={handleChatMenuClose} style={{cursor: 'pointer'}}>&times;</span>
@@ -59,15 +60,18 @@ const ConversationSelectionMenu = ({setConvo, handleChatMenuClose}) => {
                 </div>
               </>
             )}
-          <div className='form-bottom-buttons'>
-            <button className="icon-button-small" onClick={() => setCreateMenuOn(true)}><FiPlus className='react-icon'/></button>
+            <div className='form-bottom-buttons'>
+              <button className="icon-button-small" onClick={() => setCreateMenuOn(true)}><FiPlus className='react-icon'/></button>
+            </div>
+            <span id="convo-close" className="close" onClick={handleChatMenuClose} style={{ cursor: "pointer" }}>
+              &times;
+            </span>
           </div>
         </div>
       </div>
       {createMenuOn && (
         <ConversationCreate CreateConvo={CreateConvo} setCreateMenuOn={setCreateMenuOn}/>
       )}
-      
     </>
   );
 };

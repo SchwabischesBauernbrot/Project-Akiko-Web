@@ -35,7 +35,10 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
     };
 
     const handleCreateConversationSubmit = (event) => {
-    const participants = selectedParticipants.map(option => option.value);
+    const participants = selectedParticipants.map(option => ({
+        characterName: option.label,
+        char_id: option.value
+    }));
     event.preventDefault();
     if(conversationName === '' || participants.length <= 0){
         return;

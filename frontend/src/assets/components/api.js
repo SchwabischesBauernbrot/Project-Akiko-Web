@@ -16,6 +16,15 @@ export function downloadImage(imageUrl, fileName) {
   document.body.removeChild(link);
 }
 
+export async function imageExists(url) {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    return false;
+  }
+}
 
 export async function fetchCharacters() {
   const response = await axios.get(`${API_URL}/characters`);
@@ -83,10 +92,6 @@ export async function createCharacter(newCharacter) {
 
 export function getCharacterImageUrl(avatar) {
   return `${CURRENT_URL}/${AVATARS_FOLDER}/${avatar}`;
-}
-
-export function getUserImageUrl(avatar) {
-  return `${CURRENT_URL}/${USER_AVATARS_FOLDER}/${avatar}`;
 }
 
 export async function deleteCharacter(charId) {

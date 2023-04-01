@@ -110,7 +110,7 @@ const GenSettingsMenu = ({onClose}) => {
                 <label>
                     <b>Repitition Penalty</b>
                     <input type="range" min='1' value={repPen} onChange={(e) => {setRepPen(e.target.value); saveSettings();}} />
-                    <input id='input-container' type="number" value={repPen} onChange={(e) => setRepPen(e.target.value)} />
+                    <input id='input-container' type="number" value={repPen} onChange={(e) => {setRepPen(e.target.value); saveSettings();}} />
                 </label>
                 <label>
                     <b>Repitition Penalty Range</b>
