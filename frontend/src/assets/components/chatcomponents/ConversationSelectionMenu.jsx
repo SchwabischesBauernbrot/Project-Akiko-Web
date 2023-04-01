@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { fetchConversations, saveConversation, fetchConversation } from "../api";
+import { fetchConversations, saveConversation, fetchConversation, deleteConversation } from "../api";
 import Conversation from "./Conversation";
 import ConversationCreate from "./ConversationCreate";
 import {FiPlus} from "react-icons/fi";
 
-const ConversationSelectionMenu = ({setConvo, handleDelete, handleChatMenuClose}) => {
+const ConversationSelectionMenu = ({setConvo, handleChatMenuClose}) => {
   const [conversations, setConversations] = useState([]);
   const [createMenuOn, setCreateMenuOn] = useState(false);
   
+  const fetchConversationData = async () => {
+    const data = await fetchConversations();
+    setConversations(data);
+  };
+  
   useEffect(() => {
-    const fetchConversationData = async () => {
-      const data = await fetchConversations();
-      setConversations(data);
-    };
     fetchConversationData();
   }, []);
 
@@ -30,7 +31,8 @@ const ConversationSelectionMenu = ({setConvo, handleDelete, handleChatMenuClose}
   }
 
   const handleDeleteConversation = async (convo) => {
-    handleDelete(convo);
+    await deleteConversation(convo);
+    fetchConversationData();
   }
 
   return (
@@ -50,8 +52,8 @@ const ConversationSelectionMenu = ({setConvo, handleDelete, handleChatMenuClose}
                   {conversations.map((conversation, index) => (
                   <div className="conversation-container" key={index}>
                     <Conversation conversation={conversation} />
-                    <button onClick={() => handleSetConversation(conversation)}>Select</button>
-                    <button onClick={() => handleDeleteConversation(conversation)}>Delete</button>
+                    <button className='chat-management-button' id='submit' onClick={() => handleSetConversation(conversation)}>Select</button>
+                    <button className='chat-management-button' id='cancel' onClick={() => handleDeleteConversation(conversation)}>Delete</button>
                   </div>
                   ))}
                 </div>

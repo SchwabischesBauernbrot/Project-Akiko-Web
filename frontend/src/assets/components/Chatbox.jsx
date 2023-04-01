@@ -64,42 +64,49 @@ function Chatbox({ endpoint, endpointType }) {
   };
 
   useEffect(() => {
-    (async () => {
       const fetchConfig = async () => {
         if (localStorage.getItem('selectedCharacter') !== null) {
           const character = await fetchCharacter(localStorage.getItem('selectedCharacter'));
           setSelectedCharacter(character);
         }
-        if (!localStorage.getItem('conversationName') || localStorage.getItem('conversationName') === 'null') {
-          if (!selectedCharacter) return;
+      };
+      fetchConfig();
+      setUserCharacter({ name: configuredName, avatar: 'default.png' });
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (selectedCharacter !== null) {
+        if (!localStorage.getItem('conversationName') || localStorage.getItem('conversationName') === null) {
           await createNewConversation();
         } else {
+        let previousConversation = null;
           try {
-            if (!selectedCharacter) return;
-            const previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
-            if (previousConversation.participants.length == 1) {
-              if (!previousConversation.participants.includes(selectedCharacter.char_id)) {
-                await createNewConversation();
-                return;
-              }
-            }
-            setConversation(previousConversation);
-            setMessages(previousConversation.messages);
-            return;
+            previousConversation = await fetchConversation(localStorage.getItem('conversationName'));
           } catch (e) {
             localStorage.setItem("conversationName", null);
-            if (!selectedCharacter) return;
             console.log(e);
             await createNewConversation();
             return;
           }
+          if (previousConversation.participants.length === 1) {
+            if (!previousConversation.participants.includes(selectedCharacter.char_id)) {
+              await createNewConversation();
+              return;
+            }else{
+              setConversation(previousConversation);
+              setMessages(previousConversation.messages);
+              return;
+            }
+          }else{
+            setConversation(previousConversation);
+            setMessages(previousConversation.messages);
+            return;
+          }
         }
-      };
-      await fetchConfig();
-      setUserCharacter({ name: configuredName, avatar: 'default.png' });
+      }
     })();
-  }, []);
-  
+  }, [selectedCharacter]);
 
   useEffect(() => {
     setUserCharacter({ name: configuredName, avatar: 'default.png'});
@@ -349,11 +356,15 @@ function Chatbox({ endpoint, endpointType }) {
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>
     )}
-      <div className={'connect-chat-box'}>
-        <Connect/>
+      <div className='connect-chat-box'>
+        <div id="connect">
+          <Connect/>
+        </div>
+        <div id="chat-name">
         {conversation && (
         <h4 className={'chat-title'} contentEditable suppressContentEditableWarning={true} onBlur={(e) => handleTitleEdit(e.target.innerText)} onKeyDown={(e) => handleMessageKeyDown(e)}>{conversation.conversationName}</h4>
         )}
+        </div>
         <div className='chat-management-buttons'>
           <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
           <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
