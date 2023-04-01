@@ -13,7 +13,7 @@ function AvailableModules() {
   }, []);
 
   return (
-    <div className='settings-box' id='modules'>
+    <div className="centered settings-box">
       <h2>Available Modules</h2>
         {modules.map((module) => (
           <p key={module}>{module}</p>

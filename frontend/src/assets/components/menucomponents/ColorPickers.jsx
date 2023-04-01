@@ -112,8 +112,8 @@ function ColorPicker() {
 
   // ... return statement and other code remain unchanged
   return (
-    <div className="settings-box" id="colors">
-      <h2 className="settings-box">Custom UI Options</h2>
+    <div className="centered settings-box">
+      <h2>Custom UI Options</h2>
       <h3>Element to Change:</h3>
       <select value={selectedElement} onChange={handleElementChange}>
         <option value="backdrop">Central UI Backdrop</option>

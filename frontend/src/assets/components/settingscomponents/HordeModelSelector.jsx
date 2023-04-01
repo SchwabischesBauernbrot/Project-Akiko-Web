@@ -35,7 +35,6 @@ const HordeModelSelector = () => {
   return (
     <>
     <h3>Horde Model Selector</h3>
-    <div id='endpoint-container'>
       <Select
         id="options"
         inputId="model-select"
@@ -43,7 +42,6 @@ const HordeModelSelector = () => {
         onChange={handleChange}
         options={models}
       />
-    </div>
     </>
   );
 };
