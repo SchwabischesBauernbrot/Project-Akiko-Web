@@ -13,11 +13,69 @@
 - Discord Server: https://discord.gg/Pdhd7dEqHp
 # Basic Usage Guide (no image gen or emotion classification):
 1. Clone the repo to your local machine.
-2. Click the 'start.bat' file and wait for the batch file to complete setting up your enviornment.
+2. Click the 'setup.bat' file and wait for the batch file to complete setting up your enviornment. After you run this once, just use Start.bat for startup.
 3. Navigate to the link displayed on the Node CMD. usually it is 'http://localhost:5173/'.
 4. Go to the 'Settings' tab and configure your Textgen Endpoint. 
 5. Start chatting!
+# Advanced User Guide
+1. Clone the repo to your local machine. 
+2. Go into the 'setup.bat' (and or 'setup.sh' on Linux).
+For windows users change this:
+```
+start cmd /k "cd backend && pip install -r requirements.txt && python server.py"
+```
+to this
+```
+start cmd /k "cd backend && pip install -r full_requirements.txt && python server.py"
+```
+For Linux users change this:
+```
+cd backend && pip install -r requirements.txt && python server.py&
+```
+to this
+```
+cd backend && pip install -r full_requirements.txt && python server.py&
+```
+After running it should boot you into Akiko.
+ 
+3. Adding in modules.
 
+## Special Stuff
+
+| Name             | Description                      | Required [Modules](#modules) | Screenshot |
+| ---------------- | ---------------------------------| ---------------------------- | ---------- |
+| Image Captioning | Send a cute picture to your bot!<br><br>Picture select option will appear next to the text input box. | `caption`                    | <img src="https://user-images.githubusercontent.com/26259870/229362131-1344c4bd-2fd0-467c-a842-f115f7b2dc83.png" style="max-width:200px" />  |
+| Character Expressions | See your character reacting to your messages!<br><br>**You need to provide your own character images!**<br><br>| `classify` | <img style="max-width:200px" alt="image" src="https://user-images.githubusercontent.com/26259870/229362238-beb65e82-ffb3-4756-8e36-7d66c1d39c86.png"> |
+
+
+## Modules
+
+| Name        | Description                       | Included in default requirements.txt       |
+| ----------- | --------------------------------- | ------ |
+| `caption`   | Image captioning                  | :x: No        |
+| `classify`  | Text sentiment classification     | :x: No      |
+
+## Additional options
+| Flag                     | Description                                                            |
+| ------------------------ | ---------------------------------------------------------------------- |
+| `--enable-modules`       | **Required option**. Provide a list of enabled modules.<br>Expects a comma-separated list of module names. See [Modules](#modules)<br>Example: `--enable-modules=caption,sd` |
+| `--port`                 | Specify the port on which the application is hosted. Default: **5100** |
+| `--listen`               | Host the app on the local network                                      |
+| `--share`                | Share the app on CloudFlare tunnel                                     |
+| `--cpu`                  | Run the models on the CPU instead of CUDA                              |
+| `--summarization-model`  | Load a custom summarization model.<br>Expects a HuggingFace model ID.<br>Default: [Qiliang/bart-large-cnn-samsum-ChatGPT_v3](https://huggingface.co/Qiliang/bart-large-cnn-samsum-ChatGPT_v3) |
+| `--classification-model` | Load a custom sentiment classification model.<br>Expects a HuggingFace model ID.<br>Default (6 emotions): [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion)<br>Other solid option is (28 emotions): [joeddav/distilbert-base-uncased-go-emotions-student](https://huggingface.co/joeddav/distilbert-base-uncased-go-emotions-student) |
+| `--captioning-model`     | Load a custom captioning model.<br>Expects a HuggingFace model ID.<br>Default: [Salesforce/blip-image-captioning-large](https://huggingface.co/Salesforce/blip-image-captioning-large) |
+| `--keyphrase-model`      | Load a custom key phrase extraction model.<br>Expects a HuggingFace model ID.<br>Default: [ml6team/keyphrase-extraction-distilbert-inspec](https://huggingface.co/ml6team/keyphrase-extraction-distilbert-inspec) |
+
+Add any of those arguments to the ``start.bat`` or ``start.sh`` like this:
+```
+python server.py --enable-modules=caption,classify --listen
+```
+To make your site public, use this in the same file:
+```
+npx vite --host
+```
 # Planned Features:
 ## Highlighted Features:
 - Horde Support. **(Done)**
