@@ -67,11 +67,18 @@ export async function showEmotions(selectedCharacter) {
 
 export async function setEmotion(emotion, setCurrentEmotion, selectedCharacter) {
   if (emotion === 'default') {
-    setCurrentEmotion('default');
+    setCurrentEmotion((prevEmotions) => {
+      const updatedEmotions = prevEmotions.filter((e) => e.id !== selectedCharacter.char_id);
+      return updatedEmotions;
+    });
   } else {
     const emotionPath = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion);
     if (emotionPath) {
-      setCurrentEmotion(emotion);
+      setCurrentEmotion((prevEmotions) => {
+        const updatedEmotions = prevEmotions.filter((e) => e.id !== selectedCharacter.char_id);
+        updatedEmotions.push({ id: selectedCharacter.char_id, emotion: emotion });
+        return updatedEmotions;
+      });
     } else {
       alert("Invalid emotion.");
     }

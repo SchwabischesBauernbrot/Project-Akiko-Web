@@ -102,6 +102,7 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
           onChange={handleImageChange}
           />
             <div className="character-form-top-right">
+              <div className="character-form-bottom">
               <label htmlFor="characterName"><b>Name:</b></label>
               <textarea
                 id="name-field"
@@ -111,6 +112,9 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
                 onChange={(event) => setCharacterName(event.target.value)}
                 required
               />
+              <b>CharID:</b> 
+              <p id="name-field">{character.char_id}</p>
+            </div>
               <label htmlFor="characterPersonality"><b>Summary:</b></label>
               <textarea
                 id="small-field"
