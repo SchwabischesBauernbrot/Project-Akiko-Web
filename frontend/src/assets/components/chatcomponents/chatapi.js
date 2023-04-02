@@ -5,14 +5,14 @@ const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/a
 const kobold_defaults = {
   "max_context_length": 2048,
   "max_length": 180,
-	"rep_pen": 1.01,
+	"rep_pen": 1.1,
 	"rep_pen_slope": 0.9,
 	"rep_pen_range": 1024,
-	"temperature": 0.7,
+	"temperature": 0.71,
 	"top_p": 0.9,
 	"top_k": 40,
 	"top_a": 0.0,
-	"tfs": 0.9,
+	"tfs": 1,
 	"typical": 1.0,
 	"sampler_order": [
 		6,

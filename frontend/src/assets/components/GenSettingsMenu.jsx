@@ -19,13 +19,13 @@ const GenSettingsMenu = ({onClose}) => {
       }, []);  
     const [invalidEndpoint, setInvalidEndpoint] = useState(false);
     const [maxContextLength, setMaxContextLength] = useState(2048);
-    const [maxLength, setMaxLength] = useState(512);
+    const [maxLength, setMaxLength] = useState(180);
     const [repPen, setRepPen] = useState(1.1);
-    const [repPenRange, setRepPenRange] = useState(0);
-    const [repPenSlope, setRepPenSlope] = useState(0);
+    const [repPenRange, setRepPenRange] = useState(1024);
+    const [repPenSlope, setRepPenSlope] = useState(0.9);
     const [samplerFullDeterminism, setSamplerFullDeterminism] = useState(false);
     const [singleline, setSingleline] = useState(false);
-    const [temperature, setTemperature] = useState(0);
+    const [temperature, setTemperature] = useState(0.71);
     const [tfs, setTfs] = useState(1);
     const [topA, setTopA] = useState(0);
     const [topK, setTopK] = useState(40);
