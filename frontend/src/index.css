@@ -167,16 +167,27 @@ body {
     border-radius: 5px;
 }
 
-#model {
+#model-left {
     width: auto;
-    height: 51.25rem;
+    height: 35rem;
     position: fixed;
     bottom: 0;
-    right: 200px;
+    left: 2rem;
     margin-bottom: 0%;
     z-index: 3;
 	background-color: transparent;
 }
+#model-right {
+    width: auto;
+    height: 35rem;
+    position: fixed;
+    bottom: 0;
+    right: 2rem;
+    margin-bottom: 0%;
+    z-index: 3;
+	background-color: transparent;
+}
+
 .centered{
 	width: fit-content;
 	margin: 1.5rem auto;
@@ -297,6 +308,8 @@ body {
 }
 
 .container {
+	display: flex;
+	flex-direction: column;
 	margin-left: 15rem; /* converted from 15% */
 	margin-right: 15rem; /* converted from 15% */
 }

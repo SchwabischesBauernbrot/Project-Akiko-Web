@@ -81,8 +81,7 @@ function Avatar({ selectedCharacter, emotion, position }) {
     <div>
       {currentAvatarImage && (
         <img
-          className={position === 0 ? "avatar-left" : "avatar-right"}
-          id="model"
+          id={position === 0 ? "model-right" : "model-left"}
           ref={avatarRef}
           draggable={false}
           src={currentAvatarImage}
