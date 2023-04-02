@@ -13,10 +13,45 @@
 - Discord Server: https://discord.gg/Pdhd7dEqHp
 # Basic Usage Guide (no image gen or emotion classification):
 1. Clone the repo to your local machine.
-2. Click the 'start.bat' file and wait for the batch file to complete setting up your enviornment.
+2. Click the 'setup.bat' file and wait for the batch file to complete setting up your enviornment. After you run this once, just use Start.bat for startup.
 3. Navigate to the link displayed on the Node CMD. usually it is 'http://localhost:5173/'.
 4. Go to the 'Settings' tab and configure your Textgen Endpoint. 
 5. Start chatting!
+# Advanced User Guide
+1. Clone the repo to your local machine. 
+2. Go into the 'setup.bat' (and or 'setup.sh' on Linux).
+For windows users change this:
+```
+start cmd /k "cd backend && pip install -r requirements.txt && python server.py"
+```
+to this
+```
+start cmd /k "cd backend && pip install -r full_requirements.txt && python server.py"
+```
+For Linux users change this:
+```
+cd backend && pip install -r requirements.txt && python server.py&
+```
+to this
+```
+cd backend && pip install -r full_requirements.txt && python server.py&
+```
+After running it should boot you into Akiko. 
+3. Adding in modules. 
+## UI Extensions
+
+| Name             | Description                      | Required [Modules](#modules) | Screenshot |
+| ---------------- | ---------------------------------| ---------------------------- | ---------- |
+| Image Captioning | Send a cute picture to your bot!<br><br>Picture select option will appear next to the text input box. | `caption`                    | <img src="https://user-images.githubusercontent.com/26259870/229362131-1344c4bd-2fd0-467c-a842-f115f7b2dc83.png" style="max-width:200px" />  |
+| Character Expressions | See your character reacting to your messages!<br><br>**You need to provide your own character images!**<br><br>| `classify` | <img style="max-width:200px" alt="image" src="https://user-images.githubusercontent.com/26259870/229362238-beb65e82-ffb3-4756-8e36-7d66c1d39c86.png"> |
+
+
+## Modules
+
+| Name        | Description                       | Included in default requirements.txt       |
+| ----------- | --------------------------------- | ------ |
+| `caption`   | Image captioning                  | :x: No        |
+| `classify`  | Text sentiment classification     | :x: No      |
 
 # Planned Features:
 ## Highlighted Features:
