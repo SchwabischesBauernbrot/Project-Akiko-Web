@@ -17,6 +17,7 @@ from random import randint
 from werkzeug.utils import secure_filename
 from colorama import Fore, Style, init as colorama_init
 
+colorama_init()
 # Constants
 # Also try: 'Qiliang/bart-large-cnn-samsum-ElectrifAi_v10'
 DEFAULT_SUMMARIZATION_MODEL = 'Qiliang/bart-large-cnn-samsum-ChatGPT_v3'
@@ -100,7 +101,6 @@ if len(modules) == 0:
     
 if(len(modules) != 0):
     # Import modules
-    colorama_init()
     from transformers import AutoTokenizer, AutoProcessor, pipeline
     from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
     from transformers import BlipForConditionalGeneration, GPT2Tokenizer
