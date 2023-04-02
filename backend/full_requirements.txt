@@ -1,0 +1,13 @@
+flask
+flask-cloudflared
+flask-cors
+markdown
+Pillow
+colorama
+--extra-index-url https://download.pytorch.org/whl/cu117
+torch==1.13.1+cu117
+torchvision
+torchaudio
+accelerate
+git+https://github.com/huggingface/transformers
+git+https://github.com/huggingface/diffusers
