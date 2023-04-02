@@ -1,6 +1,22 @@
 import React, {useEffect, useState} from "react";
 
 const GenSettingsMenu = ({onClose}) => {
+    useEffect(() => {
+    
+        const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
+        const closeOnOutsideClick = e => {
+          if (modalRef.current && !modalRef.current.contains(e.target)) {
+            onClose();
+          }
+        };
+        document.body.addEventListener("keydown", closeOnEscapeKey);
+        window.addEventListener("mousedown", closeOnOutsideClick);
+      
+        return () => {
+          document.body.removeEventListener("keydown", closeOnEscapeKey);
+          window.removeEventListener("mousedown", closeOnOutsideClick);
+        };
+      }, []);  
     const [invalidEndpoint, setInvalidEndpoint] = useState(false);
     const [maxContextLength, setMaxContextLength] = useState(2048);
     const [maxLength, setMaxLength] = useState(512);
