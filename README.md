@@ -37,7 +37,8 @@ to this
 cd backend && pip install -r full_requirements.txt && python server.py&
 ```
 After running it should boot you into Akiko. 
-3. Adding in modules. 
+### 3 Adding in modules.
+
 ## UI Extensions
 
 | Name             | Description                      | Required [Modules](#modules) | Screenshot |
@@ -53,6 +54,27 @@ After running it should boot you into Akiko.
 | `caption`   | Image captioning                  | :x: No        |
 | `classify`  | Text sentiment classification     | :x: No      |
 
+## Additional options
+| Flag                     | Description                                                            |
+| ------------------------ | ---------------------------------------------------------------------- |
+| `--enable-modules`       | **Required option**. Provide a list of enabled modules.<br>Expects a comma-separated list of module names. See [Modules](#modules)<br>Example: `--enable-modules=caption,sd` |
+| `--port`                 | Specify the port on which the application is hosted. Default: **5100** |
+| `--listen`               | Host the app on the local network                                      |
+| `--share`                | Share the app on CloudFlare tunnel                                     |
+| `--cpu`                  | Run the models on the CPU instead of CUDA                              |
+| `--summarization-model`  | Load a custom summarization model.<br>Expects a HuggingFace model ID.<br>Default: [Qiliang/bart-large-cnn-samsum-ChatGPT_v3](https://huggingface.co/Qiliang/bart-large-cnn-samsum-ChatGPT_v3) |
+| `--classification-model` | Load a custom sentiment classification model.<br>Expects a HuggingFace model ID.<br>Default (6 emotions): [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion)<br>Other solid option is (28 emotions): [joeddav/distilbert-base-uncased-go-emotions-student](https://huggingface.co/joeddav/distilbert-base-uncased-go-emotions-student) |
+| `--captioning-model`     | Load a custom captioning model.<br>Expects a HuggingFace model ID.<br>Default: [Salesforce/blip-image-captioning-large](https://huggingface.co/Salesforce/blip-image-captioning-large) |
+| `--keyphrase-model`      | Load a custom key phrase extraction model.<br>Expects a HuggingFace model ID.<br>Default: [ml6team/keyphrase-extraction-distilbert-inspec](https://huggingface.co/ml6team/keyphrase-extraction-distilbert-inspec) |
+
+Add any of those arguments to the ``start.bat`` or ``start.sh`` like this:
+```
+python server.py --enable-modules=caption,classify --listen
+```
+To make your site public, use this in the same file:
+```
+npx vite --host
+```
 # Planned Features:
 ## Highlighted Features:
 - Horde Support. **(Done)**
