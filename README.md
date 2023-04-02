@@ -36,10 +36,11 @@ to this
 ```
 cd backend && pip install -r full_requirements.txt && python server.py&
 ```
-After running it should boot you into Akiko. 
-### 3 Adding in modules.
+After running it should boot you into Akiko.
+ 
+3. Adding in modules.
 
-## UI Extensions
+## Special Stuff
 
 | Name             | Description                      | Required [Modules](#modules) | Screenshot |
 | ---------------- | ---------------------------------| ---------------------------- | ---------- |
