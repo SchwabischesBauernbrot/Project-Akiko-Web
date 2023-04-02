@@ -2,5 +2,5 @@
 
 git pull
 
-cd frontend && npx vite &
+cd frontend && npm i && npm run dev &
 cd backend && python server.py &

@@ -196,6 +196,7 @@ function Chatbox({ endpoint, endpointType }) {
       setMessages(isTypingHistory);
     }, 2000);
     const history = chatHistory
+    .slice(-15) // Add this line to only take the last 15 messages
     .map((message) => `${message.sender}: ${message.text}`)
     .join('\n');
 

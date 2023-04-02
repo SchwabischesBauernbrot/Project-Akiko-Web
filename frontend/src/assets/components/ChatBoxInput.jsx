@@ -3,8 +3,10 @@ import { FiUsers, FiSliders, FiImage } from "react-icons/fi";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
 import { BsPersonCheck, BsPersonCheckFill } from "react-icons/bs";
 import GenSettingsMenu from "./GenSettingsMenu";
+import UserInfo from "./chatcomponents/UserInfo";
 
 function ChatboxInput({ onSend, impersonate }) {
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [messageImage, setMessageImage] = useState(null);
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
@@ -51,12 +53,15 @@ function ChatboxInput({ onSend, impersonate }) {
 
   return (
     <>
+    {userMenuOpen && (
+      <UserInfo onClose={() => setUserMenuOpen(false)}/>
+    )}
     {GenSettingsMenuIsOpen && (
       <GenSettingsMenu onClose={() => setGenSettingsMenuIsOpen(false)}/>
     )}
     <div className="input-box">
       <div className="send-input">
-        <div id="FiMenu" onClick={() => setIsOpen(true)} title={'Change User Profile Settings'}>
+        <div id="FiMenu" onClick={() => setUserMenuOpen(true)} title={'Change User Profile Settings'}>
           <FiUsers />
         </div>
         <div id="FiSliders" onClick={() => setGenSettingsMenuIsOpen(true)} title={'Change Generation Settings'}>
