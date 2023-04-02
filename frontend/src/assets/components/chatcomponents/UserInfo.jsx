@@ -6,6 +6,7 @@ const UserInfo = ({onClose}) => {
     const [userImage, setUserImage] = useState(null);
     const [userName, setUserName] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
+    const [authorsNote, setAuthorsNote] = useState('');
 
     useEffect(() => {
         if(localStorage.getItem('configuredName')){
@@ -28,8 +29,14 @@ const UserInfo = ({onClose}) => {
         }
     }
     
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
+        const newUserInfo = {
+            userImage : userImage,
+            userName : userName,
+            authorsNote : authorsNote
+        }
+        //await saveUserDetails(newUserInfo);
         localStorage.setItem('userImage', userImage);
         localStorage.setItem('configuredName', userName);
         onClose();
@@ -54,6 +61,24 @@ const UserInfo = ({onClose}) => {
                             />
                         </div>
                         <div className="user-info-top-right">
+                            <label htmlFor="userName"><b>Name:</b></label>
+                            <textarea
+                                id="name-field"
+                                className="character-field"
+                                value={userName}
+                                type="text"
+                                onChange={(event) => setUserName(event.target.value)}
+                                required
+                            />
+                            <label htmlFor="authorsNote"><b>Author's Note:</b></label>
+                            <textarea
+                                id="authors-note"
+                                className='character-field'
+                                value={authorsNote}
+                                type="text"
+                                onChange={(event) => setAuthorsNote(event.target.value)}
+                                placeholder="Author's Note Here"
+                            />
                         </div>
                     </div>
                     <div className="user-info-bottom">
