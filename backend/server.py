@@ -4,11 +4,7 @@ from flask import Flask, jsonify, request, render_template_string, abort, send_f
 from flask_cors import CORS, cross_origin
 import argparse
 import requests
-from transformers import AutoTokenizer, AutoProcessor, pipeline
-from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
-from transformers import BlipForConditionalGeneration, GPT2Tokenizer
 import unicodedata
-import torch
 import time
 from glob import glob
 import json
@@ -18,10 +14,8 @@ import base64
 from io import BytesIO
 from pathlib import Path
 from random import randint
-from colorama import Fore, Style, init as colorama_init
 from werkzeug.utils import secure_filename
-
-colorama_init()
+from colorama import Fore, Style, init as colorama_init
 
 # Constants
 # Also try: 'Qiliang/bart-large-cnn-samsum-ElectrifAi_v10'
@@ -103,11 +97,18 @@ modules = args.enable_modules if args.enable_modules and len(args.enable_modules
 if len(modules) == 0:
     print(f'{Fore.RED}{Style.BRIGHT}You did not select any modules to run! Choose them by adding an --enable-modules option')
     print(f'Example: --enable-modules=caption,summarize{Style.RESET_ALL}')
-
-# Models init
-device_string = "cuda:0" if torch.cuda.is_available() and not args.cpu else "cpu"
-device = torch.device(device_string)
-torch_dtype = torch.float32 if device_string == "cpu" else torch.float16
+    
+if(len(modules) != 0):
+    # Import modules
+    colorama_init()
+    from transformers import AutoTokenizer, AutoProcessor, pipeline
+    from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
+    from transformers import BlipForConditionalGeneration, GPT2Tokenizer
+    import torch
+    # Models init
+    device_string = "cuda:0" if torch.cuda.is_available() and not args.cpu else "cpu"
+    device = torch.device(device_string)
+    torch_dtype = torch.float32 if device_string == "cpu" else torch.float16
 
 if 'caption' in modules:
     print('Initializing an image captioning model...')
