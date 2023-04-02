@@ -61,11 +61,24 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
         setCreateMenuOn(false);
         return;
     }else{
+        let configuredName = 'You';
+        const matchingCharacter = characters.find(character => character.char_id === participants[0].char_id);
+        if(localStorage.getItem('configuredName') !== null) {
+            configuredName = localStorage.getItem('configuredName');
+        }
+        const defaultMessage = {
+            sender: matchingCharacter.name,
+            text: matchingCharacter.first_mes.replace('<USER>', configuredName).replace('{{char}}', matchingCharacter.name).replace('{{user}}', configuredName).replace('{{CHAR}}', matchingCharacter.name).replace('{{USER}}', configuredName),
+            avatar: getCharacterImageUrl(matchingCharacter.avatar),
+            isIncoming: true,
+            timestamp: Date.now(),
+          };
         const NewConvo = {
             conversationName: conversationName,
             participants: participants,
-            messages: [],
+            messages: [defaultMessage],
         }
+        localStorage.setItem('selectedCharacter', matchingCharacter.char_id);
         CreateConvo(NewConvo);
         localStorage.setItem('conversationName', conversationName);
         setCreateMenuOn(false);

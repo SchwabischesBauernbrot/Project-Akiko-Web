@@ -92,6 +92,9 @@ function Chatbox({ endpoint, endpointType }) {
           const character = await fetchCharacter(localStorage.getItem('selectedCharacter'));
           setSelectedCharacter(character);
         }
+        if(localStorage.getItem('configuredName') !== null) {
+          setconfiguredName(localStorage.getItem('configuredName'));
+        }
       };
       fetchConfig();
       setUserCharacter({ name: configuredName, avatar: 'default.png' });
