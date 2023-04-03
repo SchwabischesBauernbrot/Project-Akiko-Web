@@ -275,6 +275,7 @@ body {
 	background-color: rgba(0, 0, 0, 0.39); /* semi-transparent black background */
 	display: flex;
 	align-items: center;
+	backdrop-filter: blur(5px);
 	justify-content: center;
 	z-index: 8000; /* make sure the modal is on top of other content */
 	overflow-y: scroll;
@@ -487,6 +488,12 @@ Settings Pages CSS
 	padding: 20px;
 	color: var(--selected-text-color);
 }
+
+#input-container {
+	border: none;
+	width: 10%
+}
+
 .gen-settings-header {
 	width: fit-content;
 	margin: 2% auto;
@@ -1039,14 +1046,12 @@ Characters Page CSS
 /* Nav CSS */
 #nav-container {
     z-index: 999;
-    max-width: 100%;
+    max-width: 50%;
     background-color: var(--selected-color);
-    border-top-right-radius: 0px;
-    border-top-left-radius: 0px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.529);
-    backdrop-filter: blur(11px);
+    border-bottom-right-radius: 10rem;
+	border-bottom-left-radius: 10rem;
+    box-shadow: 0px 7px 10px 0px rgba(0, 0, 0, 0.529);
+    backdrop-filter: blur(50px);
     margin: auto;
 }
   
@@ -1123,17 +1128,17 @@ Characters Page CSS
 }
 /* Chat CSS */
 .message-box {
-	height: 77.5vh;
+	height: 75vh;
 	overflow-x: hidden;
 	position: relative;
-	max-width: 720px;
+	max-width: 750px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
 	background-color: var(--selected-bb-color);
-	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: var(--selected-blur);
+	box-shadow: 0px 0px 10px 0px rgba(25, 25, 25, 0.737);
+	backdrop-filter: blur(10px);
 }
 .chatbox-wrapper{
 	margin: auto;
@@ -1143,14 +1148,11 @@ Characters Page CSS
     display: flex;
     flex-direction: row;
     align-items: center; /* Add this line to align items vertically */
-    max-width: 720px;
+    max-width: 750px;
     padding: 5px;
     background-color: var(--selected-bb-color);
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-    backdrop-filter: var(--selected-blur);
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
+    
+    backdrop-filter: blur(10px);
     margin-bottom: 4px;
     height: auto;
     overflow: hidden; /* Change this to hidden */
@@ -1163,7 +1165,7 @@ Characters Page CSS
 	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: var(--selected-blur);
+	backdrop-filter: blur(10px);
 	padding: 15px;
 	color: var(--selected-text-color);
 }
@@ -1220,6 +1222,7 @@ Characters Page CSS
 .input-box {
 	position: relative;
 	overflow-x: break-word;
+	max-width: 750px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -1227,13 +1230,13 @@ Characters Page CSS
 	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: var(--selected-blur);
+	backdrop-filter: blur(10px);
 	margin-right: 0;
 	margin-left: 0px;
 	border-top-right-radius: 0px;
 	border-top-left-radius: 0px;
 	margin-top: 4px;
-	height: auto;
+	height: 4.5rem;
 }
 
 .create-conversation-menu {
@@ -1314,6 +1317,10 @@ Characters Page CSS
 	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
 	line-height: 1.45rem;
 	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.message-text i {
+	font-weight: 600;
 }
 
 .message-editor {
