@@ -463,7 +463,7 @@ def textgen(endpointType):
         reply = {'results': response["data"][0]}
         return jsonify(reply)
     elif(endpointType == 'OAI'):
-        return jsonify({'error': 'OAI is not yet supported.'})
+        return jsonify({'error': 'OAI is not yet supported.'}), 404
     elif(endpointType == 'Horde'):
         if(data['endpoint'] == ''):
             api_key = 0000000000
@@ -496,7 +496,7 @@ def textgen(endpointType):
     elif(endpointType == 'AkikoBackend'):
         results = {'results': [generate_text(data['prompt'], data['settings'])]}
         return jsonify(results)
-    return jsonify({'error': 'Invalid endpoint type or endpoint.'})
+    return jsonify({'error': 'Invalid endpoint type or endpoint.'}), 404
 
 @app.route('/api/textgen/status', methods=['POST'])
 @cross_origin()
@@ -506,19 +506,22 @@ def textgen_status():
     endpointType = data['endpointType']
     if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
     if(endpointType == 'Kobold'):
-        response = requests.get(f"{endpoint}/api/v1/model")
-        if response.status_code == 200:
-            results = response.json()
-            return jsonify(results)
+        try:
+            response = requests.get(f"{endpoint}/api/v1/model")
+            if response.status_code == 200:
+                results = response.json()
+                return jsonify(results)
+        except:
+            return jsonify({'error': 'Kobold endpoint is not responding.'}), 404
     elif(endpointType == 'Ooba'):
-        requests.put(f"{endpoint}/config", json={data})
+        return jsonify({'error': 'Ooba is not yet supported.'}), 500
     elif(endpointType == 'OAI'):
-        return jsonify({'error': 'OAI is not yet supported.'})
+        return jsonify({'error': 'OAI is not yet supported.'}), 500
     elif(endpointType == 'Horde'):
         response = requests.get('https://stablehorde.net/api' + f"/v2/status/heartbeat")
         if response.status_code == 200:
             return jsonify({'result': 'Horde heartbeat is steady.'})
-        return jsonify({'error': 'Horde heartbeat failed.'})
+        return jsonify({'error': 'Horde heartbeat failed.'}), 500
     elif(endpointType == 'AkikoBackend'):
         results = {'result': text_model}
         return jsonify(results)

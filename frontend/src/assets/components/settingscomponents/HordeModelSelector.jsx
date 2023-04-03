@@ -34,7 +34,7 @@ const HordeModelSelector = () => {
 
   return (
     <>
-    <h3>Horde Model Selector</h3>
+    <h3 style={{'color': 'var(--selected-text-color)'}}>Horde Model Selector</h3>
       <Select
         id="options"
         inputId="model-select"
