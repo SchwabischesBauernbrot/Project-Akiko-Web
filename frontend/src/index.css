@@ -407,12 +407,20 @@ body {
 }
 
 @media only screen and (min-width: 281px) and (max-width: 896px) {
-	#model {
+	#model-right {
 		width: auto;
 		height: 15rem;
 		position: fixed;
 		bottom: 6rem;
 		right: 2rem;
+		z-index: 3;
+	}
+	#model-left {
+		width: auto;
+		height: 15rem;
+		position: fixed;
+		bottom: 6rem;
+		left: 2rem;
 		z-index: 3;
 	}
 	.container {
@@ -421,12 +429,20 @@ body {
 	}
 }
 @media only screen and (max-width: 280px) {
-	#model {
+	#model-right {
 		width: auto;
 		height: 15rem;
 		position: fixed;
 		bottom: 7rem;
 		right: 2rem;
+		z-index: 3;
+	}
+	#model-left {
+		width: auto;
+		height: 15rem;
+		position: fixed;
+		bottom: 7rem;
+		left: 2rem;
 		z-index: 3;
 	}
 	.container {
@@ -811,7 +827,7 @@ Characters Page CSS
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* set the column width and make them flexible */
 	gap: 20px; /* set the gap between the columns */
-  }
+}
   
 .character-info-box {
 	margin-right: auto;
