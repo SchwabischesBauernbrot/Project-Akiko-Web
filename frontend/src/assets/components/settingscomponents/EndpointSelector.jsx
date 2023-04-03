@@ -65,7 +65,6 @@ const EndpointSelector = () => {
         { value: 'Kobold', label: 'Kobold' },
         { value: 'Ooba', label: 'OobaTextUI' },
         { value: 'AkikoBackend', label: 'AkikoTextgen' },
-        { value: 'OAI', label: 'OpenAI (API-KEY)' },
         { value: 'Horde', label: 'Horde' }
     ];
   
@@ -81,7 +80,7 @@ const EndpointSelector = () => {
         onChange={handleOptionChange}
         placeholder={selectedOption}
         />
-        {selectedOption && (
+        {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
             <input
             id="inputValue"
             type="text"

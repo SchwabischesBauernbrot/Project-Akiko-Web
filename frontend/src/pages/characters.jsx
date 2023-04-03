@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../assets/css/character.css";
 import { fetchCharacters, getCharacterImageUrl, deleteCharacter, createCharacter, updateCharacter, uploadTavernCharacter } from "../assets/components/api";
 import { CharacterForm } from "../assets/components/charactercomponents/CharacterForm";
 import { UpdateCharacterForm } from "../assets/components/charactercomponents/UpdateCharacterForm";

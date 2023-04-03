@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Chatbox from '../assets/components/Chatbox';
-import "../assets/css/chat.css";
 
 const Chat = () => {
 const [configuredEndpoint, setconfiguredEndpoint] = useState('http://localhost:5100/');
