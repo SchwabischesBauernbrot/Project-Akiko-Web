@@ -427,12 +427,15 @@ def save_discord_bot_channel():
 ##### TEXT GEN API HANDLING #####
 #################################
 
+HORDE_API_URL = 'https://aihorde.net/api/'
+
 @app.route('/api/textgen/<endpointType>', methods=['POST'])
 @cross_origin()
 def textgen(endpointType):
     data = request.get_json()
     endpoint = data['endpoint']
     if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
+    if(data['endpoint'].endswith('/api')): endpoint = data['endpoint'][:-4]
     if(endpointType == 'Kobold'):
         # Update the payload for the Kobold endpoint
         payload = {'prompt': data['prompt'], **data['settings']}
@@ -471,7 +474,7 @@ def textgen(endpointType):
             api_key = data['endpoint']
         payload = {"prompt": data['prompt'], "params": data['settings'], "models": [data['hordeModel']]}
         response = requests.post(
-                "https://stablehorde.net/api/v2/generate/text/async",
+                HORDE_API_URL + f"v2/generate/text/async",
                 headers={"Content-Type": "application/json", "apikey": api_key},
                 data=json.dumps(payload)
             )
@@ -479,14 +482,14 @@ def textgen(endpointType):
         while True:
                 time.sleep(5)
                 status_check = requests.get(
-                    'https://stablehorde.net/api' + f"/v2/generate/text/status/{task_id}", 
+                    HORDE_API_URL + f"v2/generate/text/status/{task_id}", 
                     headers={"Content-Type": "application/json", "apikey": data['endpoint']}
                 )
                 status_check_json = json.loads(status_check.content.decode("utf-8"))
                 print(status_check_json)
                 if status_check_json.get('done') == True:
                     get_text = requests.get(
-                    'https://stablehorde.net/api' + f"/v2/generate/text/status/{task_id}", 
+                    HORDE_API_URL + f"v2/generate/text/status/{task_id}", 
                     headers={"Content-Type": "application/json", "apikey": data['endpoint']}
                     )
                     text_response_json = json.loads(get_text.content.decode("utf-8"))
@@ -518,7 +521,7 @@ def textgen_status():
     elif(endpointType == 'OAI'):
         return jsonify({'error': 'OAI is not yet supported.'}), 500
     elif(endpointType == 'Horde'):
-        response = requests.get('https://stablehorde.net/api' + f"/v2/status/heartbeat")
+        response = requests.get(HORDE_API_URL + f"v2/status/heartbeat")
         if response.status_code == 200:
             return jsonify({'result': 'Horde heartbeat is steady.'})
         return jsonify({'error': 'Horde heartbeat failed.'}), 500
