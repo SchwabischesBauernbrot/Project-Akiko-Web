@@ -49,11 +49,11 @@ const EndpointSelector = () => {
     const getDefaultInputValue = (option) => {
         switch (option) {
           case 'Kobold':
-            return 'http://localhost:5000/';
+            return '';
           case 'Ooba':
-            return 'http://localhost:7861/';
+            return '';
           case 'AkikoBackend':
-            return 'http://localhost:5100/' ;
+            return '' ;
           case 'Horde':
             return '0000000000';
           default:

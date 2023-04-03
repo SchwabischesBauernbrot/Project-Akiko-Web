@@ -11,7 +11,7 @@ const HordeModelSelector = () => {
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('https://stablehorde.net/api/v2/status/models?type=text');
+      const response = await fetch('https://aihorde.net/api/v2/status/models?type=text');
       const data = await response.json();
       const formattedData = data.map((model) => ({
         value: model.name,
