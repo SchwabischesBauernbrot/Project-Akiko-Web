@@ -6,6 +6,7 @@ import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowU
 import CharacterInfoBox from "../assets/components/charactercomponents/CharacterInfoBox";
 
 const Characters = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [characters, setCharacters] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
@@ -126,6 +127,14 @@ return (
         onChange={(e) => handleImageUpload(e.target.files[0])}
         style={{ display: 'none' }}
       />
+      <div className="chara-search-bar">
+        <input
+          type="text"
+          placeholder="Search characters"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
+      </div>
     </div>
     {showForm && (
       <CharacterForm
@@ -134,11 +143,20 @@ return (
       />
     )}
     {characters &&
-    <div className="character-display">
-      {characters.map((character) => (
-        <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
-      ))}
-    </div>
+      <div className="character-display">
+        {characters
+          .filter((character) => {
+            return Object.values(character).some((value) =>
+              value
+                .toString()
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            );
+          })
+          .map((character) => (
+            <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
+          ))}
+      </div>
     }
     {selectedCharacter && (
       <UpdateCharacterForm
