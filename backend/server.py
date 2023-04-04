@@ -435,6 +435,7 @@ HORDE_API_URL = 'https://aihorde.net/api/'
 def textgen(endpointType):
     data = request.get_json()
     endpoint = data['endpoint']
+    configuredName = data['configuredName']
     if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
     if(data['endpoint'].endswith('/api')): endpoint = data['endpoint'][:-4]
     if(endpointType == 'Kobold'):
@@ -476,7 +477,7 @@ def textgen(endpointType):
         ],
         max_tokens=150,
             n=1,
-            stop=None,
+            stop=f'{configuredName}:',
             temperature=0.7
         )
         if response.choices:
