@@ -469,10 +469,10 @@ def textgen(endpointType):
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
-        response = openai.Completion.create(
+        response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": data['prompt']}
+            {"role": "user", "content": data['prompt']}
         ],
         max_tokens=150,
             n=1,
@@ -480,7 +480,7 @@ def textgen(endpointType):
             temperature=0.7
         )
         if response.choices:
-            response = response['choices'][0]['message']['content']
+            response = response.choices[0].message
             return jsonify(response)
         else:
             print('There was no response.')
