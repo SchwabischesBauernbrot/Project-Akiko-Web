@@ -4,6 +4,7 @@ import { CharacterForm } from "../assets/components/charactercomponents/Characte
 import { UpdateCharacterForm } from "../assets/components/charactercomponents/UpdateCharacterForm";
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import CharacterInfoBox from "../assets/components/charactercomponents/CharacterInfoBox";
+import { FiShuffle } from "react-icons/fi";
 
 const Characters = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -107,12 +108,22 @@ const Characters = () => {
       console.error(error);
     }
   };
+  const pickRandomChar = async () => {
+    try {
+      const randomChar = characters[Math.floor(Math.random() * characters.length)];
+      selectCharacter(randomChar);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 return (
   <div className="container">
     <div className="character-buttons">
       <button className="character-button" onClick={refresh} title="Refresh Character List">
-        <ArrowPathIcon className="heroIcon"/>
+        <div class="character-button-content">
+          <ArrowPathIcon className="heroIcon"/>
+        </div>
       </button>
       <button className="character-button" onClick={() => setShowForm(true)} title="Create Character">
         <PlusCircleIcon className="heroIcon"/>
@@ -120,6 +131,9 @@ return (
       <label htmlFor="character-image-input" className="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
         <ArrowUpTrayIcon className="heroIcon"/>
       </label>
+      <button className="character-button" onClick={() => pickRandomChar()} title="Create Character">
+        <FiShuffle className="react-icon"/>
+      </button>
       <input
         type="file"
         accept="image/png"
