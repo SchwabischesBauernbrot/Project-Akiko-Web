@@ -16,6 +16,7 @@ from pathlib import Path
 from random import randint
 from werkzeug.utils import secure_filename
 from colorama import Fore, Style, init as colorama_init
+import openai
 
 colorama_init()
 # Constants
@@ -466,7 +467,21 @@ def textgen(endpointType):
         reply = {'results': response["data"][0]}
         return jsonify(reply)
     elif(endpointType == 'OAI'):
-        return jsonify({'error': 'OAI is not yet supported.'}), 404
+        response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": data['prompt']}
+        ],
+        max_tokens=150,
+            n=1,
+            stop=None,
+            temperature=0.7
+        )
+        if response.choices:
+            response = response['choices'][0]['message']['content']
+            return jsonify(response)
+        else:
+            print('There was no response.')
     elif(endpointType == 'Horde'):
         if(data['endpoint'] == ''):
             api_key = 0000000000
