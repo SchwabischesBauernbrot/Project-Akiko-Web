@@ -905,6 +905,7 @@ def save_user_avatar():
     # Return a response to the client
     return {avatar: f'{avatar_count}.png'}, 200
 
+
 #########################
 #### SETTINGS ROUTES ####
 #########################

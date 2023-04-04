@@ -31,7 +31,7 @@ Broadly used CSS
 
 :root {
 	--selected-italic-color: rgba(255, 255, 255, 0.636);
-	--selected-background: url('https://i.imgur.com/jf9w6NO.png');
+	--selected-background: url('src/shared_data/backgrounds/dark_cherryblossoms.jpg');
 	--selected-color: rgba(11, 11, 11, 0.636);
 	--selected-text-color: white;
 	--selected-bb-color: rgba(11, 11, 11, 0.636);
@@ -642,6 +642,20 @@ Settings Pages CSS
 /* 
 Characters Page CSS
 */
+.chara-search-bar input{
+	margin-top: 1%;
+	margin-right: auto;
+	margin-left: auto;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding: 15px;
+	border-color: none;
+	background-color: var(--selected-bb-color);
+	color: var(--selected-text-color);
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
+	backdrop-filter: blur(10px);
+}
 .character-field {
 	background-color: var(--selected-bb-color);
 	backdrop-filter: blur(10px);
@@ -839,10 +853,6 @@ Characters Page CSS
 }
 
 .character-info-box h2{
-	background-color: var(--selected-bb-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
 	width: fit-content;
 	padding: 10px;
 	margin-right: auto;
@@ -850,13 +860,12 @@ Characters Page CSS
 	height: inherit;
 	position: absolute; /* add position property */
 	z-index: 2; /* add z-index property */
-	top: 10px;
 	left: 10px;
 	right: 10px;
 	text-align: center;
 	color: var(--selected-text-color);
 	font-size: 24px;
-	text-shadow: 0 0 5px black;
+	text-shadow: 5px 5px 10px black;
 }
 .character-buttons {
 	justify-content: center;
@@ -1210,7 +1219,6 @@ Characters Page CSS
 .input-box {
 	position: relative;
 	overflow-x: break-word;
-	max-width: 720px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -1321,7 +1329,7 @@ Characters Page CSS
 	font-size: 15.5px;
 	line-height: 1.45rem;
 	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
-	width: 40rem;
+	width: 50rem;
 	height: auto;
 	padding: 2px 0px;
 	border-radius: 10px;

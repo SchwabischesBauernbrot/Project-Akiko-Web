@@ -75,7 +75,12 @@ export async function saveUserAvatar(image) {
   const formData = new FormData();
   formData.append('avatar', image);
   const response = await axios.post(`${API_URL}/user-avatar`, formData);
-  return response.data;
+  if(response.data.avatar !== undefined){
+    return response.data.avatar;
+  }
+  else{
+    return response.data;
+  }
 }
 
 export async function createCharacter(newCharacter) {

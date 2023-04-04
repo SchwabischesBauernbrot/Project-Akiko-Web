@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getCharacterImageUrl } from '../api';
+import { getCharacterImageUrl, saveUserAvatar } from '../api';
 import { FiImage, FiSave } from 'react-icons/fi';
 
 const UserInfo = ({onClose}) => {
@@ -36,7 +36,7 @@ const UserInfo = ({onClose}) => {
             userName : userName,
             authorsNote : authorsNote
         }
-        //await saveUserDetails(newUserInfo);
+        await saveUserAvatar(newUserInfo);
         localStorage.setItem('userImage', userImage);
         localStorage.setItem('configuredName', userName);
         onClose();
