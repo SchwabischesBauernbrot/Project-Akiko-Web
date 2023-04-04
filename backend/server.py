@@ -480,8 +480,10 @@ def textgen(endpointType):
             temperature=0.7
         )
         if response.choices:
-            response = response.choices[0].message
-            return jsonify(response)
+            response = response['choices'][0]['message']['content']
+            print(response)
+            results = {'results': [response]}
+            return jsonify(results)
         else:
             print('There was no response.')
     elif(endpointType == 'Horde'):
