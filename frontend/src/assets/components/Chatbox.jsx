@@ -9,7 +9,7 @@ import UpdateCharacterForm from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
 import { createUserMessage } from './chatcomponents/MessageHandling';
-import scanSlash from './chatcomponents/slashcommands';
+import scanSlash, { setEmotion } from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 import {FiList, FiPlusCircle, FiTrash2} from 'react-icons/fi';
 import Model from "./Model";
@@ -117,6 +117,7 @@ function Chatbox({ endpoint, endpointType }) {
         if (existingConversationName) {
           try {
             previousConversation = await fetchConversation(existingConversationName);
+            setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
           } catch (e) {
             console.log(e);
             localStorage.setItem("conversationName", null);
@@ -135,6 +136,7 @@ function Chatbox({ endpoint, endpointType }) {
         } else {
           // If no suitable conversation was found, create a new one
           await createNewConversation();
+          setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
         }
       }
     })();
@@ -223,7 +225,7 @@ function Chatbox({ endpoint, endpointType }) {
           // If the character's char_id is found, update the emotion in the existing object
           newEmotions = currentEmotion.map((emotion, index) =>
             index === characterIndex ? { ...emotion, emotion: label } : emotion
-          );
+        );
         } else {
           // If the character's char_id is not found, add a new object to the array
           newEmotions = [...currentEmotion, { char_id: currentCharacter.char_id, emotion: label }];

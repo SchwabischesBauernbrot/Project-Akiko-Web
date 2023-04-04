@@ -202,7 +202,7 @@ export async function getAvailableModules() {
   for (let i = 0; i < modules.length; i++) {
     switch (modules[i]) {
       case 'caption':
-        localStorage.setItem('imageCaptioning', 1);
+        localStorage.setItem('imageCaptioning', true);
         break;
       case 'classify':
         localStorage.setItem('useEmotionClassifier', 1);
@@ -217,7 +217,7 @@ export async function getAvailableModules() {
   const hasCaption = modules.includes('caption');
   const hasClassify = modules.includes('classify');
   if (!hasCaption) {
-    localStorage.setItem('imageCaptioning', 0);
+    localStorage.setItem('imageCaptioning', false);
   }
   if(!hasClassify) {
     localStorage.setItem('useEmotionClassifier', 0);
