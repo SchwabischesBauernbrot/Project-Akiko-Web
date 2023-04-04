@@ -468,8 +468,8 @@ def textgen(endpointType):
         return jsonify(reply)
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
-        openai = OpenAIApi(OPENAI_API_KEY)
-        response = openai.ChatCompletion.create(
+        openai.api_key = OPENAI_API_KEY
+        response = openai.Completion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": data['prompt']}
