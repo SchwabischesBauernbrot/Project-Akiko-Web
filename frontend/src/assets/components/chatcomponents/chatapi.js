@@ -84,7 +84,7 @@ const ooba_defaults = {
     let customSettings = null;
     let hordeModel = null;
     if(localStorage.getItem('generationSettings') !== null){
-      if(endpointType === 'Kobold' || endpointType === 'Horde'){
+      if(endpointType === 'Kobold' || endpointType === 'Horde' || endpointType === 'OAI'){
         customSettings = getSettings(endpointType);
         console.log(customSettings);
       }
@@ -98,6 +98,10 @@ const ooba_defaults = {
     } else if(endpointType === 'Horde'){
       customSettings = kobold_defaults;
       hordeModel = localStorage.getItem('hordeModel');
+    }
+    else if(endpointType === 'OAI'){
+      customSettings = kobold_defaults;
+      console.log('Custom Settings failed. Using Kobold defaults.')
     }
   let imgText = null;
     if(image !== null){

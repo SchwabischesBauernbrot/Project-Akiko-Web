@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "../css/nav.css";
 import { HomeIcon, WrenchScrewdriverIcon, UserGroupIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { RxDiscordLogo } from 'react-icons/rx';
 import { HiChevronDoubleRight } from 'react-icons/hi2'

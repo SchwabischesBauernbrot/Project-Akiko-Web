@@ -7,10 +7,12 @@ const Connect = () => {
     useEffect(() => {
         const fetchStatus = async () => {
             if (localStorage.getItem('endpointType') != null){
-                const status = await getModelStatus();
-                if(status !== null){
-                    localStorage.setItem('modelName', status);
-                    setConnectionStatus(status);
+                if(localStorage.getItem('endpoint') != null){
+                    const status = await getModelStatus();
+                    if(status !== null){
+                        localStorage.setItem('modelName', status);
+                        setConnectionStatus(status);
+                    }
                 }
                 if(localStorage.getItem('endpointType') === 'Horde'){
                     setConnectionStatus(`${localStorage.getItem('hordeModel')} (Horde)`);

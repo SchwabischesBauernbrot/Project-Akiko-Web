@@ -49,13 +49,15 @@ const EndpointSelector = () => {
     const getDefaultInputValue = (option) => {
         switch (option) {
           case 'Kobold':
-            return 'http://localhost:5000/';
+            return '';
           case 'Ooba':
-            return 'http://localhost:7861/';
+            return '';
           case 'AkikoBackend':
-            return 'http://localhost:5100/' ;
+            return '' ;
           case 'Horde':
             return '0000000000';
+          case 'OpenAI':
+            return '';
           default:
             return '';
         }
@@ -65,8 +67,8 @@ const EndpointSelector = () => {
         { value: 'Kobold', label: 'Kobold' },
         { value: 'Ooba', label: 'OobaTextUI' },
         { value: 'AkikoBackend', label: 'AkikoTextgen' },
-        { value: 'OAI', label: 'OpenAI (API-KEY)' },
-        { value: 'Horde', label: 'Horde' }
+        { value: 'Horde', label: 'Horde' },
+        { value: 'OAI', label: 'OpenAI' }
     ];
   
     return (
@@ -81,7 +83,7 @@ const EndpointSelector = () => {
         onChange={handleOptionChange}
         placeholder={selectedOption}
         />
-        {selectedOption && (
+        {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
             <input
             id="inputValue"
             type="text"

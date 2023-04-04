@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "../assets/css/discordbot.css";
 import { RxDiscordLogo } from 'react-icons/rx';
 import { handleSaveToken, handleSaveChannel } from '../assets/components/api.js';
 

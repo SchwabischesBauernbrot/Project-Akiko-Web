@@ -11,7 +11,7 @@ const HordeModelSelector = () => {
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('https://stablehorde.net/api/v2/status/models?type=text');
+      const response = await fetch('https://aihorde.net/api/v2/status/models?type=text');
       const data = await response.json();
       const formattedData = data.map((model) => ({
         value: model.name,
@@ -34,7 +34,7 @@ const HordeModelSelector = () => {
 
   return (
     <>
-    <h3>Horde Model Selector</h3>
+    <h3 style={{'color': 'var(--selected-text-color)'}}>Horde Model Selector</h3>
       <Select
         id="options"
         inputId="model-select"
