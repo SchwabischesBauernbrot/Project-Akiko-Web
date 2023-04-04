@@ -122,14 +122,14 @@ return (
     <div className="character-buttons">
       <button className="character-button" onClick={refresh} title="Refresh Character List">
         <div class="character-button-content">
-          <ArrowPathIcon className="heroIcon"/>
+          <ArrowPathIcon className="hero-icon"/>
         </div>
       </button>
       <button className="character-button" onClick={() => setShowForm(true)} title="Create Character">
-        <PlusCircleIcon className="heroIcon"/>
+        <PlusCircleIcon className="hero-icon"/>
       </button>
       <label htmlFor="character-image-input" className="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
-        <ArrowUpTrayIcon className="heroIcon"/>
+        <ArrowUpTrayIcon className="hero-icon"/>
       </label>
       <button className="character-button" onClick={() => pickRandomChar()} title="Create Character">
         <FiShuffle className="react-icon"/>

@@ -10,13 +10,13 @@ const Navbar = () => {
     <div id='nav-container'>
       <div className="nav">
         <Link title='Home' id={'nav-button'} to='/'>
-          <HomeIcon className="heroicon"/>
+          <HomeIcon className="hero-icon"/>
         </Link >
         <Link title='Chat' id={'nav-button'} to='/chat'>
           <ChatBubbleLeftRightIcon className="heroicon"/>
         </Link >
 		<Link  title='Characters' id={'nav-button'} to='/characters'>
-			<UserGroupIcon className="heroicon"/>
+			<UserGroupIcon className="hero-icon"/>
 		</Link >
 		<Link title='Advanced Characters' to='/advcharacter' id={'nav-button'}>
 			<HiChevronDoubleRight className="react-icon" title="Advanced Characters"/>

@@ -117,7 +117,6 @@ function Chatbox({ endpoint, endpointType }) {
         if (existingConversationName) {
           try {
             previousConversation = await fetchConversation(existingConversationName);
-            setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
           } catch (e) {
             console.log(e);
             localStorage.setItem("conversationName", null);
@@ -133,6 +132,18 @@ function Chatbox({ endpoint, endpointType }) {
         ) {
           setConversation(previousConversation);
           setMessages(previousConversation.messages);
+  
+          // Initialize default emotions for the first two characters if there are more than one
+          if (previousConversation.participants.length > 1) {
+            setCurrentEmotion(
+              previousConversation.participants.slice(0, 2).map((participant) => ({
+                char_id: participant.char_id,
+                emotion: 'default',
+              }))
+            );
+          } else {
+            setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
+          }
         } else {
           // If no suitable conversation was found, create a new one
           await createNewConversation();
@@ -140,7 +151,8 @@ function Chatbox({ endpoint, endpointType }) {
         }
       }
     })();
-  }, [selectedCharacter, isInitialized]);  
+  }, [selectedCharacter, isInitialized]);
+  
 
   useEffect(() => {
     setUserCharacter({ name: configuredName, avatar: 'default.png'});
@@ -350,6 +362,16 @@ function Chatbox({ endpoint, endpointType }) {
   }
 
   const handleSetConversation = (conversation) => {
+    if (conversation.participants.length > 1) {
+      setCurrentEmotion(
+        conversation.participants.slice(0, 2).map((participant) => ({
+          char_id: participant.char_id,
+          emotion: 'default',
+        }))
+      );
+    } else {
+      setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
+    }
     setConversation(conversation);
     setMessages(conversation.messages);
     setOpenConvoSelector(false);
