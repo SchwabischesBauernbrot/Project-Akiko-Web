@@ -435,6 +435,7 @@ HORDE_API_URL = 'https://aihorde.net/api/'
 def textgen(endpointType):
     data = request.get_json()
     endpoint = data['endpoint']
+    configuredName = data['configuredName']
     if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
     if(data['endpoint'].endswith('/api')): endpoint = data['endpoint'][:-4]
     if(endpointType == 'Kobold'):
@@ -469,19 +470,21 @@ def textgen(endpointType):
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
-        response = openai.Completion.create(
+        response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": data['prompt']}
+            {"role": "user", "content": data['prompt']}
         ],
         max_tokens=150,
             n=1,
-            stop=None,
+            stop=f'{configuredName}:',
             temperature=0.7
         )
         if response.choices:
             response = response['choices'][0]['message']['content']
-            return jsonify(response)
+            print(response)
+            results = {'results': [response]}
+            return jsonify(results)
         else:
             print('There was no response.')
     elif(endpointType == 'Horde'):
@@ -876,9 +879,36 @@ def get_backgrounds():
     return {'backgrounds': backgrounds}, 200
 
 
-##########################################
+#####################################
 #### END OF LAYOUT/DESIGN ROUTES ####
-##########################################
+#####################################
+
+
+##############################
+#### START OF USER ROUTES ####
+##############################
+
+
+@app.route('/api/user-avatar', methods=['POST'])
+def save_user_avatar():
+    if 'avatar' not in request.files:
+        return 'No avatar file provided', 400
+
+    avatar = request.files['avatar']
+
+    if avatar.filename == '':
+        return 'No selected file', 400
+    # Count the number of avatar files in the folder
+    avatar_count = len(os.listdir(app.config['USER_IMAGES_FOLDER']))
+    # Save the avatar file to the user's folder
+    avatar.save(os.path.join(app.config['USER_IMAGES_FOLDER'], f'{avatar_count}.png'))
+    # Return a response to the client
+    return {avatar: f'{avatar_count}.png'}, 200
+
+#########################
+#### SETTINGS ROUTES ####
+#########################
+
 
 @app.route('/api/modules', methods=['GET'])
 @cross_origin()
@@ -907,6 +937,10 @@ def save_settings():
         json.dump(request.json, f)
     return jsonify({'success': 'Settings saved'})
 
+
+################################
+#### END OF SETTINGS ROUTES ####
+################################
 
 
 if args.share:

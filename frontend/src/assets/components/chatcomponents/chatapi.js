@@ -76,8 +76,14 @@ const ooba_defaults = {
     }
   }
       
-  function parseTextEnd(text) {
+  function parseTextEnd(text, endpointType, results) {
+    if(endpointType !== 'OAI') {
     return text.split("\n").map(line => line.trim());
+  }
+    else {
+      const response = results[0]
+      return response.split("\n").map(line => line.trim());
+    }
   }
   
   export async function characterTextGen(character, history, endpoint, endpointType, image, configuredName) {
@@ -110,12 +116,18 @@ const ooba_defaults = {
     const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
     const convo = 'Current Conversation:\n' + history + (imgText ? imgText : '') +'\n';
     const createdPrompt = basePrompt + convo + character.name + ':';
-    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings, hordeModel: hordeModel ? hordeModel : 'PygmalionAI/pygmalion-6b'});
+    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings, hordeModel: hordeModel ? hordeModel : 'PygmalionAI/pygmalion-6b', configuredName: configuredName ? configuredName : 'You'});
 
     const generatedText = response.data.results[0];
-    const parsedText = parseTextEnd(generatedText.text);
-    const responseText = parsedText[0] !== undefined ? parsedText[0] : '';
-    return responseText;
+    if(endpointType !== 'OAI') {
+      const parsedText = parseTextEnd(generatedText.text);
+      const responseText = parsedText[0] !== undefined ? parsedText[0] : '';
+      return responseText;
+    } 
+    else {
+      return generatedText;
+    }
+
   };  
 
   export async function handleImageSend(image, configuredName) {

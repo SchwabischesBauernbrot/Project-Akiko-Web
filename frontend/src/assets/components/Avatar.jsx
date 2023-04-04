@@ -11,7 +11,12 @@ function Avatar({ selectedCharacter, emotion, position }) {
   
   useEffect(() => {
     const findAvatar = async () => {
-      const data = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion);
+      let data;
+      if(emotion.emotion === null){
+        data = await fetchAdvancedCharacterEmotion(selectedCharacter, 'default');
+      }else{
+        data = await fetchAdvancedCharacterEmotion(selectedCharacter, emotion.emotion);
+      }
       if (data !== null) {
         setCurrentAvatarImage(data);
       }

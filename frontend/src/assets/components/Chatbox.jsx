@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { fetchCharacter, getCharacterImageUrl, fetchConversation, saveConversation, deleteConversation } from "./api";
+import { fetchCharacter, getCharacterImageUrl, fetchConversation, saveConversation, deleteConversation, getAvailableModules } from "./api";
 import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
@@ -9,7 +9,7 @@ import UpdateCharacterForm from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
 import { createUserMessage } from './chatcomponents/MessageHandling';
-import scanSlash from './chatcomponents/slashcommands';
+import scanSlash, { setEmotion } from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 import {FiList, FiPlusCircle, FiTrash2} from 'react-icons/fi';
 import Model from "./Model";
@@ -17,7 +17,7 @@ import Model from "./Model";
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
   const [configuredName, setconfiguredName] = useState('You');
-  const [useEmotionClassifier, setUseEmotionClassifier] = useState(false);
+  const [useEmotionClassifier, setUseEmotionClassifier] = useState('');
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState([]);
   const [editRowCounter, setEditRowCounter] = useState(1);
@@ -76,7 +76,7 @@ function Chatbox({ endpoint, endpointType }) {
   
       return Array.from(selectedIndices).map((index) => participants[index]);
     };
-  
+    
     if (conversation && conversation.participants.length > 1) {
       const participants = getRandomParticipants(conversation.participants, 2); // Randomly select two participants
       setSelectedParticipants(participants);
@@ -95,6 +95,13 @@ function Chatbox({ endpoint, endpointType }) {
         if(localStorage.getItem('configuredName') !== null) {
           setconfiguredName(localStorage.getItem('configuredName'));
         }
+        if(localStorage.getItem('useEmotionClassifier') !== null) {
+          if(localStorage.getItem('useEmotionClassifier') === '1') {
+            setUseEmotionClassifier('true');
+          } else {
+            setUseEmotionClassifier('false');
+          }
+        }
       };
       fetchConfig();
       setUserCharacter({ name: configuredName, avatar: 'default.png' });
@@ -110,6 +117,7 @@ function Chatbox({ endpoint, endpointType }) {
         if (existingConversationName) {
           try {
             previousConversation = await fetchConversation(existingConversationName);
+            setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
           } catch (e) {
             console.log(e);
             localStorage.setItem("conversationName", null);
@@ -128,6 +136,7 @@ function Chatbox({ endpoint, endpointType }) {
         } else {
           // If no suitable conversation was found, create a new one
           await createNewConversation();
+          setCurrentEmotion([{ char_id: selectedCharacter.char_id, emotion: 'default' }]);
         }
       }
     })();
@@ -202,32 +211,30 @@ function Chatbox({ endpoint, endpointType }) {
 
     // Make API call
     const generatedText = await characterTextGen(currentCharacter, history, endpoint, endpointType, image, configuredName);
-    if (generatedText !== null) {
-      if(useEmotionClassifier === 'true'){
-        const classification = await classifyEmotion(generatedText);
-        if (classification && classification.length > 0) {
-          const label = classification[0]['label'];
-    
-          // Find the index of the currentCharacter's char_id in the currentEmotion array
-          const characterIndex = currentEmotion.findIndex(emotion => emotion.char_id === currentCharacter.char_id);
-    
-          let newEmotions;
-    
-          if (characterIndex !== -1) {
-            // If the character's char_id is found, update the emotion in the existing object
-            newEmotions = currentEmotion.map((emotion, index) =>
-              index === characterIndex ? { ...emotion, emotion: label } : emotion
-            );
-          } else {
-            // If the character's char_id is not found, add a new object to the array
-            newEmotions = [...currentEmotion, { char_id: currentCharacter.char_id, emotion: label }];
-          }
-          setCurrentEmotion(newEmotions);
+    if(useEmotionClassifier === 'true'){
+      const classification = await classifyEmotion(generatedText);
+      if (classification && classification.length > 0) {
+        const label = classification[0]['label'];
+        console.log(label)
+        // Find the index of the currentCharacter's char_id in the currentEmotion array
+        const characterIndex = currentEmotion.findIndex(emotion => emotion.char_id === currentCharacter.char_id);
+  
+        let newEmotions;
+  
+        if (characterIndex !== -1) {
+          // If the character's char_id is found, update the emotion in the existing object
+          newEmotions = currentEmotion.map((emotion, index) =>
+            index === characterIndex ? { ...emotion, emotion: label } : emotion
+        );
         } else {
-          console.error('Invalid classification data:', classification);
+          // If the character's char_id is not found, add a new object to the array
+          newEmotions = [...currentEmotion, { char_id: currentCharacter.char_id, emotion: label }];
         }
+        setCurrentEmotion(newEmotions);
+      } else {
+        console.error('Invalid classification data:', classification);
       }
-    }    
+    }   
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {
