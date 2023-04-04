@@ -1145,8 +1145,11 @@ Characters Page CSS
 }
 .connect-chat-box {
 	position: relative;
+	margin-top: 5px;
     display: flex;
     flex-direction: row;
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
     align-items: center; /* Add this line to align items vertically */
     max-width: 750px;
     padding: 5px;
