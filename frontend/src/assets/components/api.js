@@ -3,7 +3,6 @@ import axios from 'axios';
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
 const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
-const USER_AVATARS_FOLDER = 'src/shared_data/user_avatars';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
 
 
@@ -72,7 +71,12 @@ export async function handleSaveChannel(channels) {
   }
 };
 
-
+export async function saveUserAvatar(image) {
+  const formData = new FormData();
+  formData.append('avatar', image);
+  const response = await axios.post(`${API_URL}/user-avatar`, formData);
+  return response.data;
+}
 
 export async function createCharacter(newCharacter) {
   const formData = new FormData();
@@ -198,25 +202,25 @@ export async function getAvailableModules() {
   for (let i = 0; i < modules.length; i++) {
     switch (modules[i]) {
       case 'caption':
-        localStorage.setItem('imageCaptioning', true);
+        localStorage.setItem('imageCaptioning', 1);
         break;
       case 'classify':
-        localStorage.setItem('useEmotionClassifier', true);
+        localStorage.setItem('useEmotionClassifier', 1);
+        console.log('Emotion classifier found');
         break;
       default:
         break;
     }
   }
 
-  
   // Check if both caption and classify are present, otherwise set to false
   const hasCaption = modules.includes('caption');
   const hasClassify = modules.includes('classify');
   if (!hasCaption) {
-    localStorage.setItem('imageCaptioning', false);
+    localStorage.setItem('imageCaptioning', 0);
   }
   if(!hasClassify) {
-    localStorage.setItem('useEmotionClassifier', false);
+    localStorage.setItem('useEmotionClassifier', 0);
   }
 
   return modules;

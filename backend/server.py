@@ -879,9 +879,36 @@ def get_backgrounds():
     return {'backgrounds': backgrounds}, 200
 
 
-##########################################
+#####################################
 #### END OF LAYOUT/DESIGN ROUTES ####
-##########################################
+#####################################
+
+
+##############################
+#### START OF USER ROUTES ####
+##############################
+
+
+@app.route('/api/user-avatar', methods=['POST'])
+def save_user_avatar():
+    if 'avatar' not in request.files:
+        return 'No avatar file provided', 400
+
+    avatar = request.files['avatar']
+
+    if avatar.filename == '':
+        return 'No selected file', 400
+    # Count the number of avatar files in the folder
+    avatar_count = len(os.listdir(app.config['USER_IMAGES_FOLDER']))
+    # Save the avatar file to the user's folder
+    avatar.save(os.path.join(app.config['USER_IMAGES_FOLDER'], f'{avatar_count}.png'))
+    # Return a response to the client
+    return {avatar: f'{avatar_count}.png'}, 200
+
+#########################
+#### SETTINGS ROUTES ####
+#########################
+
 
 @app.route('/api/modules', methods=['GET'])
 @cross_origin()
@@ -910,6 +937,10 @@ def save_settings():
         json.dump(request.json, f)
     return jsonify({'success': 'Settings saved'})
 
+
+################################
+#### END OF SETTINGS ROUTES ####
+################################
 
 
 if args.share:
