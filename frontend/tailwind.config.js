@@ -5,12 +5,8 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {      
-      backgroundColor: {
-        'selected-color': '#your-color-code', // Replace #your-color-code with the color you want
-      },
-      textColor: {
-        'selected-text-color': '#your-color-code', // Replace #your-color-code with the color you want
-      },},
+      backgroundColor: ['hover'],
+    },
   },
   variants: {
     extend: {},

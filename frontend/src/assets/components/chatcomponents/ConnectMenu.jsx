@@ -8,6 +8,14 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
+        const closeOnEscapeKey = e => e.key === "Escape" ? setToggleConnectMenu(false) : null;
+        document.body.addEventListener("keydown", closeOnEscapeKey);
+        return () => {
+            document.body.removeEventListener("keydown", closeOnEscapeKey);
+        };
+    }, []);
+
+    useEffect(() => {
       var localOption = localStorage.getItem('endpointType');
       if (localOption != null){
         setSelectedOption({value: localOption, label: localOption});
@@ -74,7 +82,7 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
     return (
     <div className="modal-overlay">
         <div className="gen-settings-menu">
-            <span className="close" onClick={setToggleConnectMenu}>&times;</span>
+            <span className="close" onClick={() => setToggleConnectMenu(false)}>&times;</span>
             <div>
                 <h2>Text Generation Endpoint</h2>
                 <div id='endpoint-container'>

@@ -892,24 +892,6 @@ Characters Page CSS
   display: flex;
   opacity: 1;
 }
-.character-button {
-	aspect-ratio: 1 / 1;
-	background-color: var(--selected-bb-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	padding: .7em;
-	width: 4rem;
-	border: none;
-	outline: none;
-	color: var(--selected-text-color);
-	word-wrap: normal;
-	justify-content: center;
-	cursor: pointer;
-}
-.character-button:hover {
-    background-color: rgb(6, 136, 168);
-}
 
 /* For tablets and smaller devices */
 @media only screen and (min-width: 401px) and (max-width: 896px) {

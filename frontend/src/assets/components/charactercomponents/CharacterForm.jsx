@@ -11,12 +11,12 @@ export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
   const [characterAvatar, setCharacterAvatar] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
-useEffect(() => {
-  const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
-  document.body.addEventListener("keydown", closeOnEscapeKey);
-  return () => {
-      document.body.removeEventListener("keydown", closeOnEscapeKey);
-  };
+  useEffect(() => {
+    const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
+    document.body.addEventListener("keydown", closeOnEscapeKey);
+    return () => {
+        document.body.removeEventListener("keydown", closeOnEscapeKey);
+    };
   }, []);
   
   async function handleSubmit(event) {
