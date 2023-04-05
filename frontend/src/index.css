@@ -1,5 +1,12 @@
 @charset "UTF-8";
+/* Import the base styles for Tailwind */
+@import 'tailwindcss/base';
 
+/* Import the component styles for Tailwind */
+@import 'tailwindcss/components';
+
+/* Import the utility styles for Tailwind */
+@import 'tailwindcss/utilities';
 /* 
 Broadly used CSS 
 */
