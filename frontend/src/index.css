@@ -1119,6 +1119,9 @@ Characters Page CSS
     #nav-button {
         width: 50%;
     }
+	#nav-container {
+		max-width: 100%;
+	}
 }
 
 /* For mobile devices */
@@ -1133,6 +1136,10 @@ Characters Page CSS
     #nav-button {
         width: 50%;
     }
+
+	#nav-container {
+		max-width: 100%;
+	}
 }
 /* Chat CSS */
 .message-box {
