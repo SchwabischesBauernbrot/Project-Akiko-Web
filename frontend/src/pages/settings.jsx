@@ -29,19 +29,24 @@ function Settings() {
     <>
       <h1 className='settings-panel-header'>Settings</h1>
       <div className='settings-panel'>
-        <div id='endpoint'>
-          <EndpointSelector/>
+        <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+          <div id='endpoint'>
+            <EndpointSelector/>
+          </div>
+          <div>
+            <AvailableModules/>
+          </div>
+          <div>
+            <ColorPicker/>
+          </div>
+          <div>
+            <GroupChatSettings settings={settings}/>
+          </div>
         </div>
-        <div>
-          <AvailableModules/>
-        </div>
-        <div>
-          <ColorPicker/>
-        </div>
-        <GroupChatSettings settings={settings}/>
-        </div>
+      </div>
     </>
   );
+  
 }
 
 export default Settings;

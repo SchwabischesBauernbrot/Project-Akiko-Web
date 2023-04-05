@@ -36,10 +36,9 @@ const DiscordBot = () => {
 
   return (
     <>
-          <div className="bg-red-500">Hello, world!</div>
       <h1 className='settings-panel-header'>Discord Bot Configuration</h1>
-      <div className='settings-panel' ref={settingsPanelRef}>
-        <div className="grid md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 2xl:grid-cols-1 grid-cols-3 gap-4">
+      <div className='settings-panel ' ref={settingsPanelRef}>
+      <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
           <div className="settings-box" id='on-switch'>
             <RxDiscordLogo className="discord-logo" />
             <h2>On/Off Switch</h2>

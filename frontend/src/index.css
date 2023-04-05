@@ -623,8 +623,8 @@ Settings Pages CSS
 		border-radius: 10px;
 		backdrop-filter: blur(10px);
 		padding: 2rem;
-		padding-top: 20rem;
-		padding-bottom: 20rem;
+		/* padding-top: 20rem;
+		padding-bottom: 20rem; */
 		color: var(--selected-text-color);
 		justify-content: center;
 	}
@@ -1686,7 +1686,7 @@ Characters Page CSS
 	margin-bottom: 1rem;
   }
   
-  @media (max-width: 640px) {
+  /* @media (max-width: 640px) {
 	.settings-panel {
 	  flex-direction: column;
 	  padding: 2rem;
@@ -1699,12 +1699,12 @@ Characters Page CSS
 	  font-size: 4rem;
 	}
   }
+   */
   
-  
-  .settings-panel {
+  /* .settings-panel {
 	display: flex;
 	align-items: stretch;
-  }
+  } */
   
   .settings-box {
 	display: flex;
