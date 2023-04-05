@@ -64,83 +64,81 @@ export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
   
   return (
     <div className="modal-overlay">
-      <div className="character-form">
-        <span className="close" onClick={onClose} style={{cursor: 'pointer'}}>&times;</span>
-        <h2 id='charactername-title'>Create New Character</h2>
+      <div className="character-form max-w-full gap-1 mx-auto rounded-lg shadow-md backdrop-blur-md p-5 lg:w-4/5 m-auto">
+        <span className="close cursor-pointer" onClick={onClose}>&times;</span>
+        <h1 className="text-center text-lg sm:text-2xl"><b>Create New Character</b></h1>
         <form onSubmit={handleSubmit}>
-          <div className='character-form-top-box'>
-            <label htmlFor="avatar-field">{!imageUrl && <FiImage id="avatar-default"/>} {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar-form"/>}</label>
-            <input
-              id="avatar-field"
-              type="file"
-              name="characterAvatar"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-            <div className="character-form-top-right">
-              <label><b>Name:</b></label>
+          <div className='flex flex-col lg:flex-row w-full gap-2.5 justify-start items-center mt-auto'>
+            <label htmlFor="avatar-field" className="relative cursor-pointer flex-shrink-0">
+              {!imageUrl && <FiImage id="avatar-default" className="h-32 w-32 sm:h-56 sm:w-56 flex items-center justify-center"/>} 
+              {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar-form" className="flex-shrink-0 h-32 w-32 sm:h-56 sm:w-56 rounded-md overflow-hidden"/>}
+              <input
+                id="avatar-field"
+                type="file"
+                name="characterAvatar"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="absolute w-full h-full opacity-0 cursor-pointer top-0 left-0"
+              />
+            </label>
+            <div className="w-full gap-1 flex flex-col justify-start mt-0">
+              <label className="mb-2 text-xs sm:text-base"><b>Name:</b></label>
               <textarea
-                id="name-field"
-                className="character-field"
+                className="character-field w-full h-12 p-1 sm:h-16 sm:p-2 rounded-md resize-none"
                 value={characterName}
                 onChange={(event) => setCharacterName(event.target.value)}
                 required
               />
-              <label><b>Summary:</b></label>
+              <label className="mb-2 text-xs sm:text-base"><b>Summary:</b></label>
               <textarea
-                id="small-field"
-                className="character-field"
+                className="character-field w-full h-12 p-1 sm:h-16 sm:p-2 rounded-md resize-none"
                 value={characterPersonality}
                 onChange={(event) => setcharacterPersonality(event.target.value)}
               />
-              <label><b>Scenario:</b></label>
+              <label className="mb-2 text-xs sm:text-base"><b>Scenario:</b></label>
               <textarea
-                id="small-field"
-                className="character-field"
+                className="character-field w-full h-12 p-1 sm:h-16 sm:p-2 rounded-md resize-none"
                 value={characterScenario}
                 onChange={(event) => setCharacterScenario(event.target.value)}
               />
             </div>
-            <div className="character-form-top-right">
-              <label htmlFor="characterGreeting"><b>Greeting:</b></label>
+            <div className="w-full gap-2 flex flex-col justify-start mt-auto">
+              <label htmlFor="characterGreeting" className="mb-2 text-xs sm:text-base"><b>Greeting:</b></label>
               <textarea
-                id="large-field"
-                className="character-field"
+                className="character-field w-full h-48 p-1 sm:h-96 sm:p-2 rounded-md resize-none"
                 value={characterGreeting}
                 onChange={(event) => setCharacterGreeting(event.target.value)}
               />
             </div>
           </div>
-          <div className="character-form-bottom">
-            <div className="character-form-bottom-box" id='description'>
-              <label><b>Description:</b></label>
+          <div className="flex flex-col lg:flex-row gap-2.5 w-full">
+            <div className="character-form-bottom-box w-full justify-start">
+              <label className="mb-2 text-xs sm:text-base"><b>Description:</b></label>
               <textarea
-                id="large-field"
-                className="character-field"
+                className="character-field w-full h-48 p-1        sm:h-96 sm:p-2 rounded-md resize-none"
                 value={characterDescription}
                 type="text"
                 onChange={(event) => setCharacterDescription(event.target.value)}
               />
             </div>
-            <div className="character-form-bottom-box" id='examples'>
-              <label><b>Dialogue Examples:</b></label>
+            <div className="character-form-bottom-box w-full justify-start">
+              <label className="mb-2 text-xs sm:text-base"><b>Dialogue Examples:</b></label>
               <textarea
-                id="large-field"
-                className="character-field"
+                className="character-field w-full h-48 p-1 sm:h-96 sm:p-2 rounded-md resize-none"
                 value={characterExamples}
                 type="text"
                 onChange={(event) => setCharacterExamples(event.target.value)}
               />
             </div>
           </div>
-            <div className="form-bottom-buttons"> 
-              <button className="character-button" type="submit" id="character-submit">
-                <FiSave className="react-icon"/>
-              </button>
-            </div>
-        </form>
-      </div>
+          <div className="flex justify-center mt-4 mt-0"> 
+            <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" type="submit">
+              <FiSave className="react-icon"/>
+            </button>
+          </div>
+      </form>
     </div>
+  </div>
   );
 };
 

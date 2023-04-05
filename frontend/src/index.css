@@ -122,7 +122,7 @@ animation-delay: .2s;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-
+  
 body {
   background-image: var(--selected-background);
   margin: 0;
@@ -739,40 +739,13 @@ Characters Page CSS
 }
 
 .character-form {
-	margin: auto;
-	width: 80%;
 	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
-	padding: 20px;
 	color: var(--selected-text-color);
 }
-.character-form-top-box {
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-	gap: 2.5%;
-	justify-content: flex-start;
-	align-items: center;
-	margin-bottom: 1rem;
-}
-.character-form-top-right {
-	display: flex;
-	justify-content: flex-start;
-	width: 100%;
-	margin-top: 0%;
-	gap: 10%;
-	flex-direction: column;
-}
-.character-form-bottom {
-	gap: 2.5%;
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-	justify-content: flex-start;
-	align-items: center;
-}
+
 .character-form-bottom-box {
 	display: flex;
 	flex-direction: column;
@@ -805,6 +778,7 @@ Characters Page CSS
 	object-fit: cover;
 }
 #character-avatar-form {
+	flex-shrink: 0;
 	padding: 10px;
 	word-wrap:break-word;
 	cursor: pointer;
@@ -819,13 +793,8 @@ Characters Page CSS
 	object-fit: cover;
 }
 
-#charactername-title {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
 #avatar-default {
+	flex-shrink: 0;
 	padding: 10px;
 	word-wrap:break-word;
 	height: 21.875em;
