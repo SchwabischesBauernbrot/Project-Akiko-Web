@@ -27,7 +27,11 @@ useEffect(() => {
 return (
     <>
       {character && (
-        <div key={character.char_id} className="character-info-box">
+        <div
+          key={character.char_id}
+          className="character-info-box flex justify-center"
+          tabIndex="0" // Add this line to make the div focusable on tap
+        >
           <h2>
             <b>{character.name}</b>
           </h2>
@@ -37,31 +41,33 @@ return (
             id="character-avatar"
             onClick={() => openModal(character)}
           />
-          <div className="character-info-buttons">
-            <button
-              className="character-button"
-              id="character-close"
-              onClick={() => delCharacter(character)}
-              title="Delete Character"
-            >
-              <TrashIcon />
-            </button>
-            <button
-              className="character-button"
-              id="character-select"
-              onClick={() => selectCharacter(character)}
-              title="Select Character"
-            >
-              <FiCheck className="react-icon" />
-            </button>
-            <button
-              className="character-button"
-              id="character-info"
-              onClick={() => openModal(character)}
-              title="View Character Details"
-            >
-              <InformationCircleIcon />
-            </button>
+          <div className="absolute bottom-6 flex justify-center items-center">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 md:gap-1 md:gap-5 lg:gap-14 button-container">
+              <button
+                className="character-button"
+                id="cancel"
+                onClick={() => delCharacter(character)}
+                title="Delete Character"
+              >
+                <TrashIcon />
+              </button>
+              <button
+                className="character-button"
+                id="select"
+                onClick={() => selectCharacter(character)}
+                title="Select Character"
+              >
+                <FiCheck className="react-icon" />
+              </button>
+              <button
+                className="character-button"
+                id="select"
+                onClick={() => openModal(character)}
+                title="View Character Details"
+              >
+                <InformationCircleIcon />
+              </button>
+            </div>
           </div>
         </div>
       )}

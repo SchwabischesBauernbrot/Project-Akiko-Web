@@ -13,7 +13,9 @@ import { createUserMessage } from './chatcomponents/MessageHandling';
 import scanSlash, { setEmotion } from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 import {FiList, FiPlusCircle, FiTrash2, FiUsers} from 'react-icons/fi';
+import {VscDebugDisconnect} from 'react-icons/vsc';
 import Model from "./Model";
+import ConnectMenu from "./chatcomponents/ConnectMenu";
 
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
@@ -36,6 +38,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [createMenuOn, setCreateMenuOn] = useState(false);
+  const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
 
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -445,8 +448,14 @@ function Chatbox({ endpoint, endpointType }) {
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>
     )}
+    {toggleConnectMenu && (
+     <ConnectMenu setToggleConnectMenu={setToggleConnectMenu}/> 
+    )}
     <div className="chatbox-wrapper">
       <div className='connect-chat-box'>
+          <div id="connect-button">
+            <button className={'chat-button'} id={'submit'} title={'Connect to Chat'} onClick={() => setToggleConnectMenu(true)}> <VscDebugDisconnect className="react-icon"/></button>
+          </div>
           <div id="connect">
             <Connect/>
           </div>

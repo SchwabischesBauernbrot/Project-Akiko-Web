@@ -170,22 +170,28 @@ const Characters = () => {
           ))}
         </div>
       </div>
+      {showForm && (
+        <CharacterForm
+          onCharacterSubmit={addCharacter}
+          onClose={() => setShowForm(false)}
+        />
+      )}
       {selectedCharacter && (
-      <UpdateCharacterForm
-            character={selectedCharacter}
-            onUpdateCharacter={editCharacter}
-            onClose={closeModal}
-      />
+        <UpdateCharacterForm
+              character={selectedCharacter}
+              onUpdateCharacter={editCharacter}
+              onClose={closeModal}
+        />
       )}
       {showDeleteModal && (
-      <div className="modal-overlay">
-        <div className="modal-small-box">
-          <h2 className="centered">Delete Character</h2>
-          <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
-          <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-          <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
+        <div className="modal-overlay">
+          <div className="modal-small-box">
+            <h2 className="centered">Delete Character</h2>
+            <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
+            <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+            <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
+          </div>
         </div>
-      </div>
       )}
     </div>
   );
