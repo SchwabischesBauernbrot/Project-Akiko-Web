@@ -1,9 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import * as PIXI from "pixi.js";
 import { config } from 'pixi-live2d-display';
-import { Live2DModel } from "pixi-live2d-display/cubism4";
+import { Live2DModel } from "pixi-live2d-display";
 
 window.PIXI = PIXI;
+
+Live2DModel.registerTicker(PIXI.Ticker);
+// register InteractionManager to make Live2D models interactive
 
 const Model = ({ character }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -14,7 +17,7 @@ const Model = ({ character }) => {
   const [model, setModel] = useState(false);
 
   useEffect(() => {
-    const modelUrl = `/src/shared_data/advanced_characters/${character.char_id}/Live2D/${character.char_id}.model3.json`;
+    const modelUrl = `/src/shared_data/advanced_characters/${character.char_id}/Live2D/runtime/${character.char_id}.model3.json`;
     fetch(modelUrl)
       .then(response => {
         if (response.ok) {
@@ -43,18 +46,14 @@ const Model = ({ character }) => {
           height: window.innerHeight - 200,
         });
 
-        Live2DModel.from(blob, { idleMotionGroup: 'main_idle' }).then((model) => {
+        Live2DModel.from(`/src/shared_data/advanced_characters/${character.char_id}/Live2D/runtime/mao_pro_t02.model3.json`, { idleMotionGroup: 'main_idle' }).then((model) => {
           app.stage.addChild(model);
           model.anchor.set(.5, 0.37);
-          model.scale.set(.25, .25);
-          model.interactive = true;
-          model.motion('tap_body', 0);
+          model.scale.set(.1, .1);
           model.x = app.screen.width / 2;
           model.y = app.screen.height / 2;
-          model.on('hit', (hitAreaNames) => {
-            if (hitAreaNames.includes('body')) {
-                // body is hit
-            }
+          model.on("pointertap", () => {
+            model.motion("Tap@Body");
           });
         });
         setModel(true);

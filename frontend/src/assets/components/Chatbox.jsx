@@ -5,13 +5,14 @@ import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
 import Message from "./chatcomponents/Message";
 import Connect from "./Connect";
+import ConversationCreate from "./chatcomponents/ConversationCreate";
 import UpdateCharacterForm from "./charactercomponents/UpdateCharacterForm";
 import InvalidActionPopup from './chatcomponents/InvalidActionPopup';
 import DeleteMessageModal from './chatcomponents/DeleteMessageModal';
 import { createUserMessage } from './chatcomponents/MessageHandling';
 import scanSlash, { setEmotion } from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
-import {FiList, FiPlusCircle, FiTrash2} from 'react-icons/fi';
+import {FiList, FiPlusCircle, FiTrash2, FiUsers} from 'react-icons/fi';
 import Model from "./Model";
 
 function Chatbox({ endpoint, endpointType }) {
@@ -34,6 +35,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [settings, setSettings] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [createMenuOn, setCreateMenuOn] = useState(false);
 
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -415,9 +417,18 @@ function Chatbox({ endpoint, endpointType }) {
     setConversation(renamedConvo);
   };
 
+  const CreateConvo = async (convo) => {
+    await saveConversation(convo);
+    localStorage.setItem('conversationName', convo.conversationName);
+    setConvo(convo);
+  }
+
   return (
     <>
     <>
+    {createMenuOn && (
+        <ConversationCreate CreateConvo={CreateConvo} setCreateMenuOn={setCreateMenuOn}/>
+    )}
     {selectedParticipants.map((participant, index) => (
       <React.Fragment key={index}>
         <Model character={participant} />
@@ -456,6 +467,7 @@ function Chatbox({ endpoint, endpointType }) {
             <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
             <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
             <button className={'chat-button'} id={'submit'} title={'Create New Chat'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
+            <button className={'chat-button'} id={'submit'} title={'Create Group Chat'} onClick={() => setCreateMenuOn(true)}><FiUsers className='react-icon'/></button>
           </div>
         </div>
       <div className="message-box">

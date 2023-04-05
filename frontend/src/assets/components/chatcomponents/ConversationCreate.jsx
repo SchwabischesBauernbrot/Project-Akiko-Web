@@ -146,28 +146,30 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
 return (
 <div className='modal-overlay'>
     <div className='create-conversation-menu'>
-        <h2 className="centered">Create Conversation</h2>
-        <form>
-            <label>Conversation Name:</label>
-            <input className='character-input' type="text" value={conversationName} onChange={handleConversationNameChange} />
-            <label>Participants:</label>
-            <Select
-            isMulti
-            options={characterOptions}
-            formatOptionLabel={formatOptionLabel}
-            onChange={handleParticipantsChange}
-            value={selectedParticipants}
-            styles={customStyles}
-            />
-            <div className="form-bottom-buttons">
-            <button className='icon-button-small' type="button" id='cancel' onClick={handleCancelCreateConversation}>
-            <ImCancelCircle className='react-icon'/>
-            </button>
-            <button className='icon-button-small' id='submit' type="submit" onClick={handleCreateConversationSubmit}>
-            <FiSave className='react-icon'/>
-            </button>
-            </div>
-        </form>
+        <h2 className="centered">Create Group Conversation</h2>
+        <div className="create-menu-wrapper">
+            <form>
+                <label>Conversation Name:</label>
+                <input className='character-input' type="text" value={conversationName} onChange={handleConversationNameChange}/>
+                <label>Participants:</label>
+                    <Select
+                    isMulti
+                    options={characterOptions}
+                    formatOptionLabel={formatOptionLabel}
+                    onChange={handleParticipantsChange}
+                    value={selectedParticipants}
+                    styles={customStyles}
+                    />
+                <div className="form-bottom-buttons">
+                    <button className='icon-button-small' type="button" id='cancel' onClick={handleCancelCreateConversation}>
+                        <ImCancelCircle className='react-icon'/>
+                    </button>
+                    <button className='icon-button-small' id='submit' type="submit" onClick={handleCreateConversationSubmit}>
+                        <FiSave className='react-icon'/>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 );
