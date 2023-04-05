@@ -8,6 +8,7 @@ import Settings from './pages/settings';
 import DiscordBot from './pages/discordbot';
 import AdvancedCharacter from './pages/advancedcharacter';
 import { getAvailableModules } from './assets/components/api';
+import 'tailwindcss/tailwind.css';
 
 function App() {
   useEffect(() => {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/characters" element={<Characters />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/discordbot" element={<DiscordBot />} />
+        <Route path="/test" element={<test />} />
         <Route path="/advcharacter" element={<AdvancedCharacter />} />
       </Routes>
     </Router>

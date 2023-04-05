@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
 import { handleSaveToken, handleSaveChannel } from '../assets/components/api.js';
+import 'tailwindcss/tailwind.css';
+
 
 
 const DiscordBot = () => {
@@ -34,36 +36,45 @@ const DiscordBot = () => {
 
   return (
     <>
+          <div className="bg-red-500">Hello, world!</div>
       <h1 className='settings-panel-header'>Discord Bot Configuration</h1>
       <div className='settings-panel' ref={settingsPanelRef}>
-        <div className="settings-box" id='on-switch'>
-          <RxDiscordLogo className="discord-logo" />
-          <h2>On/Off Switch</h2>
-          <button className={`discord-button ${isOn ? 'discord-button-on' : ''}`} onClick={handleToggle}>
-            {isOn ? 'ON' : 'OFF'}
-          </button>
-        </div>
-        <div className="settings-box" id='bot-token'>
-          <h2>Discord Bot Token</h2>
-          <div className="input-group">
-            <input type="password" value={botToken} onChange={(event) => setBotToken(event.target.value)} />
-            <button className="discord-button discord-button-confirm" onClick={onSaveToken}>
-              Confirm
+        <div className="grid md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 2xl:grid-cols-1 grid-cols-3 gap-4">
+          <div className="settings-box" id='on-switch'>
+            <RxDiscordLogo className="discord-logo" />
+            <h2>On/Off Switch</h2>
+            <button className={`discord-button ${isOn ? 'discord-button-on' : ''}`} onClick={handleToggle}>
+              {isOn ? 'ON' : 'OFF'}
             </button>
           </div>
-        </div>
-        <div className="settings-box" id='channel'>
-          <h2>Channel</h2>
-          <div className="input-group">
-            <input type="text" value={channels} onChange={(event) => setChannels(event.target.value)} />
-            <button className="discord-button discord-button-confirm" onClick={onSaveChannel}>
-              Confirm
-            </button>
+          <div className="settings-box" id='bot-token'>
+            <h2>Discord Bot Token</h2>
+            <div className="input-group">
+              <input type="password" value={botToken} onChange={(event) => setBotToken(event.target.value)} />
+              <button className="discord-button discord-button-confirm" onClick={onSaveToken}>
+                Confirm
+              </button>
+            </div>
+          </div>
+          <div className="settings-box" id='channel'>
+            <h2>Channel</h2>
+            <div className="input-group">
+              <input type="text" value={channels} onChange={(event) => setChannels(event.target.value)} />
+              <button className="discord-button discord-button-confirm" onClick={onSaveChannel}>
+                Confirm
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
+
+
     </>
   );
+  
 };
+
+
 
 export default DiscordBot;
