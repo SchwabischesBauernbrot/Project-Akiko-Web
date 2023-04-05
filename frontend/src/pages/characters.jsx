@@ -5,6 +5,7 @@ import { UpdateCharacterForm } from "../assets/components/charactercomponents/Up
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import CharacterInfoBox from "../assets/components/charactercomponents/CharacterInfoBox";
 import { FiShuffle } from "react-icons/fi";
+import 'tailwindcss/tailwind.css';
 
 const Characters = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -117,11 +118,12 @@ const Characters = () => {
     }
   };
 
-return (
-  <div className="container">
-    <div className="character-buttons">
+  return (
+<div className="flex flex-col items-center justify-center">
+  <div className="w-full flex justify-center mb-6">
+    <div className="grid grid-cols-6 gap-1">
       <button className="character-button" onClick={refresh} title="Refresh Character List">
-        <div class="character-button-content">
+        <div className="character-button-content">
           <ArrowPathIcon className="hero-icon"/>
         </div>
       </button>
@@ -141,7 +143,7 @@ return (
         onChange={(e) => handleImageUpload(e.target.files[0])}
         style={{ display: 'none' }}
       />
-      <div className="chara-search-bar">
+      <div className="chara-search-bar col-span-2">
         <input
           type="text"
           placeholder="Search characters"
@@ -150,15 +152,11 @@ return (
         />
       </div>
     </div>
-    {showForm && (
-      <CharacterForm
-        onCharacterSubmit={addCharacter}
-        onClose={() => setShowForm(false)}
-      />
-    )}
-    {characters &&
-      <div className="character-display">
-        {characters
+  </div>
+  <div className="w-full flex justify-center">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {characters &&
+        characters
           .filter((character) => {
             return Object.values(character).some((value) =>
               value
@@ -170,27 +168,13 @@ return (
           .map((character) => (
             <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
           ))}
-      </div>
-    }
-    {selectedCharacter && (
-      <UpdateCharacterForm
-            character={selectedCharacter}
-            onUpdateCharacter={editCharacter}
-            onClose={closeModal}
-      />
-    )}
-    {showDeleteModal && (
-    <div className="modal-overlay">
-      <div className="modal-small-box">
-        <h2 className="centered">Delete Character</h2>
-        <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
-        <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-        <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
-      </div>
     </div>
-   )}
   </div>
-);
+</div>
+
+
+  );
+  
 };
 
 export default Characters;
