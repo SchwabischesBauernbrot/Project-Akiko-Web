@@ -119,60 +119,75 @@ const Characters = () => {
   };
 
   return (
-<div className="flex flex-col items-center justify-center">
-  <div className="w-full flex justify-center mb-6">
-    <div className="grid grid-cols-6 gap-1">
-      <button className="character-button" onClick={refresh} title="Refresh Character List">
-        <div className="character-button-content">
-          <ArrowPathIcon className="hero-icon"/>
+    <div className="flex flex-col items-center justify-center">
+      <div className="w-full flex justify-center mb-6">
+        <div className="grid grid-cols-6 gap-0">
+          <button className="character-button" onClick={refresh} title="Refresh Character List">
+            <div className="character-button-content">
+              <ArrowPathIcon className="hero-icon"/>
+            </div>
+          </button>
+          <button className="character-button" onClick={() => setShowForm(true)} title="Create Character">
+            <PlusCircleIcon className="hero-icon"/>
+          </button>
+          <label htmlFor="character-image-input" className="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
+            <ArrowUpTrayIcon className="hero-icon"/>
+          </label>
+          <button className="character-button" onClick={() => pickRandomChar()} title="Create Character">
+            <FiShuffle className="react-icon"/>
+          </button>
+          <input
+            type="file"
+            accept="image/png"
+            id="character-image-input"
+            onChange={(e) => handleImageUpload(e.target.files[0])}
+            style={{ display: 'none' }}
+          />
+          <div className="chara-search-bar col-span-2">
+            <input
+              type="text"
+              placeholder="Search characters"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </div>
         </div>
-      </button>
-      <button className="character-button" onClick={() => setShowForm(true)} title="Create Character">
-        <PlusCircleIcon className="hero-icon"/>
-      </button>
-      <label htmlFor="character-image-input" className="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
-        <ArrowUpTrayIcon className="hero-icon"/>
-      </label>
-      <button className="character-button" onClick={() => pickRandomChar()} title="Create Character">
-        <FiShuffle className="react-icon"/>
-      </button>
-      <input
-        type="file"
-        accept="image/png"
-        id="character-image-input"
-        onChange={(e) => handleImageUpload(e.target.files[0])}
-        style={{ display: 'none' }}
-      />
-      <div className="chara-search-bar col-span-2">
-        <input
-          type="text"
-          placeholder="Search characters"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-        />
       </div>
-    </div>
-  </div>
-  <div className="w-full flex justify-center">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {characters &&
-        characters
-          .filter((character) => {
-            return Object.values(character).some((value) =>
-              value
-                .toString()
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            );
-          })
-          .map((character) => (
-            <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
+      <div className="w-full flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20">
+          {characters &&
+            characters
+              .filter((character) => {
+                return Object.values(character).some((value) =>
+                  value
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                );
+              })
+              .map((character) => (
+                <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
           ))}
+        </div>
+      </div>
+      {selectedCharacter && (
+      <UpdateCharacterForm
+            character={selectedCharacter}
+            onUpdateCharacter={editCharacter}
+            onClose={closeModal}
+      />
+      )}
+      {showDeleteModal && (
+      <div className="modal-overlay">
+        <div className="modal-small-box">
+          <h2 className="centered">Delete Character</h2>
+          <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
+          <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+          <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
+        </div>
+      </div>
+      )}
     </div>
-  </div>
-</div>
-
-
   );
   
 };

@@ -76,22 +76,22 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
           <label htmlFor="avatar-field">          
             {character.avatar && (
               <>
-                  {imageUrl !== null ? (
-                    <img
-                    src={imageUrl}
-                    alt="New avatar"
-                    id="character-avatar"
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                  />
-                ) : (
+                {imageUrl !== null ? (
                   <img
-                  src={getCharacterImageUrl(character.avatar)}
-                  title="Current avatar"
-                  id="character-avatar-form"
+                  src={imageUrl}
+                  alt="New avatar"
+                  id="character-avatar"
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                  />
-                )}
-              </>
+                />
+              ) : (
+                <img
+                src={getCharacterImageUrl(character.avatar)}
+                title="Current avatar"
+                id="character-avatar-form"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                />
+              )}
+            </>
             )}
           </label>
           <input

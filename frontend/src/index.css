@@ -285,7 +285,7 @@ body {
 	align-items: center;
 	backdrop-filter: blur(5px);
 	justify-content: center;
-	z-index: 8000; /* make sure the modal is on top of other content */
+	z-index: 9999; /* make sure the modal is on top of other content */
 	overflow-y: scroll;
 }
 
@@ -1234,7 +1234,7 @@ Characters Page CSS
 
 }
 .input-box textarea {
-	min-height: 2rem !important;
+	min-height: 1rem !important;
 }
 
 .input-box {
@@ -1387,7 +1387,6 @@ Characters Page CSS
 .send-input {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
 }
 
 #FiImage:hover,
