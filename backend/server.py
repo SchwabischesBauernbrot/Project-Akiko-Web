@@ -389,35 +389,27 @@ def api_keywords():
     return jsonify({'keywords': keywords})
 
 
-@app.route('/api/discord-bot/token', methods=['POST'])
-def save_discord_bot_token():
-    bot_token = request.json.get('botToken')
+@app.route('/api/discord-bot/config', methods=['GET'])
+def get_discord_bot_config():
+    # Read the .config file if it exists, otherwise return default values
+    if os.path.isfile('.config'):
+        with open('.config', 'r') as config_file:
+            lines = config_file.readlines()
+            for line in lines:
+                if line.startswith('DISCORD_BOT_TOKEN='):
+                    bot_token = line.strip().split('=')[1].strip('"')
+                elif line.startswith('CHANNEL_ID='):
+                    channels = line.strip().split('=')[1].strip('"')
+    else:
+        bot_token = 'default_bot_token'
+        channels = 'default_channel_id'
 
-    # Read the .config file and remove the previous token value
-    with open('.config', 'r') as config_file:
-        lines = config_file.readlines()
-    with open('.config', 'w') as config_file:
-        config_file.write(f'DISCORD_BOT_TOKEN="{bot_token}"\n')
-        for line in lines:
-            if not line.startswith('DISCORD_BOT_TOKEN='):
-                config_file.write(line)
+    return jsonify({
+        'botToken': bot_token,
+        'channels': channels
+    }), 200
 
-    return 'Token configuration saved successfully', 200
 
-@app.route('/api/discord-bot/channel', methods=['POST'])
-def save_discord_bot_channel():
-    channels = request.json.get('channels')
-
-    # Read the .config file and remove the previous channel value
-    with open('.config', 'r') as config_file:
-        lines = config_file.readlines()
-    with open('.config', 'w') as config_file:
-        for line in lines:
-            if not line.startswith('CHANNEL_ID='):
-                config_file.write(line)
-        config_file.write(f'CHANNEL_ID={channels}\n')
-
-    return 'Channel configuration saved successfully', 200
 
 
 ##############################

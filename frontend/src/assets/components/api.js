@@ -46,6 +46,26 @@ export async function fetchCharacter(charId) {
   return response.data;
 }
 
+
+
+export async function fetchConfig(setBotToken, setChannels) {
+  try {
+    const response = await axios.get('http://localhost:5100/api/discord-bot/config');
+    console.log('Response:', response);
+    const data = response.data;
+    console.log('Data:', data);
+
+    // set the state with the retrieved data
+    setBotToken(data.botToken || '');
+    console.log('Bot Token set:', data.botToken);
+    setChannels(data.channels || '');
+    console.log('Channels set:', data.channels);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 export async function handleSaveToken(botToken) {
   const config = {
     botToken: botToken,
@@ -53,6 +73,14 @@ export async function handleSaveToken(botToken) {
   try {
     const response = await axios.post('http://localhost:5100/api/discord-bot/token', config);
     console.log('Token configuration saved successfully');
+
+    // Read the .config file and set the initial value of the bot token input field
+    const fileResponse = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const fileData = fileResponse.data;
+    const tokenValue = fileData['DISCORD_BOT_TOKEN'];
+    if (tokenValue) {
+      document.getElementById('bot-token-input').value = tokenValue.slice(1, -1);
+    }
   } catch (error) {
     console.error(error);
   }
@@ -64,8 +92,15 @@ export async function handleSaveChannel(channels) {
   };
   try {
     const response = await axios.post('http://localhost:5100/api/discord-bot/channel', config);
+    console.log('Channel configuration saved successfully');
 
-    console.log(response);
+    // Read the .config file and set the initial value of the channel input field
+    const fileResponse = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const fileData = fileResponse.data;
+    const channelValue = fileData['CHANNEL_ID'];
+    if (channelValue) {
+      document.getElementById('channel-input').value = channelValue;
+    }
   } catch (error) {
     console.error(error);
   }

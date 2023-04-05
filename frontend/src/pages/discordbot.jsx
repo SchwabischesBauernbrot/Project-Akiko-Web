@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { RxDiscordLogo } from 'react-icons/rx';
-import { handleSaveToken, handleSaveChannel } from '../assets/components/api.js';
+import { handleSaveToken, handleSaveChannel, fetchConfig } from '../assets/components/api.js';
 import 'tailwindcss/tailwind.css';
-
 
 
 const DiscordBot = () => {
@@ -13,7 +13,7 @@ const DiscordBot = () => {
 
   const handleToggle = () => {
     setIsOn(!isOn);
-  }
+  };
 
   const settingsPanelRef = useRef(null);
 
@@ -21,14 +21,16 @@ const DiscordBot = () => {
     const settingsBoxes = document.querySelectorAll('.settings-box');
     const settingsBoxHeights = Array.from(settingsBoxes).map(box => box.getBoundingClientRect().height);
     const tallestBoxHeight = Math.max(...settingsBoxHeights);
-    settingsBoxes.forEach(box => box.style.height = `${tallestBoxHeight}px`);
-  }, []);
+    settingsBoxes.forEach(box => (box.style.height = `${tallestBoxHeight}px`));
 
+    // Load the config data from the backend on mount
+    fetchConfig(setBotToken, setChannels);
+  }, []);
 
   const onSaveToken = () => {
     handleSaveToken(botToken);
   };
-  
+
   const onSaveChannel = () => {
     handleSaveChannel(channels);
   };
@@ -37,8 +39,8 @@ const DiscordBot = () => {
   return (
     <>
       <h1 className='settings-panel-header'>Discord Bot Configuration</h1>
-      <div className='settings-panel ' ref={settingsPanelRef}>
-      <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
+      <div className='settings-panel' ref={settingsPanelRef}>
+        <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
           <div className="settings-box" id='on-switch'>
             <RxDiscordLogo className="discord-logo" />
             <h2>On/Off Switch</h2>
@@ -67,12 +69,10 @@ const DiscordBot = () => {
           </div>
         </div>
       </div>
-
-
     </>
-  );
-  
+  );  
 };
+
 
 
 
