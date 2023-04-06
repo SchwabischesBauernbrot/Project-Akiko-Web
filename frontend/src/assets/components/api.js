@@ -131,7 +131,7 @@ export async function createCharacter(newCharacter) {
 
   const response = await axios.post(`${API_URL}/characters`, formData);
 
-  return response.data.avatar;
+  return response.data;
 }
 
 export function getCharacterImageUrl(avatar) {

@@ -68,16 +68,17 @@ const Characters = () => {
   const closeModal = () => {
     setSelectedCharacter(null);
   };
-
+  
   function addCharacter(newCharacter) {
     createCharacter(newCharacter)
-      .then(avatar => {
-        setCharacters([...characters, {...newCharacter, avatar: avatar}]);
+      .then(responseData => {
+        setCharacters([...characters, {...responseData}]);
       })
       .catch(error => {
         console.error(error);
       });
   };
+  
   
   const editCharacter = (updatedCharacter) => {
     const updatedCharacters = characters.map((c) => c.char_id === updatedCharacter.char_id ? updatedCharacter : c);

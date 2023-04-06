@@ -665,7 +665,7 @@ def add_character():
     with open(os.path.join(app.config['CHARACTER_FOLDER'], f"{character['char_id']}.json"), 'a') as f:
         f.write(json.dumps(character))
 
-    return jsonify({'message': 'Character added successfully', 'avatar': avatar})
+    return jsonify(character)
 
 
 @app.route('/api/characters/<char_id>', methods=['GET'])
