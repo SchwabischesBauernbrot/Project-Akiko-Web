@@ -144,7 +144,7 @@ const Characters = () => {
           </button>
           <input
             type="file"
-            accept="image/png"
+            accept="image/png, application/json"
             id="character-image-input"
             onChange={(e) => handleImageUpload(e.target.files[0])}
             style={{ display: 'none' }}

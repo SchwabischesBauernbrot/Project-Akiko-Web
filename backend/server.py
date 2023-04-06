@@ -154,7 +154,7 @@ app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'json'}
 
 def import_tavern_character(img, char_id):
     _img = Image.open(io.BytesIO(img))
@@ -818,20 +818,31 @@ def conversation(conversation_name):
 @cross_origin()
 def upload_tavern_character():
     char_id = request.form.get('char_id')
-    avatar = request.files['image']
+    file = request.files['image']
+
+    filename = None
     # Check if a file was uploaded and if it's allowed
-    if avatar and allowed_file(avatar.filename):
+    if file and allowed_file(file.filename):
         # Save the file with a secure filename
-        filename = secure_filename(str(char_id) + '.png')
-        avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
-        # Add the file path to the character information
-        avatar = filename
+        filename = secure_filename(str(char_id) + os.path.splitext(file.filename)[-1])
+        folder = app.config['CHARACTER_IMAGES_FOLDER'] if file.filename.lower().endswith('.png') else app.config['CHARACTER_FOLDER']
+        file.save(os.path.join(folder, filename))
     try:
-        if avatar.endswith('.png'):
-            with open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], avatar), 'rb') as read_file:
+        if filename.lower().endswith('.png'):
+            with open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename), 'rb') as read_file:
                 img = read_file.read()
                 _json = import_tavern_character(img, char_id)
             read_file.close()
+        elif filename.lower().endswith('.json'):
+            with open(os.path.join(app.config['CHARACTER_FOLDER'], filename), 'r') as read_file:
+                _json = json.load(read_file)
+            read_file.close()
+            _json['char_id'] = char_id
+            _json['avatar'] = 'default.png'
+            # Save the updated JSON back to the file
+            with open(os.path.join(app.config['CHARACTER_FOLDER'], filename), 'w') as write_file:
+                json.dump(_json, write_file)
+            write_file.close()
     except Exception as e:
         print(f"Error saving character: {str(e)}")
         return jsonify({'error': 'Character card failed to import'}), 500
