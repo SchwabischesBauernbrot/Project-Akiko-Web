@@ -221,10 +221,17 @@ function Chatbox({ endpoint, endpointType }) {
     setTimeout(() => {
       setMessages(isTypingHistory);
     }, 1000);
-    const history = chatHistory
-    .slice(-15) // Add this line to only take the last 15 messages
-    .map((message) => `${message.sender}: ${message.text}`)
-    .join('\n');
+    if(endpointType !== 'OAI'){
+      const history = chatHistory
+      .slice(-15) // Add this line to only take the last 15 messages
+      .map((message) => `${message.sender}: ${message.text}`)
+      .join('\n');
+    }else{
+      const history = chatHistory
+      .slice(-25) // Add this line to only take the last 15 messages
+      .map((message) => `${message.sender}: ${message.text}`)
+      .join('\n');
+    }
 
     // Make API call
     const generatedText = await characterTextGen(currentCharacter, history, endpoint, endpointType, image, configuredName);

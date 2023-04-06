@@ -223,6 +223,26 @@ export async function exportNewCharacter(character) {
   return `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`;
 }
 
+export async function exportJSON(character) {
+  const formData = new FormData();
+  formData.append('char_id', character.char_id);
+  formData.append('name', character.name);
+  formData.append('personality', character.personality);
+  formData.append('description', character.description);
+  formData.append('scenario', character.scenario);
+  formData.append('first_mes', character.first_mes);
+  formData.append('mes_example', character.mes_example);
+
+  const response = await axios.post(`${API_URL}/tavern-character/json-export`, formData, {
+    responseType: 'blob',
+  });
+
+  const blob = new Blob([response.data], { type: 'application/json' });
+  const fileName = `${character.name}.AkikoJSON.json`;
+
+  downloadImage(URL.createObjectURL(blob), fileName);
+}
+
 export async function fetchAdvancedCharacterEmotion(character, emotion) {
   const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
   return response.data['path'];

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { FiSave, FiImage, FiDownload } from 'react-icons/fi';
-import { exportNewCharacter, getCharacterImageUrl } from '../api';
+import { FiSave, FiImage } from 'react-icons/fi';
+import { BsFiletypeJson, BsFiletypePng } from "react-icons/bs";
+import { exportJSON, exportNewCharacter } from '../api';
 import { getTokenCount } from "../miscfunctions";
+
 export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
   const [characterName, setCharacterName] = useState('');
   const [nameTokenCount, setNameTokenCount] = useState(0);
@@ -118,6 +120,20 @@ export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
     exportNewCharacter(newCharacter);
   };
 
+  const handleJSONDownload = () => {
+    const newCharacter = {
+      char_id: Date.now(),
+      name: characterName || "Default Name",
+      personality: characterPersonality || "",
+      description: characterDescription || "",
+      scenario: characterScenario || "",
+      first_mes: characterGreeting || "",
+      mes_example: characterExamples || "",
+      avatar: characterAvatar,
+    };
+    exportJSON(newCharacter);
+  };
+
   return (
     <div className="modal-overlay">
       <div className="character-form max-w-full gap-1 mx-auto rounded-lg shadow-md backdrop-blur-md p-5 lg:w-4/5 m-auto">
@@ -200,8 +216,11 @@ export const CharacterForm = ({ onCharacterSubmit, onClose }) => {
             <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" type="submit">
               <FiSave className="react-icon"/>
             </button>
-            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" id="character-download" alt="Download Character" onClick={handleDownload}>
-              <FiDownload className="react-icon"/>
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as PNG" onClick={handleDownload}>
+              <BsFiletypePng className="react-icon"/>
+            </button>
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as JSON" onClick={handleJSONDownload}>
+              <BsFiletypeJson className="react-icon"/>
             </button>
           </div>
       </form>

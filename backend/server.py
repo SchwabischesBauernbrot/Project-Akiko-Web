@@ -1,7 +1,7 @@
 import datetime
 from functools import wraps
 import io
-from flask import Flask, jsonify, request, render_template_string, abort, send_from_directory
+from flask import Flask, jsonify, request, render_template_string, abort, send_file, send_from_directory
 from flask_cors import CORS, cross_origin
 import argparse
 import requests
@@ -242,6 +242,27 @@ def export_new_character(character):
     with open(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{outfile_name}.png'), 'wb') as f:
         image.save(f, format='PNG', pnginfo=img_info)
     return
+
+def export_as_json(character):
+    # Create a dictionary containing the character information to export
+    character_data = {
+        'name': character['name'],
+        'description': character['description'],
+        'personality': character['personality'],
+        'scenario': character['scenario'],
+        'first_mes': character['first_mes'],
+        'mes_example': character['mes_example'],
+        'metadata': {
+            'version': '1.0.0',
+            'editor': 'ProjectAkiko',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+    }
+
+    # Convert the dictionary to a JSON string
+    json_data = json.dumps(character_data)
+
+    return json_data
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -843,6 +864,35 @@ def download_new_character_card():
         print(f"Error saving character: {str(e)}")
         return jsonify({'error': 'Character card failed to export'}), 500
     return jsonify({'success': 'Character card exported'})
+
+
+@app.route('/api/tavern-character/json-export', methods=['POST'])
+@cross_origin()
+def download_as_json():
+    fields = {
+        'char_id': 'char_id',
+        'name': 'name',
+        'personality': 'personality',
+        'description': 'description',
+        'scenario': 'scenario',
+        'first_mes': 'first_mes',
+        'mes_example': 'mes_example'
+    }
+
+    character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
+
+    try:
+        json_data = export_as_json(character)
+    except Exception as e:
+        print(f"Error saving character: {str(e)}")
+        return jsonify({'error': 'Character JSON failed to export'}), 500
+
+    # Prepare the JSON data for download
+    json_bytes = json_data.encode('utf-8')
+    buffer = io.BytesIO(json_bytes)
+    outfile_name = f"{character['name']}.AkikoJSON.json"
+
+    return send_file(buffer, mimetype='application/json', as_attachment=True, download_name=outfile_name)
 
 @app.route('/api/tavern-character/<char_id>', methods=['GET'])
 @cross_origin()

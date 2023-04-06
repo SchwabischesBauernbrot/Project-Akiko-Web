@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { getCharacterImageUrl, exportTavernCharacter, updateCharacter } from "../api";
-import { FiSave, FiDownload } from "react-icons/fi";
+import { getCharacterImageUrl, exportTavernCharacter, exportJSON, updateCharacter } from "../api";
+import { FiSave } from "react-icons/fi";
 import { getTokenCount } from "../miscfunctions";
+import { BsFiletypeJson, BsFiletypePng } from "react-icons/bs";
 
 export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, download }) => {
   const [characterName, setCharacterName] = useState('');
@@ -98,6 +99,20 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
   
   const handleDownload = () => {
     exportTavernCharacter(character.char_id, character.name)
+  };
+
+  const handleJSONDownload = () => {
+    const newCharacter = {
+      char_id: character.char_id,
+      name: characterName || "Default Name",
+      personality: characterPersonality || "",
+      description: characterDescription || "",
+      scenario: characterScenario || "",
+      first_mes: characterGreeting || "",
+      mes_example: characterExamples || "",
+      avatar: characterAvatar,
+    };
+    exportJSON(newCharacter);
   };
 
   function handleImageChange(event) {
@@ -215,12 +230,15 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
               <i>{`(${examplesTokenCount} tokens)`}</i>
             </div>
           </div>
-          <div className="flex justify-center mt-4 mt-0"> 
+          <div className="flex justify-center mt-4 mt-0 gap-6"> 
             <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" type="submit">
               <FiSave className="react-icon"/>
             </button>
-            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" id="character-download" alt="Download Character" onClick={handleDownload}>
-              <FiDownload className="react-icon"/>
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as PNG" onClick={() => handleDownload()}>
+              <BsFiletypePng className="react-icon"/>
+            </button>
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as JSON" onClick={() => handleJSONDownload()}>
+              <BsFiletypeJson className="react-icon"/>
             </button>
           </div>
       </form>
