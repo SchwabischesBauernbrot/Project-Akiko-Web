@@ -29,22 +29,21 @@ return (
       {character && (
         <div
           key={character.char_id}
-          className="character-info-box flex justify-center"
-          tabIndex="0" // Add this line to make the div focusable on tap
+          className="character-info-box relative rounded-lg bg-selected-bb-color shadow-md backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center"
+          tabIndex="0"
         >
-          <h2>
+          <h2 className="absolute w-auto px-2 py-1.5 text-xl sm:text-2xl md:text-3xl text-center text-selected-text-color z-2 top-2 sm:top-3 md:top-4 left-1/2 transform -translate-x-1/2">
             <b>{character.name}</b>
           </h2>
           <img
             src={imageUrl}
             title={character.name}
             id="character-avatar"
-            onClick={() => openModal(character)}
           />
-          <div className="absolute bottom-6 flex justify-center items-center">
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 md:gap-1 md:gap-5 lg:gap-14 button-container">
+          <div className="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+            <div className="button-container w-48 h-16 sm:w-64 sm:h-20 md:w-48 md:h-16 flex justify-between">
               <button
-                className="text-selected-text bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="cancel text-selected-text bg-selected w-1/3 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
                 id="cancel"
                 onClick={() => delCharacter(character)}
                 title="Delete Character"
@@ -52,7 +51,7 @@ return (
                 <TrashIcon />
               </button>
               <button
-                className="text-selected-text bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="text-selected-text bg-selected w-1/3 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
                 id="select"
                 onClick={() => selectCharacter(character)}
                 title="Select Character"
@@ -60,7 +59,7 @@ return (
                 <FiCheck className="react-icon" />
               </button>
               <button
-                className="text-selected-text bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="text-selected-text bg-selected w-1/3 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
                 id="select"
                 onClick={() => openModal(character)}
                 title="View Character Details"

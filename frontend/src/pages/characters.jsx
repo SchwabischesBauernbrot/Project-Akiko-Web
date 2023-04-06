@@ -160,8 +160,8 @@ const Characters = () => {
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20">
+      <div className="w-full h-full grid place-content-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20 mx-auto">
           {characters &&
             characters
               .filter((character) => {

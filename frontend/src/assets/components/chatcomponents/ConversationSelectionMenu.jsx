@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchConversations, saveConversation, fetchConversation, deleteConversation } from "../api";
 import Conversation from "./Conversation";
-import {FiPlus} from "react-icons/fi";
+import {FiPlus, FiTrash2} from "react-icons/fi";
 
 const ConversationSelectionMenu = ({setConvo, handleChatMenuClose}) => {
   const [conversations, setConversations] = useState([]);
@@ -45,8 +45,8 @@ const ConversationSelectionMenu = ({setConvo, handleChatMenuClose}) => {
                   {conversations.map((conversation, index) => (
                   <div className="conversation-container" key={index}>
                     <Conversation conversation={conversation} />
-                    <button className='chat-management-button' id='submit' onClick={() => handleSetConversation(conversation)}>Select</button>
-                    <button className='chat-management-button' id='cancel' onClick={() => handleDeleteConversation(conversation)}>Delete</button>
+                    <button className='chat-management-button' id='submit' onClick={() => handleSetConversation(conversation)}><FiPlus className="react-icon"/></button>
+                    <button className='chat-management-button' id='cancel' onClick={() => handleDeleteConversation(conversation)}><FiTrash2 className="react-icon"/></button>
                   </div>
                   ))}
                 </div>

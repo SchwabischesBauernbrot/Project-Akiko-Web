@@ -704,65 +704,12 @@ Characters Page CSS
 	box-shadow: none;
 }
 
-#character-info {
-	bottom: 1.25rem;
-	right: 1.25rem;
-	position: absolute;
-}
-
-#character-submit {
-	bottom: 1.25rem;
-	right: 1.25rem;
-	position: absolute;
-}
-
-#character-download {
-	bottom: 1.25rem;
-	left: 1.25rem;
-	position: absolute;
-}
-
-#character-close {
-	bottom: 1.25rem;
-	left: 1.25rem;
-	position: absolute;
-}
-#character-select {
-	bottom: 1.25rem;
-	right: 0rem;
-	left: 9rem;
-	position: absolute;
-}
-
-#character-close:hover {
-    background-color: rgba(179, 6, 6, 0.636);
-}
-
 .character-form {
 	background-color: var(--selected-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	color: var(--selected-text-color);
-}
-
-.character-form-bottom-box {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	justify-content: flex-start;
-	margin-bottom: 1rem;
-}
-#name-field {
-	width: 10rem;
-	height: 3.25rem;
-	font-size: 1.5rem;
-}
-#small-field {
-	height: 6.25rem;
-}
-#large-field {
-	height: 20rem;
 }
 
 #character-avatar {
@@ -828,7 +775,6 @@ Characters Page CSS
 }
   
 .character-info-box {
-	position: relative;
 	border-radius: 10%;
 	background-color: var(--selected-bb-color);
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
@@ -836,20 +782,9 @@ Characters Page CSS
 }
 
 .character-info-box h2{
-	width: fit-content;
-	padding: 10px;
-	margin-right: auto;
-	margin-left: auto;
-	height: inherit;
-	position: absolute; /* add position property */
-	z-index: 2; /* add z-index property */
-	left: 10px;
-	right: 10px;
-	text-align: center;
-	color: var(--selected-text-color);
-	font-size: 24px;
 	text-shadow: 5px 5px 10px black;
 }
+
 .button-container {
 	display: none;
 	opacity: 0;
@@ -860,58 +795,6 @@ Characters Page CSS
 .character-info-box:focus-within .button-container {
   display: flex;
   opacity: 1;
-}
-
-/* For tablets and smaller devices */
-@media only screen and (min-width: 401px) and (max-width: 896px) {
-	.character-info-box h2{
-		position: static;
-		text-align: center;
-		font-size: 20px;
-	}
-	#character-avatar-form {
-		padding: 10px;
-		height: 15rem;
-		width: 15rem;
-	}
-	#avatar-default {
-		padding: 10px;
-		height: 15rem;
-		width: 15rem;
-	}
-	.character-form {
-		margin-top: 10rem;
-		margin-right: 0;
-		margin-left: 0;
-		width: 100%;
-		padding: .5em;
-	}
-}
-
-/* For mobile devices */
-@media only screen and (max-width: 400px) {
-	.character-info-box h2{
-		position: static;
-		text-align: center;
-		font-size: 20px;
-	}
-	#character-avatar-form {
-		padding: 10px;
-		height: 15rem;
-		width: 15rem;
-	}
-	#avatar-default {
-		padding: 10px;
-		height: 15rem;
-		width: 15rem;
-	}
-	.character-form {
-		margin-top: 10rem;
-		margin-right: 0;
-		margin-left: 0;
-		width: 100%;
-		padding: .5em;
-	}
 }
 /* Chat CSS */
 .message-box {
