@@ -38,13 +38,13 @@ const UserInfo = ({onClose}) => {
     async function handleSubmit(event) {
         event.preventDefault();
         const avatar = await saveUserAvatar(userImage);
+        localStorage.setItem('configuredAvatar', avatar);
+        localStorage.setItem('configuredName', userName);
         const newUserInfo = {
             avatar : avatar,
             name : userName,
             authorsNote : authorsNote
         }
-        localStorage.setItem('configuredAvatar', avatar);
-        localStorage.setItem('configuredName', userName);
         onClose(newUserInfo);
     }
     const handleDefault = () => {
