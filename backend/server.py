@@ -1015,6 +1015,7 @@ def get_backgrounds():
 
 
 @app.route('/api/user-avatar', methods=['POST'])
+@cross_origin()
 def save_user_avatar():
     if 'avatar' not in request.files:
         return 'No avatar file provided', 400
