@@ -1,3 +1,4 @@
+import datetime
 from functools import wraps
 import io
 from flask import Flask, jsonify, request, render_template_string, abort, send_from_directory
@@ -179,7 +180,12 @@ def export_tavern_character(char_id):
         'personality': character_info['personality'],
         'scenario': character_info["scenario"],
         'first_mes': character_info["first_mes"],
-        'mes_example': character_info["mes_example"]
+        'mes_example': character_info["mes_example"],
+        'metadata': {
+            'version': '1.0.0',
+            'editor': 'ProjectAkiko',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
     }
 
     # Load the image in any format
@@ -197,6 +203,44 @@ def export_tavern_character(char_id):
     with open(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{outfile_name}.png'), 'wb') as f:
         image.save(f, format='PNG', pnginfo=img_info)
 
+    return
+
+def export_new_character(character):
+    outfile_name = f"{character['name']}.AkikoCharaCard"
+
+    # Create a dictionary containing the character information to export
+    character_data = {
+        'name': character['name'],
+        'description': character['description'],
+        'personality': character['personality'],
+        'scenario': character['scenario'],
+        'first_mes': character['first_mes'],
+        'mes_example': character['mes_example'],
+        'metadata': {
+            'version': '1.0.0',
+            'editor': 'ProjectAkiko',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+    }
+
+    # Load the image in any format
+    if character['avatar'] is not None:
+        image = Image.open(character['avatar']).convert('RGBA')
+    else:
+        # Load a default image if avatar is not provided
+        image = Image.open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], 'default.png')).convert('RGBA')
+
+    # Convert the dictionary to a JSON string and then encode as base64
+    json_data = json.dumps(character_data)
+    base64_encoded_data = base64.b64encode(json_data.encode('utf8')).decode('utf8')
+
+    # Add the encoded data to the image metadata
+    img_info = PngImagePlugin.PngInfo()
+    img_info.add_text('chara', base64_encoded_data)
+
+    # Save the modified image to the target location
+    with open(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{outfile_name}.png'), 'wb') as f:
+        image.save(f, format='PNG', pnginfo=img_info)
     return
 
 def allowed_file(filename):
@@ -772,6 +816,33 @@ def upload_tavern_character():
         return jsonify({'error': 'Character card failed to import'}), 500
     return jsonify(_json)
 
+@app.route('/api/tavern-character/new-export', methods=['POST'])
+@cross_origin()
+def download_new_character_card():
+    fields = {
+        'char_id': 'char_id',
+        'name': 'name',
+        'personality': 'personality',
+        'description': 'description',
+        'scenario': 'scenario',
+        'first_mes': 'first_mes',
+        'mes_example': 'mes_example'
+    }
+    avatar = None
+
+    # Use request.files.get() to avoid KeyError
+    if(request.files.get('avatar') is not None):
+        avatar = request.files['avatar']
+    
+    character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
+    character['avatar'] = avatar
+
+    try:
+        export_new_character(character)
+    except Exception as e:
+        print(f"Error saving character: {str(e)}")
+        return jsonify({'error': 'Character card failed to export'}), 500
+    return jsonify({'success': 'Character card exported'})
 
 @app.route('/api/tavern-character/<char_id>', methods=['GET'])
 @cross_origin()

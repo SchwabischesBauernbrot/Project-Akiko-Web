@@ -44,8 +44,7 @@ return (
           <div className="absolute bottom-6 flex justify-center items-center">
             <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 md:gap-1 md:gap-5 lg:gap-14 button-container">
               <button
-                style={{ backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)',}}
-                className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="text-selected-text bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
                 id="cancel"
                 onClick={() => delCharacter(character)}
                 title="Delete Character"
@@ -53,8 +52,7 @@ return (
                 <TrashIcon />
               </button>
               <button
-                style={{  backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)',}}
-                className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="text-selected-text bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
                 id="select"
                 onClick={() => selectCharacter(character)}
                 title="Select Character"
@@ -62,8 +60,7 @@ return (
                 <FiCheck className="react-icon" />
               </button>
               <button
-                style={{  backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)',}}
-                className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="text-selected-text bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
                 id="select"
                 onClick={() => openModal(character)}
                 title="View Character Details"

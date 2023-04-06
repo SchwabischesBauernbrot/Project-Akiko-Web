@@ -200,11 +200,27 @@ export async function uploadTavernCharacter(image){
 }
 
 
-export async function exportTavernCharacter(charId) {
+export async function exportTavernCharacter(charId, charName) {
   await axios.get(`${API_URL}/tavern-character/${charId}`);
   var link = `/${EXPORTS_FOLDER}/${charId}.png`
-  downloadImage(link, `${charId}.png`);
-  return `/${EXPORTS_FOLDER}/${charId}.png`;
+  downloadImage(link, `${charName}.AkikoCharaCard.png`);
+  return `/${EXPORTS_FOLDER}/${charName}.AkikoCharaCard.png`;
+}
+
+export async function exportNewCharacter(character) {
+  const formData = new FormData();
+  formData.append('char_id', character.char_id);
+  formData.append('name', character.name);
+  formData.append('personality', character.personality);
+  formData.append('description', character.description);
+  formData.append('scenario', character.scenario);
+  formData.append('first_mes', character.first_mes);
+  formData.append('mes_example', character.mes_example);
+  formData.append('avatar', character.avatar);
+  await axios.post(`${API_URL}/tavern-character/new-export`, formData);
+  var link = `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`
+  downloadImage(link, `${character.name}.AkikoCharaCard.png`);
+  return `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`;
 }
 
 export async function fetchAdvancedCharacterEmotion(character, emotion) {

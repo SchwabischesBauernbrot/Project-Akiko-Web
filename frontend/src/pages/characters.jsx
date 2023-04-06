@@ -123,23 +123,23 @@ const Characters = () => {
       <div className="w-full flex justify-center mb-6">
         <div className="grid grid-cols-6 gap-0">
           <button 
-            style={{  backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)',}}
-            className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={refresh} title="Refresh Character List">
+            style={{ color: 'var(--selected-text-color)',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={refresh} title="Refresh Character List">
               <ArrowPathIcon className="hero-icon"/>
           </button>
           <button 
-            style={{  backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)',}}
-            className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={() => setShowForm(true)} title="Create Character">
+            style={{ color: 'var(--selected-text-color)',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={() => setShowForm(true)} title="Create Character">
             <PlusCircleIcon className="hero-icon"/>
           </button>
           <label htmlFor="character-image-input"  
-            style={{  backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)', cursor: 'pointer',}}
-            className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" title="Import Character Card">
+            style={{ color: 'var(--selected-text-color)', cursor: 'pointer',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" title="Import Character Card">
             <ArrowUpTrayIcon className="hero-icon"/>
           </label>
           <button
-            style={{  backgroundColor: 'var(--selected-bb-color)', color: 'var(--selected-text-color)',}}
-            className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={() => pickRandomChar()} title="Create Character">
+            style={{ color: 'var(--selected-text-color)',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={() => pickRandomChar()} title="Create Character">
             <FiShuffle className="react-icon"/>
           </button>
           <input
