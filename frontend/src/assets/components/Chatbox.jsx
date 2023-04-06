@@ -20,6 +20,7 @@ import ConnectMenu from "./chatcomponents/ConnectMenu";
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
   const [configuredName, setconfiguredName] = useState('You');
+  const [configuredAvatar, setconfiguredAvatar] = useState('default.png');
   const [useEmotionClassifier, setUseEmotionClassifier] = useState('');
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState([]);
@@ -100,6 +101,9 @@ function Chatbox({ endpoint, endpointType }) {
         if(localStorage.getItem('configuredName') !== null) {
           setconfiguredName(localStorage.getItem('configuredName'));
         }
+        if(localStorage.getItem('configuredAvatar') !== null) {
+          setconfiguredAvatar(localStorage.getItem('configuredAvatar'));
+        }
         if(localStorage.getItem('useEmotionClassifier') !== null) {
           if(localStorage.getItem('useEmotionClassifier') === '1') {
             setUseEmotionClassifier('true');
@@ -160,8 +164,8 @@ function Chatbox({ endpoint, endpointType }) {
   
 
   useEffect(() => {
-    setUserCharacter({ name: configuredName, avatar: 'default.png'});
-  }, [configuredName]);
+    setUserCharacter({ name: configuredName, avatar: configuredAvatar});
+  }, [configuredName, configuredAvatar]);
 
   useEffect(() => {
     // scroll to last message when messages state updates
@@ -192,10 +196,10 @@ function Chatbox({ endpoint, endpointType }) {
   
     let newMessage;
     if (activateImpersonation === true) {
-      newMessage = await createUserMessage(text, image, currentCharacter);
+      newMessage = await createUserMessage(text, image, currentCharacter, activateImpersonation);
       setActivateImpersonation(false);
     } else {
-      newMessage = await createUserMessage(text, image, userCharacter);
+      newMessage = await createUserMessage(text, image, userCharacter, activateImpersonation);
     }
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages); // Update messages state with the new user message
@@ -221,14 +225,15 @@ function Chatbox({ endpoint, endpointType }) {
     setTimeout(() => {
       setMessages(isTypingHistory);
     }, 1000);
+    let history;
     if(endpointType !== 'OAI'){
-      const history = chatHistory
+      history = chatHistory
       .slice(-15) // Add this line to only take the last 15 messages
       .map((message) => `${message.sender}: ${message.text}`)
       .join('\n');
     }else{
-      const history = chatHistory
-      .slice(-25) // Add this line to only take the last 15 messages
+      history = chatHistory
+      .slice(-25) // Add this line to only take the last 25 messages
       .map((message) => `${message.sender}: ${message.text}`)
       .join('\n');
     }
@@ -432,7 +437,10 @@ function Chatbox({ endpoint, endpointType }) {
     localStorage.setItem('conversationName', convo.conversationName);
     setConvo(convo);
   }
-
+  const changeUserInfo = async (user) => {
+    setconfiguredName(user.name);
+    setconfiguredAvatar(user.avatar);
+  }
   return (
     <>
     <>
@@ -508,7 +516,7 @@ function Chatbox({ endpoint, endpointType }) {
       ))}
       <div ref={messagesEndRef}></div>
       </div>
-      <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation}/>
+      <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation} userEdit={changeUserInfo}/>
     </div>
     <InvalidActionPopup isOpen={invalidActionPopup} handleInvalidAction={handleInvalidAction} />
     <DeleteMessageModal isOpen={showDeleteMessageModal} handleCancel={() => setShowDeleteMessageModal(false)} handleDelete={() => handleDeleteMessage(deleteMessageIndex)} />

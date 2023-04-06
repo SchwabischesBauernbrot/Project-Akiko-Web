@@ -14,9 +14,9 @@ const UserInfo = ({onClose}) => {
         }else{
             setUserName('You');
         }
-        if(localStorage.getItem('userImage')){
-            setUserImage(localStorage.getItem('userImage')); // Fixed here
-            let url = getCharacterImageUrl(localStorage.getItem('userImage')) // Fixed here
+        if(localStorage.getItem('configuredAvatar')){
+            setUserImage(localStorage.getItem('configuredAvatar')); // Fixed here
+            let url = getCharacterImageUrl(localStorage.getItem('configuredAvatar')) // Fixed here
             setImageUrl(url);
         }
     }, []);    
@@ -32,66 +32,70 @@ const UserInfo = ({onClose}) => {
     async function handleSubmit(event) {
         event.preventDefault();
         const newUserInfo = {
-            userImage : userImage,
-            userName : userName,
+            avatar : userImage,
+            name : userName,
             authorsNote : authorsNote
         }
-        await saveUserAvatar(newUserInfo);
-        localStorage.setItem('userImage', userImage);
+        const avatar = await saveUserAvatar(newUserInfo);
+        localStorage.setItem('configuredAvatar', avatar);
         localStorage.setItem('configuredName', userName);
-        onClose();
+        onClose(newUserInfo);
     }
 
     return (
         <div className="modal-overlay">
-            <div className="user-info-menu">
-                <span className="close" onClick={onClose} style={{cursor: 'pointer'}}>&times;</span>
-                <h2 id='charactername-title'>User Details</h2>
-                <div className="user-info-wrapper">
-                    <form onSubmit={handleSubmit}>
-                    <div className="user-info-top">
-                        <div className="user-info-top-left">
-                            <label htmlFor="avatar-field">{!imageUrl && <FiImage id="avatar-default"/>} {imageUrl && <img src={imageUrl} alt="avatar" id="character-avatar-form"/>}</label>
-                            <input
+            <div className="character-info-box relative rounded-lg bg-selected-bb-color shadow-md backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
+            <span className="absolute top-0 right-0 p-4 text-xl font-bold cursor-pointer" onClick={onClose}>&times;</span>
+            <div className="flex flex-col w-full max-w-md p-4 bg-selected-color rounded-lg">
+                <h2 className="mb-4 text-xl font-bold">User Details</h2>
+                <div className="flex flex-col">
+                <form onSubmit={handleSubmit}>
+                    <div className="flex">
+                    <div className="flex flex-col items-center w-1/2">
+                        <label htmlFor="avatar-field" className="relative">
+                        {!imageUrl && <FiImage className="w-24 h-24 text-gray-300"/>}
+                        {imageUrl && <img src={imageUrl} alt="avatar" className="w-24 h-24 rounded-full"/>}
+                        <input
                             id="avatar-field"
+                            className="absolute inset-0 opacity-0 cursor-pointer"
                             type="file"
                             name="userAvatar"
                             accept="image/*"
                             onChange={handleImageChange}
+                        />
+                        </label>
+                    </div>
+                        <div className="w-1/2">
+                            <label htmlFor="userName" className="font-bold">Name:</label>
+                            <textarea
+                            id="name-field"
+                            className="character-field w-full px-2 py-1 mb-2 border rounded"
+                            value={userName}
+                            type="text"
+                            onChange={(event) => setUserName(event.target.value)}
+                            required
                             />
                         </div>
-                        <div className="user-info-top-right">
-                            <label htmlFor="userName"><b>Name:</b></label>
-                            <textarea
-                                id="name-field"
-                                className="character-field"
-                                value={userName}
-                                type="text"
-                                onChange={(event) => setUserName(event.target.value)}
-                                required
-                            />
-                            <label htmlFor="authorsNote"><b>Author's Note:</b></label>
-                            <textarea
+                    </div>
+                    <div className="w-full">
+                            <label htmlFor="authorsNote" className="font-bold">Author's Note:</label>
+                                <textarea
                                 id="authors-note"
-                                className='character-field'
+                                className="character-field w-full px-2 py-1 mb-2 border rounded"
                                 value={authorsNote}
                                 type="text"
                                 onChange={(event) => setAuthorsNote(event.target.value)}
                                 placeholder="Author's Note Here"
-                            />
+                                />
                         </div>
+                    <div className="flex justify-end">
+                    <button type="submit" className="p-2 text-white bg-blue-500 rounded">
+                        <FiSave className="react-icon"/>
+                    </button>
                     </div>
-                    <div className="user-info-bottom">
-                        <div className="user-info-bottom-left">
-                        </div>
-                        <div className="user-info-bottom-right">
-                            <div className="form-bottom-buttons">
-                                <button type="submit" id='submit' className="icon-button"><FiSave className="react-icon"/></button>
-                            </div>
-                        </div>
-                    </div>
-                    </form>
+                </form>
                 </div>
+            </div>
             </div>
         </div>
     );

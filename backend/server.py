@@ -148,6 +148,7 @@ app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
 app.config['CONVERSATIONS_FOLDER'] = '../frontend/src/shared_data/conversations/'
 app.config['CHARACTER_FOLDER'] = '../frontend/src/shared_data/character_info/'
 app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_images/'
+app.config['USER_IMAGES_FOLDER'] = '../frontend/src/shared_data/user_avatars/'
 app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
 app.config['DEBUG'] = True
@@ -532,7 +533,7 @@ def textgen(endpointType):
         messages=[
             {"role": "user", "content": data['prompt']}
         ],
-        max_tokens=data['settings']['max_tokens'],
+            max_tokens=data['settings']['max_tokens'],
             n=1,
             stop=f'{configuredName}:',
             temperature=data['settings']['temperature'],
@@ -1027,7 +1028,7 @@ def save_user_avatar():
     # Save the avatar file to the user's folder
     avatar.save(os.path.join(app.config['USER_IMAGES_FOLDER'], f'{avatar_count}.png'))
     # Return a response to the client
-    return {avatar: f'{avatar_count}.png'}, 200
+    return {'avatar': f'{avatar_count}.png'}, 200
 
 
 #########################
