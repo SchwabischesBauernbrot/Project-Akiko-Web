@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { saveUserAvatar, getUserImageUrl } from '../api';
 import { FiImage, FiSave } from 'react-icons/fi';
+import { RxReset } from 'react-icons/rx';
 
 const UserInfo = ({onClose}) => {
     const [userImage, setUserImage] = useState(null);
@@ -46,7 +47,14 @@ const UserInfo = ({onClose}) => {
         localStorage.setItem('configuredName', userName);
         onClose(newUserInfo);
     }
-
+    const handleDefault = () => {
+        setUserImage(null);
+        setUserName('You');
+        setImageUrl(getUserImageUrl('default.png'));
+        localStorage.setItem('configuredAvatar', 'default.png');
+        localStorage.setItem('configuredName', 'You');
+        onClose(null);
+    }
     return (
         <div className="modal-overlay">
             <div className="character-info-box relative rounded-lg bg-selected-bb-color shadow-md backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
@@ -93,8 +101,11 @@ const UserInfo = ({onClose}) => {
                                 placeholder="Author's Note Here"
                                 />
                         </div>
-                    <div className="flex justify-end">
-                    <button type="submit" className="p-2 text-white bg-blue-500 rounded">
+                    <div className="flex justify-center">
+                    <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-red-600 text-selected-text" onClick={() => handleDefault()}title='Reset to default'>
+                        <RxReset className="react-icon"/>
+                    </button>
+                    <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" type="submit">
                         <FiSave className="react-icon"/>
                     </button>
                     </div>
