@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 const GenSettingsMenu = ({onClose}) => {
+    const [endpointType, setEndpointType] = useState('');
     useEffect(() => {
     
         const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
@@ -33,14 +34,18 @@ const GenSettingsMenu = ({onClose}) => {
     const [typical, setTypical] = useState(1);
 
     useEffect(() => {
-        var endpointType = localStorage.getItem('endpointType');
-        if(endpointType === 'AkikoBackend'){
+        var endpoint = localStorage.getItem('endpointType');
+        if(endpoint === 'AkikoBackend'){
+            setEndpointType(endpoint);
             setInvalidEndpoint(false);
-        } else if(endpointType === 'Kobold'){
-            
+        } else if(endpoint === 'Kobold'){
+            setEndpointType(endpoint);
             setInvalidEndpoint(false);
-        } else if(endpointType === 'Ooba'){
-            
+        } else if(endpoint === 'Ooba'){
+            setEndpointType(endpoint);
+            setInvalidEndpoint(false);
+        } else if(endpoint === 'OAI'){
+            setEndpointType(endpoint);
             setInvalidEndpoint(false);
         }else {
             console.log('Endpoint type not recognized. Please check your settings.')
@@ -51,7 +56,7 @@ const GenSettingsMenu = ({onClose}) => {
     useEffect(() => {
         const endpointType = localStorage.getItem('endpointType');
         const settings = localStorage.getItem('generationSettings');
-        if (endpointType === 'Kobold') {
+        if (endpointType === 'Kobold' || endpointType === 'Horde') {
             setInvalidEndpoint(false);
             if (settings) {
                 const parsedSettings = JSON.parse(settings);
@@ -69,9 +74,16 @@ const GenSettingsMenu = ({onClose}) => {
                 setTopP(parsedSettings.top_p);
                 setTypical(parsedSettings.typical);
             }
-        } else {
-        console.log('Endpoint type not recognized. Please check your settings.');
-        setInvalidEndpoint(true);
+        } else if(endpointType === 'OAI'){
+            setInvalidEndpoint(false);
+            if (settings) {
+                const parsedSettings = JSON.parse(settings);
+                setMaxLength(parsedSettings.max_length);
+                setTemperature(parsedSettings.temperature);
+            }
+        }else{
+            console.log('Endpoint type not recognized. Please check your settings.')
+            setInvalidEndpoint(true);
         }
     }, []);
 
@@ -110,9 +122,25 @@ const GenSettingsMenu = ({onClose}) => {
                     <button className="submit-button" onClick={() => onCloseInvalid()}>Close</button>
                 </div>
             ) : (
-                <div className="gen-settings-menu">
+            <div className="gen-settings-menu">
                 <span className="close" onClick={onClose}>&times;</span>
                 <h1 className="gen-settings-header">Generation Settings</h1>
+                {endpointType === 'OAI' ? (
+                    // Settings for OAI
+                    <>
+                        <label>
+                            <b>Max Generation Length</b>
+                            <input type="range" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
+                            <input id='input-container' type="number" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
+                        </label>
+                        <label>
+                            <b>Temperature</b>
+                            <input type="range" min="0" step="0.01" max='2' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
+                            <input id='input-container' type="number" min="0" step="0.01" max='2' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
+                        </label>
+                    </>
+                ) : (
+                <>
                 <label>
                     <b>Max Context Length</b>
                     <input type="range" min='512' max='2048' value={maxContextLength} onChange={(e) => {setMaxContextLength(e.target.value); saveSettings();}} />
@@ -176,7 +204,9 @@ const GenSettingsMenu = ({onClose}) => {
                     <input type="range" min="0" max="1" step=".01" value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
                     <input id='input-container' type="number" min="0" max="1" step=".01" value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
                 </label>
-            </div>
+            </>
+            )}
+        </div>
         )}
     </div>
 );

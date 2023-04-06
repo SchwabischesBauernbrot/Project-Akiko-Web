@@ -532,10 +532,10 @@ def textgen(endpointType):
         messages=[
             {"role": "user", "content": data['prompt']}
         ],
-        max_tokens=150,
+        max_tokens=data['settings']['max_tokens'],
             n=1,
             stop=f'{configuredName}:',
-            temperature=0.7
+            temperature=data['settings']['temperature'],
         )
         if response.choices:
             response = response['choices'][0]['message']['content']
