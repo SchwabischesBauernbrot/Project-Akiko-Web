@@ -113,7 +113,7 @@ function Chatbox({ endpoint, endpointType }) {
         }
       };
       fetchConfig();
-      setUserCharacter({ name: configuredName, avatar: 'default.png' });
+      setUserCharacter({ name: configuredName, avatar: configuredAvatar });
   }, []);
 
   useEffect(() => {
@@ -199,7 +199,7 @@ function Chatbox({ endpoint, endpointType }) {
       newMessage = await createUserMessage(text, image, currentCharacter, activateImpersonation);
       setActivateImpersonation(false);
     } else {
-      newMessage = await createUserMessage(text, image, userCharacter, activateImpersonation);
+      newMessage = await createUserMessage(text, image, userCharacter);
     }
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages); // Update messages state with the new user message

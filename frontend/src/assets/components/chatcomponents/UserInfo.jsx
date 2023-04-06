@@ -1,25 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { getCharacterImageUrl, saveUserAvatar } from '../api';
+import { saveUserAvatar, getUserImageUrl } from '../api';
 import { FiImage, FiSave } from 'react-icons/fi';
 
 const UserInfo = ({onClose}) => {
     const [userImage, setUserImage] = useState(null);
     const [userName, setUserName] = useState(null);
-    const [imageUrl, setImageUrl] = useState('');
+    const [imageUrl, setImageUrl] = useState(null);
     const [authorsNote, setAuthorsNote] = useState('');
 
     useEffect(() => {
         if(localStorage.getItem('configuredName')){
-            setUserName(localStorage.getItem('configuredName'));
+          setUserName(localStorage.getItem('configuredName'));
         }else{
-            setUserName('You');
+          setUserName('You');
         }
         if(localStorage.getItem('configuredAvatar')){
-            setUserImage(localStorage.getItem('configuredAvatar')); // Fixed here
-            let url = getCharacterImageUrl(localStorage.getItem('configuredAvatar')) // Fixed here
-            setImageUrl(url);
+          const userAvatar = localStorage.getItem('configuredAvatar');
+          setUserImage(userAvatar);
+          if (userAvatar.startsWith('http') || userAvatar.startsWith('/')) {
+            setImageUrl(userAvatar);
+          } else {
+            setImageUrl(getUserImageUrl(userAvatar));
+          }
         }
-    }, []);    
+      }, []);
+      
 
     function handleImageChange(event) {
         const file = event.target.files[0];
@@ -31,12 +36,12 @@ const UserInfo = ({onClose}) => {
     
     async function handleSubmit(event) {
         event.preventDefault();
+        const avatar = await saveUserAvatar(userImage);
         const newUserInfo = {
-            avatar : userImage,
+            avatar : avatar,
             name : userName,
             authorsNote : authorsNote
         }
-        const avatar = await saveUserAvatar(newUserInfo);
         localStorage.setItem('configuredAvatar', avatar);
         localStorage.setItem('configuredName', userName);
         onClose(newUserInfo);
@@ -54,7 +59,7 @@ const UserInfo = ({onClose}) => {
                     <div className="flex flex-col items-center w-1/2">
                         <label htmlFor="avatar-field" className="relative">
                         {!imageUrl && <FiImage className="w-24 h-24 text-gray-300"/>}
-                        {imageUrl && <img src={imageUrl} alt="avatar" className="w-24 h-24 rounded-full"/>}
+                        {imageUrl && <img src={imageUrl} alt="avatar" className="w-24 h-24 rounded-full object-cover"/>}
                         <input
                             id="avatar-field"
                             className="absolute inset-0 opacity-0 cursor-pointer"

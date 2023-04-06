@@ -4,7 +4,7 @@ const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/a
 const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
-const USER_AVATAR_FOLDER = 'src/shared_data/character_images';
+const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
 
 export function downloadImage(imageUrl, fileName) {
   const link = document.createElement('a');
@@ -106,9 +106,9 @@ export async function handleSaveChannel(channels) {
   }
 };
 
-export async function saveUserAvatar(userData) {
+export async function saveUserAvatar(image) {
   const formData = new FormData();
-  formData.append('avatar', userData.avatar);
+  formData.append('avatar', image);
   const response = await axios.post(`${API_URL}/user-avatar`, formData);
   if(response.data.avatar !== undefined){
     return response.data.avatar;

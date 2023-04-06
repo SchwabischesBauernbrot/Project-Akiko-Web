@@ -3,6 +3,7 @@ import { getCharacterImageUrl, getUserImageUrl } from '../api';
 
 export const createUserMessage = async (text, image, messageSender, activateImpersonation) => {
     const now = new Date();
+    console.log(messageSender.avatar)
     let avatarLink;
     if (activateImpersonation === true) {
         avatarLink = getCharacterImageUrl(messageSender.avatar);
