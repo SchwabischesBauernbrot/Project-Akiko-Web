@@ -40,6 +40,11 @@ const ooba_defaults = {
   'length_penalty': 1,
   'early_stopping': false,
 };
+const oai_defaults = {
+  'max_tokens': 200,
+  'temperature': 0.7,
+}
+
   function getSettings(endpointType) {
     const settings = localStorage.getItem('generationSettings');
     if (endpointType === 'Kobold' || endpointType === 'Horde') {
@@ -71,9 +76,17 @@ const ooba_defaults = {
         }
         return customSettings;
       }
-    }else{
-      return;
+    }else if(endpointType === 'OAI'){
+      if(settings){
+        const parsedSettings = JSON.parse(settings);
+        const customSettings = {
+          'max_tokens': parsedSettings.max_length,
+          'temperature': parsedSettings.temperature,
+        }
+        return customSettings;
+      }
     }
+    return;
   }
       
   function parseTextEnd(text, endpointType, results) {
@@ -106,7 +119,7 @@ const ooba_defaults = {
       hordeModel = localStorage.getItem('hordeModel');
     }
     else if(endpointType === 'OAI'){
-      customSettings = kobold_defaults;
+      customSettings = oai_defaults;
       console.log('Custom Settings failed. Using Kobold defaults.')
     }
   let imgText = null;

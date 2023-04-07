@@ -4,7 +4,7 @@ const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/a
 const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
-
+const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
 
 export function downloadImage(imageUrl, fileName) {
   const link = document.createElement('a');
@@ -46,6 +46,26 @@ export async function fetchCharacter(charId) {
   return response.data;
 }
 
+
+
+export async function fetchConfig(setBotToken, setChannels) {
+  try {
+    const response = await axios.get('http://localhost:5100/api/discord-bot/config');
+    console.log('Response:', response);
+    const data = response.data;
+    console.log('Data:', data);
+
+    // set the state with the retrieved data
+    setBotToken(data.botToken || '');
+    console.log('Bot Token set:', data.botToken);
+    setChannels(data.channels || '');
+    console.log('Channels set:', data.channels);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 export async function handleSaveToken(botToken) {
   const config = {
     botToken: botToken,
@@ -53,6 +73,14 @@ export async function handleSaveToken(botToken) {
   try {
     const response = await axios.post('http://localhost:5100/api/discord-bot/token', config);
     console.log('Token configuration saved successfully');
+
+    // Read the .config file and set the initial value of the bot token input field
+    const fileResponse = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const fileData = fileResponse.data;
+    const tokenValue = fileData['DISCORD_BOT_TOKEN'];
+    if (tokenValue) {
+      document.getElementById('bot-token-input').value = tokenValue.slice(1, -1);
+    }
   } catch (error) {
     console.error(error);
   }
@@ -64,8 +92,15 @@ export async function handleSaveChannel(channels) {
   };
   try {
     const response = await axios.post('http://localhost:5100/api/discord-bot/channel', config);
+    console.log('Channel configuration saved successfully');
 
-    console.log(response);
+    // Read the .config file and set the initial value of the channel input field
+    const fileResponse = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const fileData = fileResponse.data;
+    const channelValue = fileData['CHANNEL_ID'];
+    if (channelValue) {
+      document.getElementById('channel-input').value = channelValue;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -96,11 +131,14 @@ export async function createCharacter(newCharacter) {
 
   const response = await axios.post(`${API_URL}/characters`, formData);
 
-  return response.data.avatar;
+  return response.data;
 }
 
 export function getCharacterImageUrl(avatar) {
   return `${CURRENT_URL}/${AVATARS_FOLDER}/${avatar}`;
+}
+export function getUserImageUrl(avatar) {
+  return `${CURRENT_URL}/${USER_AVATAR_FOLDER}/${avatar}`;
 }
 
 export async function deleteCharacter(charId) {
@@ -165,11 +203,47 @@ export async function uploadTavernCharacter(image){
 }
 
 
-export async function exportTavernCharacter(charId) {
+export async function exportTavernCharacter(charId, charName) {
   await axios.get(`${API_URL}/tavern-character/${charId}`);
   var link = `/${EXPORTS_FOLDER}/${charId}.png`
-  downloadImage(link, `${charId}.png`);
-  return `/${EXPORTS_FOLDER}/${charId}.png`;
+  downloadImage(link, `${charName}.AkikoCharaCard.png`);
+  return `/${EXPORTS_FOLDER}/${charName}.AkikoCharaCard.png`;
+}
+
+export async function exportNewCharacter(character) {
+  const formData = new FormData();
+  formData.append('char_id', character.char_id);
+  formData.append('name', character.name);
+  formData.append('personality', character.personality);
+  formData.append('description', character.description);
+  formData.append('scenario', character.scenario);
+  formData.append('first_mes', character.first_mes);
+  formData.append('mes_example', character.mes_example);
+  formData.append('avatar', character.avatar);
+  await axios.post(`${API_URL}/tavern-character/new-export`, formData);
+  var link = `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`
+  downloadImage(link, `${character.name}.AkikoCharaCard.png`);
+  return `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`;
+}
+
+export async function exportJSON(character) {
+  const formData = new FormData();
+  formData.append('char_id', character.char_id);
+  formData.append('name', character.name);
+  formData.append('personality', character.personality);
+  formData.append('description', character.description);
+  formData.append('scenario', character.scenario);
+  formData.append('first_mes', character.first_mes);
+  formData.append('mes_example', character.mes_example);
+
+  const response = await axios.post(`${API_URL}/tavern-character/json-export`, formData, {
+    responseType: 'blob',
+  });
+
+  const blob = new Blob([response.data], { type: 'application/json' });
+  const fileName = `${character.name}.AkikoJSON.json`;
+
+  downloadImage(URL.createObjectURL(blob), fileName);
 }
 
 export async function fetchAdvancedCharacterEmotion(character, emotion) {

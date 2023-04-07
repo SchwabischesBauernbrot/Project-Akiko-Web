@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Chatbox from '../assets/components/Chatbox';
+import 'tailwindcss/tailwind.css';
 
 const Chat = () => {
 const [configuredEndpoint, setconfiguredEndpoint] = useState('http://localhost:5100/');
@@ -20,9 +21,13 @@ useEffect(() => {
 }, []);
 
 return (
-	<div className="container">
+<div className="flex flex-col items-center justify-center">
+  <div className="w-full flex justify-center mb-6">
+        
         <Chatbox endpoint={configuredEndpoint} endpointType={configuredEndpointType}/>
-    </div>
+        </div>
+         </div>
+
 );
 };
 

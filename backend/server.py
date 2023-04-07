@@ -1,6 +1,7 @@
+import datetime
 from functools import wraps
 import io
-from flask import Flask, jsonify, request, render_template_string, abort, send_from_directory
+from flask import Flask, jsonify, request, render_template_string, abort, send_file, send_from_directory
 from flask_cors import CORS, cross_origin
 import argparse
 import requests
@@ -147,13 +148,14 @@ app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
 app.config['CONVERSATIONS_FOLDER'] = '../frontend/src/shared_data/conversations/'
 app.config['CHARACTER_FOLDER'] = '../frontend/src/shared_data/character_info/'
 app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_images/'
+app.config['USER_IMAGES_FOLDER'] = '../frontend/src/shared_data/user_avatars/'
 app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'json'}
 
 def import_tavern_character(img, char_id):
     _img = Image.open(io.BytesIO(img))
@@ -179,7 +181,12 @@ def export_tavern_character(char_id):
         'personality': character_info['personality'],
         'scenario': character_info["scenario"],
         'first_mes': character_info["first_mes"],
-        'mes_example': character_info["mes_example"]
+        'mes_example': character_info["mes_example"],
+        'metadata': {
+            'version': '1.0.0',
+            'editor': 'ProjectAkiko',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
     }
 
     # Load the image in any format
@@ -198,6 +205,65 @@ def export_tavern_character(char_id):
         image.save(f, format='PNG', pnginfo=img_info)
 
     return
+
+def export_new_character(character):
+    outfile_name = f"{character['name']}.AkikoCharaCard"
+
+    # Create a dictionary containing the character information to export
+    character_data = {
+        'name': character['name'],
+        'description': character['description'],
+        'personality': character['personality'],
+        'scenario': character['scenario'],
+        'first_mes': character['first_mes'],
+        'mes_example': character['mes_example'],
+        'metadata': {
+            'version': '1.0.0',
+            'editor': 'ProjectAkiko',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+    }
+
+    # Load the image in any format
+    if character['avatar'] is not None:
+        image = Image.open(character['avatar']).convert('RGBA')
+    else:
+        # Load a default image if avatar is not provided
+        image = Image.open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], 'default.png')).convert('RGBA')
+
+    # Convert the dictionary to a JSON string and then encode as base64
+    json_data = json.dumps(character_data)
+    base64_encoded_data = base64.b64encode(json_data.encode('utf8')).decode('utf8')
+
+    # Add the encoded data to the image metadata
+    img_info = PngImagePlugin.PngInfo()
+    img_info.add_text('chara', base64_encoded_data)
+
+    # Save the modified image to the target location
+    with open(os.path.join(app.config['CHARACTER_EXPORT_FOLDER'], f'{outfile_name}.png'), 'wb') as f:
+        image.save(f, format='PNG', pnginfo=img_info)
+    return
+
+def export_as_json(character):
+    # Create a dictionary containing the character information to export
+    character_data = {
+        'name': character['name'],
+        'description': character['description'],
+        'personality': character['personality'],
+        'scenario': character['scenario'],
+        'first_mes': character['first_mes'],
+        'mes_example': character['mes_example'],
+        'metadata': {
+            'version': '1.0.0',
+            'editor': 'ProjectAkiko',
+            'date': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+    }
+
+    # Convert the dictionary to a JSON string
+    json_data = json.dumps(character_data)
+
+    return json_data
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -389,35 +455,27 @@ def api_keywords():
     return jsonify({'keywords': keywords})
 
 
-@app.route('/api/discord-bot/token', methods=['POST'])
-def save_discord_bot_token():
-    bot_token = request.json.get('botToken')
+@app.route('/api/discord-bot/config', methods=['GET'])
+def get_discord_bot_config():
+    # Read the .config file if it exists, otherwise return default values
+    if os.path.isfile('.config'):
+        with open('.config', 'r') as config_file:
+            lines = config_file.readlines()
+            for line in lines:
+                if line.startswith('DISCORD_BOT_TOKEN='):
+                    bot_token = line.strip().split('=')[1].strip('"')
+                elif line.startswith('CHANNEL_ID='):
+                    channels = line.strip().split('=')[1].strip('"')
+    else:
+        bot_token = 'default_bot_token'
+        channels = 'default_channel_id'
 
-    # Read the .config file and remove the previous token value
-    with open('.config', 'r') as config_file:
-        lines = config_file.readlines()
-    with open('.config', 'w') as config_file:
-        config_file.write(f'DISCORD_BOT_TOKEN="{bot_token}"\n')
-        for line in lines:
-            if not line.startswith('DISCORD_BOT_TOKEN='):
-                config_file.write(line)
+    return jsonify({
+        'botToken': bot_token,
+        'channels': channels
+    }), 200
 
-    return 'Token configuration saved successfully', 200
 
-@app.route('/api/discord-bot/channel', methods=['POST'])
-def save_discord_bot_channel():
-    channels = request.json.get('channels')
-
-    # Read the .config file and remove the previous channel value
-    with open('.config', 'r') as config_file:
-        lines = config_file.readlines()
-    with open('.config', 'w') as config_file:
-        for line in lines:
-            if not line.startswith('CHANNEL_ID='):
-                config_file.write(line)
-        config_file.write(f'CHANNEL_ID={channels}\n')
-
-    return 'Channel configuration saved successfully', 200
 
 
 ##############################
@@ -475,10 +533,10 @@ def textgen(endpointType):
         messages=[
             {"role": "user", "content": data['prompt']}
         ],
-        max_tokens=150,
+            max_tokens=data['settings']['max_tokens'],
             n=1,
             stop=f'{configuredName}:',
-            temperature=0.7
+            temperature=data['settings']['temperature'],
         )
         if response.choices:
             response = response['choices'][0]['message']['content']
@@ -608,7 +666,7 @@ def add_character():
     with open(os.path.join(app.config['CHARACTER_FOLDER'], f"{character['char_id']}.json"), 'a') as f:
         f.write(json.dumps(character))
 
-    return jsonify({'message': 'Character added successfully', 'avatar': avatar})
+    return jsonify(character)
 
 
 @app.route('/api/characters/<char_id>', methods=['GET'])
@@ -761,25 +819,92 @@ def conversation(conversation_name):
 @cross_origin()
 def upload_tavern_character():
     char_id = request.form.get('char_id')
-    avatar = request.files['image']
+    file = request.files['image']
+
+    filename = None
     # Check if a file was uploaded and if it's allowed
-    if avatar and allowed_file(avatar.filename):
+    if file and allowed_file(file.filename):
         # Save the file with a secure filename
-        filename = secure_filename(str(char_id) + '.png')
-        avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
-        # Add the file path to the character information
-        avatar = filename
+        filename = secure_filename(str(char_id) + os.path.splitext(file.filename)[-1])
+        folder = app.config['CHARACTER_IMAGES_FOLDER'] if file.filename.lower().endswith('.png') else app.config['CHARACTER_FOLDER']
+        file.save(os.path.join(folder, filename))
     try:
-        if avatar.endswith('.png'):
-            with open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], avatar), 'rb') as read_file:
+        if filename.lower().endswith('.png'):
+            with open(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename), 'rb') as read_file:
                 img = read_file.read()
                 _json = import_tavern_character(img, char_id)
             read_file.close()
+        elif filename.lower().endswith('.json'):
+            with open(os.path.join(app.config['CHARACTER_FOLDER'], filename), 'r') as read_file:
+                _json = json.load(read_file)
+            read_file.close()
+            _json['char_id'] = char_id
+            _json['avatar'] = 'default.png'
+            # Save the updated JSON back to the file
+            with open(os.path.join(app.config['CHARACTER_FOLDER'], filename), 'w') as write_file:
+                json.dump(_json, write_file)
+            write_file.close()
     except Exception as e:
         print(f"Error saving character: {str(e)}")
         return jsonify({'error': 'Character card failed to import'}), 500
     return jsonify(_json)
 
+@app.route('/api/tavern-character/new-export', methods=['POST'])
+@cross_origin()
+def download_new_character_card():
+    fields = {
+        'char_id': 'char_id',
+        'name': 'name',
+        'personality': 'personality',
+        'description': 'description',
+        'scenario': 'scenario',
+        'first_mes': 'first_mes',
+        'mes_example': 'mes_example'
+    }
+    avatar = None
+
+    # Use request.files.get() to avoid KeyError
+    if(request.files.get('avatar') is not None):
+        avatar = request.files['avatar']
+    
+    character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
+    character['avatar'] = avatar
+
+    try:
+        export_new_character(character)
+    except Exception as e:
+        print(f"Error saving character: {str(e)}")
+        return jsonify({'error': 'Character card failed to export'}), 500
+    return jsonify({'success': 'Character card exported'})
+
+
+@app.route('/api/tavern-character/json-export', methods=['POST'])
+@cross_origin()
+def download_as_json():
+    fields = {
+        'char_id': 'char_id',
+        'name': 'name',
+        'personality': 'personality',
+        'description': 'description',
+        'scenario': 'scenario',
+        'first_mes': 'first_mes',
+        'mes_example': 'mes_example'
+    }
+
+    character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
+
+    try:
+        json_data = export_as_json(character)
+    except Exception as e:
+        print(f"Error saving character: {str(e)}")
+        return jsonify({'error': 'Character JSON failed to export'}), 500
+
+    # Prepare the JSON data for download
+    json_bytes = json_data.encode('utf-8')
+    buffer = io.BytesIO(json_bytes)
+    outfile_name = f"{character['name']}.AkikoJSON.json"
+
+    return send_file(buffer, mimetype='application/json', as_attachment=True, download_name=outfile_name)
 
 @app.route('/api/tavern-character/<char_id>', methods=['GET'])
 @cross_origin()
@@ -890,6 +1015,7 @@ def get_backgrounds():
 
 
 @app.route('/api/user-avatar', methods=['POST'])
+@cross_origin()
 def save_user_avatar():
     if 'avatar' not in request.files:
         return 'No avatar file provided', 400
@@ -903,7 +1029,7 @@ def save_user_avatar():
     # Save the avatar file to the user's folder
     avatar.save(os.path.join(app.config['USER_IMAGES_FOLDER'], f'{avatar_count}.png'))
     # Return a response to the client
-    return {avatar: f'{avatar_count}.png'}, 200
+    return {'avatar': f'{avatar_count}.png'}, 200
 
 
 #########################

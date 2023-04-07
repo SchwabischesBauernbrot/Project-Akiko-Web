@@ -5,7 +5,7 @@ import { BsPersonCheck, BsPersonCheckFill } from "react-icons/bs";
 import GenSettingsMenu from "./GenSettingsMenu";
 import UserInfo from "./chatcomponents/UserInfo";
 
-function ChatboxInput({ onSend, impersonate }) {
+function ChatboxInput({ onSend, impersonate, userEdit }) {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [messageImage, setMessageImage] = useState(null);
   const [text, setText] = useState("");
@@ -50,11 +50,18 @@ function ChatboxInput({ onSend, impersonate }) {
   const handleImageUpload = async (file) => {
     setMessageImage(file);
   };
-
+  const handleUserMenuClose = async (user) => {
+    if(user !== null){
+      userEdit(user);
+      setUserMenuOpen(false);
+    }else{
+      setUserMenuOpen(false);
+    }
+  };
   return (
     <>
     {userMenuOpen && (
-      <UserInfo onClose={() => setUserMenuOpen(false)}/>
+      <UserInfo onClose={() => setUserMenuOpen(false)} handleSave={handleUserMenuClose}/>
     )}
     {GenSettingsMenuIsOpen && (
       <GenSettingsMenu onClose={() => setGenSettingsMenuIsOpen(false)}/>

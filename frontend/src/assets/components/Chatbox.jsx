@@ -13,11 +13,14 @@ import { createUserMessage } from './chatcomponents/MessageHandling';
 import scanSlash, { setEmotion } from './chatcomponents/slashcommands';
 import ConversationSelectionMenu from "./chatcomponents/ConversationSelectionMenu";
 import {FiList, FiPlusCircle, FiTrash2, FiUsers} from 'react-icons/fi';
+import {VscDebugDisconnect} from 'react-icons/vsc';
 import Model from "./Model";
+import ConnectMenu from "./chatcomponents/ConnectMenu";
 
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
   const [configuredName, setconfiguredName] = useState('You');
+  const [configuredAvatar, setconfiguredAvatar] = useState('default.png');
   const [useEmotionClassifier, setUseEmotionClassifier] = useState('');
   const [invalidActionPopup, setInvalidActionPopup] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState([]);
@@ -36,6 +39,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [createMenuOn, setCreateMenuOn] = useState(false);
+  const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
 
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -97,6 +101,9 @@ function Chatbox({ endpoint, endpointType }) {
         if(localStorage.getItem('configuredName') !== null) {
           setconfiguredName(localStorage.getItem('configuredName'));
         }
+        if(localStorage.getItem('configuredAvatar') !== null) {
+          setconfiguredAvatar(localStorage.getItem('configuredAvatar'));
+        }
         if(localStorage.getItem('useEmotionClassifier') !== null) {
           if(localStorage.getItem('useEmotionClassifier') === '1') {
             setUseEmotionClassifier('true');
@@ -106,7 +113,7 @@ function Chatbox({ endpoint, endpointType }) {
         }
       };
       fetchConfig();
-      setUserCharacter({ name: configuredName, avatar: 'default.png' });
+      setUserCharacter({ name: configuredName, avatar: configuredAvatar });
   }, []);
 
   useEffect(() => {
@@ -157,8 +164,8 @@ function Chatbox({ endpoint, endpointType }) {
   
 
   useEffect(() => {
-    setUserCharacter({ name: configuredName, avatar: 'default.png'});
-  }, [configuredName]);
+    setUserCharacter({ name: configuredName, avatar: configuredAvatar});
+  }, [configuredName, configuredAvatar]);
 
   useEffect(() => {
     // scroll to last message when messages state updates
@@ -189,7 +196,7 @@ function Chatbox({ endpoint, endpointType }) {
   
     let newMessage;
     if (activateImpersonation === true) {
-      newMessage = await createUserMessage(text, image, currentCharacter);
+      newMessage = await createUserMessage(text, image, currentCharacter, activateImpersonation);
       setActivateImpersonation(false);
     } else {
       newMessage = await createUserMessage(text, image, userCharacter);
@@ -218,10 +225,18 @@ function Chatbox({ endpoint, endpointType }) {
     setTimeout(() => {
       setMessages(isTypingHistory);
     }, 1000);
-    const history = chatHistory
-    .slice(-15) // Add this line to only take the last 15 messages
-    .map((message) => `${message.sender}: ${message.text}`)
-    .join('\n');
+    let history;
+    if(endpointType !== 'OAI'){
+      history = chatHistory
+      .slice(-15) // Add this line to only take the last 15 messages
+      .map((message) => `${message.sender}: ${message.text}`)
+      .join('\n');
+    }else{
+      history = chatHistory
+      .slice(-25) // Add this line to only take the last 25 messages
+      .map((message) => `${message.sender}: ${message.text}`)
+      .join('\n');
+    }
 
     // Make API call
     const generatedText = await characterTextGen(currentCharacter, history, endpoint, endpointType, image, configuredName);
@@ -422,7 +437,10 @@ function Chatbox({ endpoint, endpointType }) {
     localStorage.setItem('conversationName', convo.conversationName);
     setConvo(convo);
   }
-
+  const changeUserInfo = async (user) => {
+    setconfiguredName(user.name);
+    setconfiguredAvatar(user.avatar);
+  }
   return (
     <>
     <>
@@ -445,8 +463,14 @@ function Chatbox({ endpoint, endpointType }) {
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>
     )}
+    {toggleConnectMenu && (
+     <ConnectMenu setToggleConnectMenu={setToggleConnectMenu}/> 
+    )}
     <div className="chatbox-wrapper">
       <div className='connect-chat-box'>
+          <div id="connect-button">
+            <button className={'chat-button'} id={'submit'} title={'Connect to Chat'} onClick={() => setToggleConnectMenu(true)}> <VscDebugDisconnect className="react-icon"/></button>
+          </div>
           <div id="connect">
             <Connect/>
           </div>
@@ -492,7 +516,7 @@ function Chatbox({ endpoint, endpointType }) {
       ))}
       <div ref={messagesEndRef}></div>
       </div>
-      <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation}/>
+      <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation} userEdit={changeUserInfo}/>
     </div>
     <InvalidActionPopup isOpen={invalidActionPopup} handleInvalidAction={handleInvalidAction} />
     <DeleteMessageModal isOpen={showDeleteMessageModal} handleCancel={() => setShowDeleteMessageModal(false)} handleDelete={() => handleDeleteMessage(deleteMessageIndex)} />

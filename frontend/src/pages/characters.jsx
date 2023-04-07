@@ -5,6 +5,7 @@ import { UpdateCharacterForm } from "../assets/components/charactercomponents/Up
 import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import CharacterInfoBox from "../assets/components/charactercomponents/CharacterInfoBox";
 import { FiShuffle } from "react-icons/fi";
+import 'tailwindcss/tailwind.css';
 
 const Characters = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,16 +68,17 @@ const Characters = () => {
   const closeModal = () => {
     setSelectedCharacter(null);
   };
-
+  
   function addCharacter(newCharacter) {
     createCharacter(newCharacter)
-      .then(avatar => {
-        setCharacters([...characters, {...newCharacter, avatar: avatar}]);
+      .then(responseData => {
+        setCharacters([...characters, {...responseData}]);
       })
       .catch(error => {
         console.error(error);
       });
   };
+  
   
   const editCharacter = (updatedCharacter) => {
     const updatedCharacters = characters.map((c) => c.char_id === updatedCharacter.char_id ? updatedCharacter : c);
@@ -117,80 +119,90 @@ const Characters = () => {
     }
   };
 
-return (
-  <div className="container">
-    <div className="character-buttons">
-      <button className="character-button" onClick={refresh} title="Refresh Character List">
-        <div class="character-button-content">
-          <ArrowPathIcon className="hero-icon"/>
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <div className="w-full flex justify-center mb-6">
+        <div className="grid grid-cols-6 gap-0">
+          <button 
+            style={{ color: 'var(--selected-text-color)',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={refresh} title="Refresh Character List">
+              <ArrowPathIcon className="hero-icon"/>
+          </button>
+          <button 
+            style={{ color: 'var(--selected-text-color)',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={() => setShowForm(true)} title="Create Character">
+            <PlusCircleIcon className="hero-icon"/>
+          </button>
+          <label htmlFor="character-image-input"  
+            style={{ color: 'var(--selected-text-color)', cursor: 'pointer',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" title="Import Character Card">
+            <ArrowUpTrayIcon className="hero-icon"/>
+          </label>
+          <button
+            style={{ color: 'var(--selected-text-color)',}}
+            className="bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" onClick={() => pickRandomChar()} title="Create Character">
+            <FiShuffle className="react-icon"/>
+          </button>
+          <input
+            type="file"
+            accept="image/png, application/json"
+            id="character-image-input"
+            onChange={(e) => handleImageUpload(e.target.files[0])}
+            style={{ display: 'none' }}
+          />
+          <div className="chara-search-bar col-span-2">
+            <input
+              type="text"
+              placeholder="Search characters"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </div>
         </div>
-      </button>
-      <button className="character-button" onClick={() => setShowForm(true)} title="Create Character">
-        <PlusCircleIcon className="hero-icon"/>
-      </button>
-      <label htmlFor="character-image-input" className="character-button" title="Import Character Card" style={{ cursor: 'pointer' }}>
-        <ArrowUpTrayIcon className="hero-icon"/>
-      </label>
-      <button className="character-button" onClick={() => pickRandomChar()} title="Create Character">
-        <FiShuffle className="react-icon"/>
-      </button>
-      <input
-        type="file"
-        accept="image/png"
-        id="character-image-input"
-        onChange={(e) => handleImageUpload(e.target.files[0])}
-        style={{ display: 'none' }}
-      />
-      <div className="chara-search-bar">
-        <input
-          type="text"
-          placeholder="Search characters"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-        />
       </div>
-    </div>
-    {showForm && (
-      <CharacterForm
-        onCharacterSubmit={addCharacter}
-        onClose={() => setShowForm(false)}
-      />
-    )}
-    {characters &&
-      <div className="character-display">
-        {characters
-          .filter((character) => {
-            return Object.values(character).some((value) =>
-              value
-                .toString()
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            );
-          })
-          .map((character) => (
-            <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
+      <div className="w-full h-full grid place-content-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20 mx-auto">
+          {characters &&
+            characters
+              .filter((character) => {
+                return Object.values(character).some((value) =>
+                  value
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                );
+              })
+              .map((character) => (
+                <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
           ))}
+        </div>
       </div>
-    }
-    {selectedCharacter && (
-      <UpdateCharacterForm
-            character={selectedCharacter}
-            onUpdateCharacter={editCharacter}
-            onClose={closeModal}
-      />
-    )}
-    {showDeleteModal && (
-    <div className="modal-overlay">
-      <div className="modal-small-box">
-        <h2 className="centered">Delete Character</h2>
-        <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
-        <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-        <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
-      </div>
+      {showForm && (
+        <CharacterForm
+          onCharacterSubmit={addCharacter}
+          onClose={() => setShowForm(false)}
+        />
+      )}
+      {selectedCharacter && (
+        <UpdateCharacterForm
+              character={selectedCharacter}
+              onUpdateCharacter={editCharacter}
+              onClose={closeModal}
+        />
+      )}
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal-small-box">
+            <h2 className="centered">Delete Character</h2>
+            <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
+            <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+            <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
+          </div>
+        </div>
+      )}
     </div>
-   )}
-  </div>
-);
+  );
+  
 };
 
 export default Characters;
