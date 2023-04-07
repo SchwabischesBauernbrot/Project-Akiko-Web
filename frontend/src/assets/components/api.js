@@ -263,6 +263,11 @@ export async function saveAdvancedCharacterEmotion(character, emotionName, emoti
   return response.data['path'];
 }
 
+export async function deleteAdvancedCharacterEmotion(character, emotion) {
+  const response = await axios.delete(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
+  return response.data;
+}
+
 export async function updateAdvancedCharacter(advancedCharacter) {
   const formData = new FormData();
   formData.append('char_id', advancedCharacter.char_id);
