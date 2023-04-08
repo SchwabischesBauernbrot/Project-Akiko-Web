@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchAdvancedCharacterEmotions, fetchAdvancedCharacterEmotion, saveAdvancedCharacterEmotion, deleteAdvancedCharacterEmotion } from '../api';
 import { FiImage } from "react-icons/fi";
+import { capitalizeFirstLetter } from "../miscfunctions";
 
 const EmotionSprites = ({ character }) => {
     const possibleEmotions = [
@@ -78,7 +79,7 @@ const EmotionSprites = ({ character }) => {
                 {possibleEmotions.map(emotion => (
                     <div key={emotion} className="bg-selected p-4 rounded-lg shadow-md flex-row justify-center">
                         <div className="flex flex-col items-center">
-                            <div className="text-base font-bold mb-2 text-center">{emotion}</div>
+                            <div className="text-base font-bold mb-2 text-center">{capitalizeFirstLetter(emotion)}</div>
                             <div className="h-42 w-32 bg-selected-bb-color mb-4 flex items-center justify-center rounded-lg overflow-hidden">
                                 {sprites[emotion] ? <img src={sprites[emotion]} alt={`${emotion} sprite`} /> : <FiImage className="w-24 h-24 text-selected-text"/>}
                             </div>
