@@ -96,7 +96,7 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
 
     const formatOptionLabel = ({ label, avatar }) => (
     <div className='flex items-center space-x-2'>
-        <img className='rounded-full w-8 h-8' src={getCharacterImageUrl(avatar)} title={label} alt='avatar'/>
+        <img className='rounded-full object-cover w-8 h-8' src={getCharacterImageUrl(avatar)} title={label} alt='avatar'/>
         <div className='font-medium text-white'>
             {label}
         </div>
@@ -107,12 +107,6 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
         menu: (provided) => ({
             ...provided,
             width: 'fit-content',
-            backgroundColor: 'rgba(11, 11, 11, 0.636)',
-            backdropFilter: 'blur(10px)',
-            color: 'white'
-        }),
-        singleValue: (provided) => ({
-            ...provided,
             backgroundColor: 'rgba(11, 11, 11, 0.636)',
             backdropFilter: 'blur(10px)',
             color: 'white'
@@ -132,14 +126,24 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
             boxShadow: '0px 0px 10px 0px rgba(57, 57, 57, 0.737)',
             backdropFilter: 'blur(11px)',
             scrollbehavior: 'smooth',
-            color: 'white',
+            color: 'black',
         }),
         option: (provided, state) => ({
             ...provided,
             backgroundColor: 'rgba(11, 11, 11, 0.636)',
             color: 'white',
         }),
-      };
+        singleValue: (provided) => ({
+            ...provided,
+            color: 'black'
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: 'gray'
+        }),
+    };
+    
+    
 
 return (
 <div className='modal-overlay'>
