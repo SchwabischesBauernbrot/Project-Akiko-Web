@@ -4,7 +4,7 @@ import { FiImage, FiSave } from 'react-icons/fi';
 import { RxReset } from 'react-icons/rx';
 import Select from 'react-select';
 
-const UserInfo = ({onClose}) => {
+const UserInfo = ({onClose, handleSave}) => {
     const [userImage, setUserImage] = useState(null);
     const [userName, setUserName] = useState('You');
     const [imageUrl, setImageUrl] = useState(null);
@@ -130,7 +130,7 @@ const UserInfo = ({onClose}) => {
             name: userName,
             authorsNote: authorsNote
         }
-        onClose(newUserInfo);
+        handleSave(newUserInfo);
     }
     
     const handleDefault = () => {
@@ -146,7 +146,7 @@ const UserInfo = ({onClose}) => {
             <div className="relative bg-selected text-selected-text rounded shadow-lg backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
             <span className="absolute top-0 right-0 p-4 text-xl font-bold cursor-pointer hover:text-red-600" onClick={onClose}>&times;</span>
             <div className="flex flex-col w-full max-w-md p-4 bg-selected-color rounded-lg">
-                <h2 className="mb-4 text-xl font-bold">User Details</h2>
+                <h1 className="text-xl font-bold mb-4 text-center mx-auto">User Details</h1>
                 <div className="flex flex-col">
                 <form onSubmit={handleSubmit}>
                     <div className="flex">
@@ -167,12 +167,12 @@ const UserInfo = ({onClose}) => {
                         <div className="w-1/2">
                             <label htmlFor="userName" className="font-bold">Name:</label>
                             <textarea
-                            id="name-field"
-                            className="character-field w-full px-2 py-1 mb-2 border rounded"
-                            value={userName}
-                            type="text"
-                            onChange={(event) => setUserName(event.target.value)}
-                            required
+                                id="userName" // Change the id attribute here
+                                className="character-field w-full px-2 py-1 mb-2 border rounded"
+                                value={userName}
+                                type="text"
+                                onChange={(event) => setUserName(event.target.value)}
+                                required
                             />
                             <label htmlFor="avatarSelect" className="font-bold">
                                 Available avatars:

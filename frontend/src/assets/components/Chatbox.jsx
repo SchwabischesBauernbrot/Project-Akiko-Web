@@ -42,6 +42,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [createMenuOn, setCreateMenuOn] = useState(false);
   const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
+  
   const createNewConversation = async () => {
     const defaultMessage = {
       sender: selectedCharacter.name,
