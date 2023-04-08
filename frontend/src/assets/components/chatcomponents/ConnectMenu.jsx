@@ -78,44 +78,46 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
         { value: 'Horde', label: 'Horde' },
         { value: 'OAI', label: 'OpenAI' }
     ];
-  
+    
+    const handleClose = () => {
+      setToggleConnectMenu(false);
+    };
+
     return (
-    <div className="modal-overlay">
-        <div className="gen-settings-menu">
-            <span className="close" onClick={() => setToggleConnectMenu(false)}>&times;</span>
-            <div>
-                <h2>Text Generation Endpoint</h2>
-                <div id='endpoint-container'>
-                <form onSubmit={handleConnectClick}>
-                <Select
-                id="options"
-                options={options}
-                value={selectedOption}
-                onChange={handleOptionChange}
-                placeholder={selectedOption}
+      <div className="modal-overlay">
+        <div className="relative flex flex-col items-center justify-center p-10 bg-selected text-selected-text rounded shadow-lg">
+          <span className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600" onClick={handleClose}>&times;</span>
+            <h2 className="mb-4 text-2xl">Text Generation Endpoint</h2>
+            <div id='endpoint-container'>
+            <form onSubmit={handleConnectClick}>
+            <Select
+            id="options"
+            options={options}
+            value={selectedOption}
+            onChange={handleOptionChange}
+            placeholder={selectedOption}
+            />
+            {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
+                <input
+                id="inputValue"
+                type="text"
+                label="If using the Kobold or Ooba endpoint, enter the URL here. If using the OpenAI endpoint, enter your API key here. If using Horde, enter your API key or leave empty for anonymous mode."
+                value={inputValue}
+                onChange={(event) => setInputValue(event.target.value)}
+                placeholder={getDefaultInputValue(selectedOption.value)}
                 />
-                {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
-                    <input
-                    id="inputValue"
-                    type="text"
-                    label="If using the Kobold or Ooba endpoint, enter the URL here. If using the OpenAI endpoint, enter your API key here. If using Horde, enter your API key or leave empty for anonymous mode."
-                    value={inputValue}
-                    onChange={(event) => setInputValue(event.target.value)}
-                    placeholder={getDefaultInputValue(selectedOption.value)}
-                    />
-                )}
-                {selectedOption && (
-                    <button className="connect-button" type="submit">Connect</button>
-                )}
-                </form>
-                <Connect/>
-                {selectedOption && selectedOption.value === 'Horde' && (
-                <HordeModelSelector/>
-                )}
-                </div >
-            </div>
+            )}
+            {selectedOption && (
+                <button className="connect-button" type="submit">Connect</button>
+            )}
+            </form>
+            <Connect/>
+            {selectedOption && selectedOption.value === 'Horde' && (
+            <HordeModelSelector/>
+            )}
+          </div >
         </div>
-    </div>
+      </div>
     );
   };
   

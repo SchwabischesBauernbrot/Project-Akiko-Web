@@ -459,7 +459,6 @@ function Chatbox({ endpoint, endpointType }) {
   
   return (
     <>
-    <>
     {openUserProfile && (
       <UserInfo onClose={() => setOpenUserProfile(false)} handleSave={handleUserMenuClose}/>
     )}
@@ -478,76 +477,79 @@ function Chatbox({ endpoint, endpointType }) {
         />
       </React.Fragment>
     ))}
-    </>
     {openConvoSelector && (
       <ConversationSelectionMenu setConvo={handleSetConversation} handleDelete={handleConversationDelete} handleChatMenuClose={() => setOpenConvoSelector(false)}/>
     )}
     {toggleConnectMenu && (
      <ConnectMenu setToggleConnectMenu={setToggleConnectMenu}/> 
     )}
-    <div className="chatbox-wrapper">
-      <div className='connect-chat-box'>
-          <div id="connect-button">
-            <button className={'chat-button'} id={'submit'} title={'Connect to Chat'} onClick={() => setToggleConnectMenu(true)}> <VscDebugDisconnect className="react-icon"/></button>
+      <div className="min-h-screen flex justify-center">
+        <div className="flex flex-col">
+          <div className="mx-auto max-w-full sm:min-w-full">
+            <div className="connect-chat-box relative mt-1 flex flex-row items-center rounded-t-lg px-1 selected-bb-color backdrop-blur-md mb-1 h-auto overflow-hidden md:max-w-[750px] md:min-w-[750px]">
+              <div id="connect-button">
+                <button className={'chat-button'} id={'submit'} title={'Connect to Chat'} onClick={() => setToggleConnectMenu(true)}> <VscDebugDisconnect className="react-icon"/></button>
+              </div>
+              <div id="connect">
+                <Connect/>
+              </div>
+              <div className="title-wrapper"> 
+                {conversation && (
+                  <h4
+                    className={'chat-title'}
+                    contentEditable
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => handleTitleEdit(e.target.innerText)}
+                    onKeyDown={(e) => handleMessageKeyDown(e)}
+                  >
+                    {conversation.conversationName}
+                  </h4>
+                )}
+              </div>
+              <div className='chat-management-buttons'>
+                <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
+                <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
+                <button className={'chat-button'} id={'submit'} title={'Create New Chat'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
+                <button className={'chat-button'} id={'submit'} title={'Create Group Chat'} onClick={() => setCreateMenuOn(true)}><FiUsers className='react-icon'/></button>
+              </div>
+            </div>
+            <div className="h-[calc(75vh-7rem)] overflow-x-hidden relative flex flex-col justify-start p-2 selected-bb-color shadow-sm backdrop-blur-md md:max-w-[750px] md:min-w-[750px] md:h-[75vh]">
+              {messages.map((message, index) => (
+              <Message
+                key={index}
+                message={message}
+                index={index}
+                editedMessageIndex={editedMessageIndex}
+                handleEditMessage={handleEditMessage}
+                handleTextEdit={handleTextEdit}
+                handleMessageKeyDown={handleMessageKeyDown}
+                editRowCounter={editRowCounter}
+                handleMoveUp={handleMoveUp}
+                handleMoveDown={handleMoveDown}
+                delMessage={delMessage}
+                handleReneration={handleReneration}
+                handleOpenCharacterProfile={handleOpenCharacterProfile}
+                handleOpenUserProfile={handleOpenUserProfile}
+                selectedCharacter={userCharacter}
+                messages={messages}
+              />
+              ))}
+            <div ref={messagesEndRef}></div>
           </div>
-          <div id="connect">
-            <Connect/>
-          </div>
-          <div className="title-wrapper"> 
-            {conversation && (
-              <h4
-                className={'chat-title'}
-                contentEditable
-                suppressContentEditableWarning={true}
-                onBlur={(e) => handleTitleEdit(e.target.innerText)}
-                onKeyDown={(e) => handleMessageKeyDown(e)}
-              >
-                {conversation.conversationName}
-              </h4>
-            )}
-          </div>
-          <div className='chat-management-buttons'>
-            <button className={'chat-button'} id={'submit'} title={'Chat Management Menu'} onClick={() => setOpenConvoSelector(true)}><FiList className="react-icon"/></button>
-            <button className={'chat-button'} id={'cancel'} title={'Delete Current Chat'} onClick={() => handleConversationDelete(conversation.conversationName)}><FiTrash2 className="react-icon"/></button>
-            <button className={'chat-button'} id={'submit'} title={'Create New Chat'} onClick={() => createNewConversation()}><FiPlusCircle className="react-icon"/></button>
-            <button className={'chat-button'} id={'submit'} title={'Create Group Chat'} onClick={() => setCreateMenuOn(true)}><FiUsers className='react-icon'/></button>
-          </div>
+          <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation} userEdit={changeUserInfo}/>
         </div>
-      <div className="message-box">
-      {messages.map((message, index) => (
-        <Message
-          key={index}
-          message={message}
-          index={index}
-          editedMessageIndex={editedMessageIndex}
-          handleEditMessage={handleEditMessage}
-          handleTextEdit={handleTextEdit}
-          handleMessageKeyDown={handleMessageKeyDown}
-          editRowCounter={editRowCounter}
-          handleMoveUp={handleMoveUp}
-          handleMoveDown={handleMoveDown}
-          delMessage={delMessage}
-          handleReneration={handleReneration}
-          handleOpenCharacterProfile={handleOpenCharacterProfile}
-          handleOpenUserProfile={handleOpenUserProfile}
-          selectedCharacter={userCharacter}
-          messages={messages}
-        />
-      ))}
-      <div ref={messagesEndRef}></div>
       </div>
-      <ChatboxInput onSend={handleUserSend} impersonate={sendImpersonation} userEdit={changeUserInfo}/>
     </div>
     <InvalidActionPopup isOpen={invalidActionPopup} handleInvalidAction={handleInvalidAction} />
     <DeleteMessageModal isOpen={showDeleteMessageModal} handleCancel={() => setShowDeleteMessageModal(false)} handleDelete={() => handleDeleteMessage(deleteMessageIndex)} />
-  {openCharacterProfile && (
-    <UpdateCharacterForm
-    character={selectedCharacter}
-    onUpdateCharacter={handleUpdateCharacterProfile}
-    onClose={handleCloseCharacterProfile}
-    />
-   )}
-    </>
+    {openCharacterProfile && (
+      <UpdateCharacterForm
+      character={selectedCharacter}
+      onUpdateCharacter={handleUpdateCharacterProfile}
+      onClose={handleCloseCharacterProfile}
+      />
+    )}
+  </>
   );
 }
 
