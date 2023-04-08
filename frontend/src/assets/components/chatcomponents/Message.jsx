@@ -11,7 +11,7 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
   return (
     <div key={index} className={`${message.isIncoming ? "incoming-message" : "outgoing-message"} ${'pop-in'}`}>
       <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-        <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? handleOpenCharacterProfile : undefined}alt={`${message.sender}'s avatar`} />
+        <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? undefined : handleOpenCharacterProfile}alt={`${message.sender}'s avatar`} />
       </div>
       <div className="message-info">
         <div className="message-buttons">
