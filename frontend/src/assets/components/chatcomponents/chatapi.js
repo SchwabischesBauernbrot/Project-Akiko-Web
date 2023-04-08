@@ -108,7 +108,7 @@ const akiko_defaults = {
         const customSettings = {
           'do_sample': parsedSettings.do_sample,
           'max_length': parsedSettings.max_length,
-          'min_new_tokens': parsedSettings.min_new_tokens,
+          'min_new_tokens': parsedSettings.min_length,
           'temperature': parsedSettings.temperature,
           'top_p': parsedSettings.top_p,
           'top_k': parsedSettings.top_k,
