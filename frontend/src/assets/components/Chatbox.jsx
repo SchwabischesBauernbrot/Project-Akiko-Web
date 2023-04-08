@@ -16,6 +16,7 @@ import {FiList, FiPlusCircle, FiTrash2, FiUsers} from 'react-icons/fi';
 import {VscDebugDisconnect} from 'react-icons/vsc';
 import Model from "./Model";
 import ConnectMenu from "./chatcomponents/ConnectMenu";
+import UserInfo from "./chatcomponents/UserInfo";
 
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
@@ -40,7 +41,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [createMenuOn, setCreateMenuOn] = useState(false);
   const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
-
+  const [openUserProfile, setOpenUserProfile] = useState(false);
   const createNewConversation = async () => {
     const defaultMessage = {
       sender: selectedCharacter.name,
@@ -437,13 +438,31 @@ function Chatbox({ endpoint, endpointType }) {
     localStorage.setItem('conversationName', convo.conversationName);
     setConvo(convo);
   }
+
   const changeUserInfo = async (user) => {
     setconfiguredName(user.name);
     setconfiguredAvatar(user.avatar);
   }
+
+  const handleOpenUserProfile = () => {
+    setOpenUserProfile(true);
+  }
+
+  const handleUserMenuClose = async (user) => {
+    if(user !== null){
+      changeUserInfo(user);
+      setOpenUserProfile(false);
+    }else{
+      setOpenUserProfile(false);
+    }
+  };
+  
   return (
     <>
     <>
+    {openUserProfile && (
+      <UserInfo onClose={() => setOpenUserProfile(false)} handleSave={handleUserMenuClose}/>
+    )}
     {createMenuOn && (
         <ConversationCreate CreateConvo={CreateConvo} setCreateMenuOn={setCreateMenuOn}/>
     )}
@@ -510,6 +529,7 @@ function Chatbox({ endpoint, endpointType }) {
           delMessage={delMessage}
           handleReneration={handleReneration}
           handleOpenCharacterProfile={handleOpenCharacterProfile}
+          handleOpenUserProfile={handleOpenUserProfile}
           selectedCharacter={userCharacter}
           messages={messages}
         />

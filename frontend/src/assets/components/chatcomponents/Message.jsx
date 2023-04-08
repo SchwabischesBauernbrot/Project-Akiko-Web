@@ -2,7 +2,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import ReactMarkdown from 'react-markdown';
 import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 
-function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages }) {
+function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages, handleOpenUserProfile }) {
   const editedMessageRef = useRef(null);
   const [editRowCounter, setEditRowCounter] = useState(1);
   
@@ -11,7 +11,7 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
   return (
     <div key={index} className={`${message.isIncoming ? "incoming-message" : "outgoing-message"} ${'pop-in'}`}>
       <div className={message.isIncoming ? "avatar incoming-avatar" : "avatar outgoing-avatar"}>
-        <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? undefined : handleOpenCharacterProfile}alt={`${message.sender}'s avatar`} />
+        <img src={message.avatar} onClick={message.sender === selectedCharacter.name ? handleOpenUserProfile : handleOpenCharacterProfile}alt={`${message.sender}'s avatar`} />
       </div>
       <div className="message-info">
         <div className="message-buttons">

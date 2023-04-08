@@ -50,6 +50,7 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
   const handleImageUpload = async (file) => {
     setMessageImage(file);
   };
+
   const handleUserMenuClose = async (user) => {
     if(user !== null){
       userEdit(user);
@@ -58,6 +59,7 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
       setUserMenuOpen(false);
     }
   };
+  
   return (
     <>
     {userMenuOpen && (

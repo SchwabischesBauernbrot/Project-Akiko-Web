@@ -943,7 +943,7 @@ Characters Page CSS
 	display: inline-flex;
 	object-fit: cover;
 }
-
+.outgoing-avatar img:hover,
 .incoming-avatar img:hover {
 	cursor: pointer;
 }
