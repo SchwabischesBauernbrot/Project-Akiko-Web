@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { saveUserAvatar, getUserImageUrl } from '../api';
+import { saveUserAvatar, getUserImageUrl, fetchUserAvatars } from '../api';
 import { FiImage, FiSave } from 'react-icons/fi';
 import { RxReset } from 'react-icons/rx';
+import Select from 'react-select';
 
 const UserInfo = ({onClose}) => {
     const [userImage, setUserImage] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [userName, setUserName] = useState('You');
     const [imageUrl, setImageUrl] = useState(null);
     const [authorsNote, setAuthorsNote] = useState('');
+    const [availableAvatars, setAvailableAvatars] = useState([]);
 
     useEffect(() => {
+        const fetchAvatars = async () => {
+            const avatars = await fetchUserAvatars();
+            setAvailableAvatars(avatars);
+        };
+        fetchAvatars();
         if(localStorage.getItem('configuredName')){
           setUserName(localStorage.getItem('configuredName'));
         }else{
@@ -25,7 +32,20 @@ const UserInfo = ({onClose}) => {
           }
         }
       }, []);
-      
+    
+    useEffect(() => {
+        if (userImage !== null) { // Add this condition
+            if (typeof userImage === 'string') { // If userImage is a filename (selected avatar)
+                setImageUrl(getUserImageUrl(userImage));
+            } else if (typeof userImage === 'object') { // If userImage is a File object (uploaded image)
+                setImageUrl(URL.createObjectURL(userImage));
+            }
+        } else {
+            setImageUrl(null); // Reset imageUrl if userImage is null
+        }
+    }, [userImage]);
+    
+    
 
     function handleImageChange(event) {
         const file = event.target.files[0];
@@ -34,19 +54,85 @@ const UserInfo = ({onClose}) => {
             setImageUrl(URL.createObjectURL(file));
         }
     }
+
+    const options = availableAvatars.map((avatar) => ({
+        value: avatar,
+        label: avatar,
+        avatar: getUserImageUrl(avatar),
+    }));
     
+    const formatOptionLabel = ({ label, avatar }) => (
+        <div className='flex items-center space-x-2'>
+            <img className='rounded-full object-cover w-8 h-8' src={avatar} title={label} alt='avatar'/>
+        </div>
+    );
+    
+
+    function handleAvatarSelect(option) {
+        const selectedAvatar = option.value;
+        setUserImage(selectedAvatar);
+    }
+
+    const customStyles = {
+        menu: (provided) => ({
+            ...provided,
+            width: 'fit-content',
+            backgroundColor: 'rgba(11, 11, 11, 0.636)',
+            backdropFilter: 'blur(10px)',
+            color: 'white'
+        }),
+        dropdownIndicator: (provided) => ({
+            ...provided,
+            color: 'white'
+        }),
+        container: (provided) => ({
+            ...provided,
+            color: 'white'
+        }),
+        control: (provided) => ({
+            ...provided,
+            width: 'fit-content',
+            backgroundColor: 'rgba(18, 18, 18, 0.737)',
+            boxShadow: '0px 0px 10px 0px rgba(57, 57, 57, 0.737)',
+            backdropFilter: 'blur(11px)',
+            scrollbehavior: 'smooth',
+            color: 'black',
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'rgba(11, 11, 11, 0.636)',
+            color: 'white',
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: 'white'
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: 'gray'
+        }),
+    };
+
     async function handleSubmit(event) {
         event.preventDefault();
-        const avatar = await saveUserAvatar(userImage);
+        let avatar;
+        
+        if (typeof userImage === 'object') { // Check if userImage is a File object (uploaded image)
+            avatar = await saveUserAvatar(userImage); // Save the uploaded image
+        } else {
+            avatar = userImage; // Use the selected avatar's filename
+        }
+    
         localStorage.setItem('configuredAvatar', avatar);
         localStorage.setItem('configuredName', userName);
         const newUserInfo = {
-            avatar : avatar,
-            name : userName,
-            authorsNote : authorsNote
+            avatar: avatar,
+            name: userName,
+            authorsNote: authorsNote
         }
         onClose(newUserInfo);
     }
+    
     const handleDefault = () => {
         setUserImage(null);
         setUserName('You');
@@ -87,6 +173,17 @@ const UserInfo = ({onClose}) => {
                             type="text"
                             onChange={(event) => setUserName(event.target.value)}
                             required
+                            />
+                            <label htmlFor="avatarSelect" className="font-bold">
+                                Available avatars:
+                            </label>
+                            <Select
+                                styles={customStyles}
+                                options={options}
+                                formatOptionLabel={formatOptionLabel}
+                                value={options.find((option) => option.value === userImage)}
+                                onChange={handleAvatarSelect}
+                                placeholder="Select an avatar"
                             />
                         </div>
                     </div>

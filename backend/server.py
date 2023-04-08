@@ -1054,9 +1054,10 @@ def save_user_avatar():
 @app.route('/api/user-avatar', methods=['GET'])
 @cross_origin()
 def get_user_avatars():
-    if(os.path.exists(app.config['USER_IMAGES_FOLDER'])):
-        avatars = os.listdir(app.config['USER_IMAGES_FOLDER'])
-        return jsonify({'success': 'User Avatars found', 'avatars': avatars})
+    if os.path.exists(app.config['USER_IMAGES_FOLDER']):
+        all_files = os.listdir(app.config['USER_IMAGES_FOLDER'])
+        png_files = [file for file in all_files if os.path.splitext(file)[1].lower() == '.png']
+        return jsonify({'success': 'User Avatars found', 'avatars': png_files})
     else:
         return jsonify({'failure': 'User Avatars not found.'})
 
