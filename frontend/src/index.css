@@ -7,6 +7,7 @@
 
 /* Import the utility styles for Tailwind */
 @import 'tailwindcss/utilities';
+
 /* 
 Broadly used CSS 
 */
@@ -901,123 +902,6 @@ Characters Page CSS
 	padding: 15px;
 	color: var(--selected-text-color);
 	flex-shrink: 0;
-}
-
-.incoming-message,
-.outgoing-message {
-	min-width: 80px;
-	display: inline-flex;
-	color: var(--selected-text-color) !important;
-	text-align: left;
-}
-
-.incoming-avatar,
-.outgoing-avatar {
-	height: 50px;
-	width: 50px;
-	border-radius: 50%;
-	margin-right: 10px;
-	margin-top: 15px;
-	overflow: hidden;
-	flex-shrink: 0;
-	display: inline-flex;
-	object-fit: cover;
-}
-.outgoing-avatar img:hover,
-.incoming-avatar img:hover {
-	cursor: pointer;
-}
-
-.incoming-avatar img,
-.outgoing-avatar img {
-	height: 100%;
-	width: 100%;
-	object-fit: cover;
-}
-
-.message-info {
-	display: flex;
-	flex-direction: column;
-}
-
-.sender-name {
-	margin: 0;
-	display: inline-flex;
-	align-items: flex-end;
-	font-weight: bold;
-	margin: 15px 0 0 0;
-}
-
-.message-text {
-	margin: 0rem 0 0px 0;
-	padding: 0px 0px;
-	border-radius: 10px;
-	position: left;
-	word-break: break-word;
-	font-size: 15.5px;
-	text-shadow: 2px 0px 2px rgba(0, 0, 0, 0.223);
-	line-height: 1.45rem;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.message-text p{
-	margin: 0px 0 0px 0;
-	padding: 2px 0px;
-	border-radius: 10px;
-	position: left;
-	word-break: break-word;
-	font-size: 15.5px;
-	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
-	line-height: 1.45rem;
-	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.message-text i {
-	font-weight: 600;
-}
-
-.message-editor {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-}
-	
-#message-edit {
-	margin: 0;
-	background-color: transparent;
-	color: var(--selected-text-color);
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	font-size: 15.5px;
-	line-height: 1.45rem;
-	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
-	width: 50rem;
-	height: auto;
-	padding: 2px 0px;
-	border-radius: 10px;
-	border: 2px solid gray;
-	box-sizing: border-box;
-	resize: none;
-	overflow-y: auto;
-}	
-.message-buttons {
-	position: absolute;
-	right: 1rem;
-	margin-top: 1rem;
-	display: flex;
-	flex-direction: row;
-}
-.message-button {
-	background-color: transparent;
-	backdrop-filter: blur(100%);
-	border-radius: 10px;
-	color: var(--selected-text-color);
-	border: none;
-	outline: none;
-}
-
-.message-button:hover {
-	cursor: pointer;
-	font-size: 21px;
 }	
 .send-input {
 	display: flex;
