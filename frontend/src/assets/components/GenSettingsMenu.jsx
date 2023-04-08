@@ -32,6 +32,7 @@ const GenSettingsMenu = ({onClose}) => {
     const [topK, setTopK] = useState(40);
     const [topP, setTopP] = useState(0.9);
     const [typical, setTypical] = useState(1);
+    const [minLengh, setMinLength] = useState(10);
 
     useEffect(() => {
         var endpoint = localStorage.getItem('endpointType');
@@ -81,6 +82,26 @@ const GenSettingsMenu = ({onClose}) => {
                 setMaxLength(parsedSettings.max_length);
                 setTemperature(parsedSettings.temperature);
             }
+        }else if(endpointType === 'Ooba'){
+            setInvalidEndpoint(false);
+            if (settings) {
+                const parsedSettings = JSON.parse(settings);
+                setMaxContextLength(parsedSettings.max_context_length);
+                setMaxLength(parsedSettings.max_length);
+                setRepPen(parsedSettings.rep_pen);
+                setMinLength(parsedSettings.min_length);
+                setRepPenRange(parsedSettings.rep_pen_range);
+                setRepPenSlope(parsedSettings.rep_pen_slope);
+                setSamplerFullDeterminism(parsedSettings.sampler_full_determinism);
+                setSingleline(parsedSettings.singleline);
+                setTemperature(parsedSettings.temperature);
+                setTfs(parsedSettings.tfs);
+                setTopA(parsedSettings.top_a);
+                setTopK(parsedSettings.top_k);
+                setTopP(parsedSettings.top_p);
+                setTypical(parsedSettings.typical);
+            }
+        
         }else{
             console.log('Endpoint type not recognized. Please check your settings.')
             setInvalidEndpoint(true);
@@ -115,16 +136,16 @@ const GenSettingsMenu = ({onClose}) => {
     return (
         <div className="modal-overlay">
             {invalidEndpoint ? (
-                <div className="gen-settings-menu">
-                    <span className="close" onClick={onClose}>&times;</span>
-                    <h1 className="gen-settings-header">Invalid Endpoint</h1>
-                    <p className="centered">Please check your TextGen Endpoint and try again.</p>
-                    <button className="submit-button" onClick={() => onCloseInvalid()}>Close</button>
-                </div>
+                <div className="relative inset-0 flex items-center justify-center z-50">
+                    <span className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600" onClick={onClose}>&times;</span>
+                    <h1 className="mb-4 text-2xl">Invalid Endpoint</h1>
+                    <p className="mb-4 text-center">Please check your TextGen Endpoint and try again.</p>
+                <button className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={() => onCloseInvalid()}>Close</button>
+            </div>
             ) : (
-            <div className="gen-settings-menu">
-                <span className="close" onClick={onClose}>&times;</span>
-                <h1 className="gen-settings-header">Generation Settings</h1>
+            <div className="relative flex flex-col items-center justify-center p-10 bg-selected text-selected-text rounded shadow-lg">
+                <span className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600" onClick={onClose}>&times;</span>
+                <h1 className="mb-4 text-2xl">Generation Settings</h1>
                 {endpointType === 'OAI' ? (
                     // Settings for OAI
                     <>

@@ -57,8 +57,8 @@ const UserInfo = ({onClose}) => {
     }
     return (
         <div className="modal-overlay">
-            <div className="character-info-box relative rounded-lg bg-selected-bb-color shadow-md backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
-            <span className="absolute top-0 right-0 p-4 text-xl font-bold cursor-pointer" onClick={onClose}>&times;</span>
+            <div className="relative bg-selected text-selected-text rounded shadow-lg backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
+            <span className="absolute top-0 right-0 p-4 text-xl font-bold cursor-pointer hover:text-red-600" onClick={onClose}>&times;</span>
             <div className="flex flex-col w-full max-w-md p-4 bg-selected-color rounded-lg">
                 <h2 className="mb-4 text-xl font-bold">User Details</h2>
                 <div className="flex flex-col">
@@ -66,7 +66,7 @@ const UserInfo = ({onClose}) => {
                     <div className="flex">
                     <div className="flex flex-col items-center w-1/2">
                         <label htmlFor="avatar-field" className="relative">
-                        {!imageUrl && <FiImage className="w-24 h-24 text-gray-300"/>}
+                        {!imageUrl && <FiImage className="w-24 h-24 text-selected-text"/>}
                         {imageUrl && <img src={imageUrl} alt="avatar" className="w-24 h-24 rounded-full object-cover"/>}
                         <input
                             id="avatar-field"
