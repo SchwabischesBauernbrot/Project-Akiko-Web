@@ -7,6 +7,7 @@
 
 /* Import the utility styles for Tailwind */
 @import 'tailwindcss/utilities';
+
 /* 
 Broadly used CSS 
 */
@@ -199,63 +200,6 @@ body {
 	width: fit-content;
 	margin: 1.5rem auto;
 	color: var(--selected-text-color);
-}
-
-.modal-small-box {
-	margin-right: auto;
-	margin-left: auto;
-	width: 90%; /* use % */
-	max-width: 25rem; /* set a maximum width */
-	height: auto; /* use auto to maintain aspect ratio */
-	min-height: 10rem;
-	background-color: var(--selected-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-}
-
-.cancel-button{
-	background-color: #333;
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	padding: 10px;
-	width: auto;
-	border: none;
-	outline: none;
-	color: var(--selected-text-color);
-	word-wrap: normal;
-	justify-content: center;
-	height: auto;
-	cursor: pointer;
-	bottom: 5%;
-	left: 20%;
-	position: absolute;
-}
-#cancel:hover {
-    background-color: rgba(179, 6, 6, 0.636);
-}
-
-.submit-button{
-	background-color: #333;
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	padding: 10px;
-	width: auto;
-	border: none;
-	outline: none;
-	color: var(--selected-text-color);
-	word-wrap: normal;
-	justify-content: center;
-	height: auto;
-	cursor: pointer;
-	bottom: 5%;
-	right: 20%;
-	position: absolute;
-}
-#submit:hover {
-    background-color: rgb(6, 136, 168);
 }
 
 .button {
@@ -482,31 +426,11 @@ Settings Pages CSS
 	color: black;
 }
 
-.gen-settings-menu {
-	margin-top: 15px;
-	display: flex;
-	flex-direction: column;
-	margin-right: auto;
-	margin-left: auto;
-	width: fit-content;
-	background-color: var(--selected-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	padding: 20px;
-	color: var(--selected-text-color);
-}
-
 #input-container {
 	border: none;
 	width: 10%
 }
 
-.gen-settings-header {
-	width: fit-content;
-	margin: 2% auto;
-	color: var(--selected-text-color);
-}
 .settings-panel-header {
 	width: fit-content;
 	margin: 2% auto;
@@ -797,38 +721,11 @@ Characters Page CSS
   opacity: 1;
 }
 /* Chat CSS */
-.message-box {
-	height: 75vh;
-	overflow-x: hidden;
-	position: relative;
-	max-width: 750px;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	padding: 10px;
+.selected-bb-color {
 	background-color: var(--selected-bb-color);
-	box-shadow: 0px 0px 10px 0px rgba(25, 25, 25, 0.737);
+  }
+.backdrop-blur-md {
 	backdrop-filter: blur(10px);
-}
-.chatbox-wrapper{
-	margin: auto;
-}
-.connect-chat-box {
-	position: relative;
-	margin-top: 5px;
-    display: flex;
-    flex-direction: row;
-	border-top-right-radius: 10px;
-	border-top-left-radius: 10px;
-    align-items: center; /* Add this line to align items vertically */
-    max-width: 750px;
-    padding: 5px;
-    background-color: var(--selected-bb-color);
-    
-    backdrop-filter: blur(10px);
-    margin-bottom: 4px;
-    height: auto;
-    overflow: hidden; /* Change this to hidden */
 }
 .chat-selection-menu {
 	position: relative;
@@ -879,39 +776,6 @@ Characters Page CSS
     align-items: center; /* Add this line */
     justify-content: center; /* Add this line */
 }
-
-#dropdown {
-	width: 10rem;
-	margin-bottom: 0rem;
-	margin-top: -3rem;
-	margin-right: 10vh;
-	font-size: 14px;
-
-}
-.input-box textarea {
-	min-height: 1rem !important;
-}
-
-.input-box {
-	position: relative;
-	overflow-x: break-word;
-	max-width: 750px;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	padding: 10px;
-	background-color: var(--selected-bb-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(57, 57, 57, 0.737);
-	backdrop-filter: blur(10px);
-	margin-right: 0;
-	margin-left: 0px;
-	border-top-right-radius: 0px;
-	border-top-left-radius: 0px;
-	margin-top: 4px;
-	height: 4.5rem;
-}
-
 .create-conversation-menu {
 	width: max-content;
 	background-color: var(--selected-color);
@@ -921,127 +785,14 @@ Characters Page CSS
 	padding: 15px;
 	color: var(--selected-text-color);
 	flex-shrink: 0;
-}
-
-.incoming-message,
-.outgoing-message {
-	min-width: 80px;
-	display: inline-flex;
-	color: var(--selected-text-color) !important;
-	text-align: left;
-}
-
-.incoming-avatar,
-.outgoing-avatar {
-	height: 50px;
-	width: 50px;
-	border-radius: 50%;
-	margin-right: 10px;
-	margin-top: 15px;
-	overflow: hidden;
-	flex-shrink: 0;
-	display: inline-flex;
-	object-fit: cover;
-}
-
-.incoming-avatar img:hover {
-	cursor: pointer;
-}
-
-.incoming-avatar img,
-.outgoing-avatar img {
-	height: 100%;
-	width: 100%;
-	object-fit: cover;
-}
-
-.message-info {
-	display: flex;
-	flex-direction: column;
-}
-
-.sender-name {
-	margin: 0;
-	display: inline-flex;
-	align-items: flex-end;
-	font-weight: bold;
-	margin: 15px 0 0 0;
-}
-
-.message-text {
-	margin: 0rem 0 0px 0;
-	padding: 0px 0px;
-	border-radius: 10px;
-	position: left;
-	word-break: break-word;
-	font-size: 15.5px;
-	text-shadow: 2px 0px 2px rgba(0, 0, 0, 0.223);
-	line-height: 1.45rem;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.message-text p{
-	margin: 0px 0 0px 0;
-	padding: 2px 0px;
-	border-radius: 10px;
-	position: left;
-	word-break: break-word;
-	font-size: 15.5px;
-	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
-	line-height: 1.45rem;
-	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.message-text i {
-	font-weight: 600;
-}
-
-.message-editor {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-}
-	
-#message-edit {
-	margin: 0;
-	background-color: transparent;
-	color: var(--selected-text-color);
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	font-size: 15.5px;
-	line-height: 1.45rem;
-	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.411);
-	width: 50rem;
-	height: auto;
-	padding: 2px 0px;
-	border-radius: 10px;
-	border: 2px solid gray;
-	box-sizing: border-box;
-	resize: none;
-	overflow-y: auto;
 }	
-.message-buttons {
-	position: absolute;
-	right: 1rem;
-	margin-top: 1rem;
-	display: flex;
-	flex-direction: row;
-}
-.message-button {
-	background-color: transparent;
-	backdrop-filter: blur(100%);
-	border-radius: 10px;
-	color: var(--selected-text-color);
-	border: none;
-	outline: none;
-}
+#dropdown {
+	width: 10rem;
+	margin-bottom: 0rem;
+	margin-top: -3rem;
+	margin-right: 10vh;
+	font-size: 14px;
 
-.message-button:hover {
-	cursor: pointer;
-	font-size: 21px;
-}	
-.send-input {
-	display: flex;
-	justify-content: space-between;
 }
 
 #FiImage:hover,
@@ -1054,53 +805,6 @@ Characters Page CSS
 	cursor: pointer;
 	color: var(--selected-text-color);
 	font-size: 21px;
-}
-
-#input {
-	background-color: transparent;
-	backdrop-filter: blur(100%);
-	border-radius: 10px;
-	padding: 10px;
-	border: none;
-	outline: none;
-	color: var(--selected-text-color);
-	overflow: hidden;
-	justify-content: flex-start;
-	margin-left: 10px;
-	height: auto;
-	overflow-y: scroll;
-	resize: none; /* disable user resizing */
-	font-family: "Noto Sans", "Noto Color Emoji", sans-serif; 
-	font-size: 14.5px;
-	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.614);
-	height: auto;
-}
-
-#input {
-	width: 600px;
-	cursor:text;
-}
-
-#input-container {
-	background-color: transparent;
-	border-radius: 10px;
-	padding: 10px;
-	color: var(--selected-text-color);
-	overflow: hidden;
-	justify-content: flex-start;
-	margin-left: 10px;
-	height: auto;
-	overflow-y: scroll;
-	resize: none; /* disable user resizing */
-	font-family: "Noto Sans", "Noto Color Emoji", sans-serif; 
-	font-size: 14.5px;
-	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.614);
-	height: auto;
-}
-
-#input-container {
-	width: auto;
-	cursor:text;
 }
 
 .sent-image {
@@ -1185,49 +889,6 @@ Characters Page CSS
 .message-button:hover {
 	cursor: pointer;
 	font-size: 21px;
-}
-.user-info-menu {
-	position: relative;
-	margin: auto;
-	padding: 20px;
-	width: 50%;
-	height: auto;
-	background-color: var(--selected-color);
-	border-radius: 10px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-}
-.user-info-top {
-    display: flex;
-    justify-content: space-between; /* Updated to space-between */
-    width: 100%;
-    margin-top: 0%;
-    gap: 5%;
-    margin-bottom: 1rem;
-}
-.user-info-top-left {
-    display: grid;
-    grid-template-columns: auto; /* Add grid-template-columns */
-    width: 100%;
-    margin-top: 0%;
-    gap: 2%;
-    flex-direction: row;
-}
-
-.user-info-top-right {
-    display: grid;
-    grid-template-columns: 1fr; /* Add grid-template-columns */
-    width: 100%;
-    margin-top: 0%;
-    gap: 2%;
-    flex-direction: column;
-}
-.user-info-wrapper {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	padding: 0;
-	width: 100%;
-	height: 100%;
 }
 #authors-note{
 	height: 15rem;

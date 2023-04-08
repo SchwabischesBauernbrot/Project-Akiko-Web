@@ -44,6 +44,23 @@ const oai_defaults = {
   'max_tokens': 200,
   'temperature': 0.7,
 }
+const akiko_defaults = {
+  'do_sample': true,
+  'max_length': 2048,
+  'use_cache': true,
+  'min_new_tokens': 10,
+  'temperature': 0.71,
+  'repetition_penalty': 1.01,
+  'top_p': 0.9,
+  'top_k': 40,
+  'typical_p': 1,
+  'repetition_penalty': 1,
+  'num_beams': 1,
+  'penalty_alpha': 0,
+  'length_penalty': 1,
+  'no_repeat_ngram_size': 0,
+  'early_stopping': false,
+}
 
   function getSettings(endpointType) {
     const settings = localStorage.getItem('generationSettings');
@@ -85,6 +102,46 @@ const oai_defaults = {
         }
         return customSettings;
       }
+    }else if(endpointType === 'AkikoBackend'){
+      if(settings){
+        const parsedSettings = JSON.parse(settings);
+        const customSettings = {
+          'do_sample': parsedSettings.do_sample,
+          'max_length': parsedSettings.max_length,
+          'min_new_tokens': parsedSettings.min_length,
+          'temperature': parsedSettings.temperature,
+          'top_p': parsedSettings.top_p,
+          'top_k': parsedSettings.top_k,
+          'typical_p': parsedSettings.typical,
+          'repetition_penalty': parsedSettings.rep_pen,
+          'penalty_alpha': parsedSettings.rep_pen_range,
+          'length_penalty': parsedSettings.rep_pen_slope,
+          'no_repeat_ngram_size': parsedSettings.tfs,
+          'early_stopping': parsedSettings.singleline,
+        }
+        return customSettings;
+      }
+    }else if(endpointType === 'Ooba'){
+      if(settings){
+        const parsedSettings = JSON.parse(settings);
+        const customSettings = {
+          'max_new_tokens': parsedSettings.max_length,
+          'do_sample': parsedSettings.do_sample,
+          'temperature': parsedSettings.temperature,
+          'top_p': parsedSettings.top_p,
+          'typical_p': parsedSettings.typical,
+          'repetition_penalty': parsedSettings.rep_pen,
+          'encoder_repetition_penalty': parsedSettings.rep_pen_range,
+          'top_k': parsedSettings.top_k,
+          'min_length': parsedSettings.min_length,
+          'no_repeat_ngram_size': parsedSettings.tfs,
+          'num_beams': parsedSettings.num_beams,
+          'penalty_alpha': parsedSettings.rep_pen_range,
+          'length_penalty': parsedSettings.rep_pen_slope,
+          'early_stopping': parsedSettings.singleline,
+        }
+        return customSettings;
+      }
     }
     return;
   }
@@ -113,7 +170,7 @@ const oai_defaults = {
     } else if(endpointType === 'Ooba'){
       customSettings = ooba_defaults;
     } else if(endpointType === 'AkikoBackend'){
-      customSettings = ooba_defaults;
+      customSettings = akiko_defaults;
     } else if(endpointType === 'Horde'){
       customSettings = kobold_defaults;
       hordeModel = localStorage.getItem('hordeModel');

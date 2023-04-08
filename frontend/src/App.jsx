@@ -25,7 +25,7 @@ function App() {
       <FrontNav showNavBar={showNavBar} setShowNavBar={setShowNavBar} />
       <main
         className="transition-all duration-100"
-        style={{ paddingTop: showNavBar ? '.25rem' : '0' }} // Replace [max-height] with the maximum height of the NavBar
+        style={{ paddingTop: showNavBar ? '.25rem' : '0' }}
       >
         <Routes>
           <Route exact path="/" element={<Home />} />

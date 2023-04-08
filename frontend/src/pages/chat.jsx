@@ -21,14 +21,8 @@ useEffect(() => {
 }, []);
 
 return (
-<div className="flex flex-col items-center justify-center">
-  <div className="w-full flex justify-center mb-6">
-        
-        <Chatbox endpoint={configuredEndpoint} endpointType={configuredEndpointType}/>
-        </div>
-         </div>
-
-);
+    <Chatbox endpoint={configuredEndpoint} endpointType={configuredEndpointType}/>
+    );
 };
 
 export default Chat;

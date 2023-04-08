@@ -926,6 +926,23 @@ def download_tavern_character(char_id):
 #### ADVANCED CHARACTER ROUTES ####
 ###################################
 
+from flask import request
+import shutil
+
+@app.route('/api/advanced-character/<char_id>/<emotion>', methods=['DELETE'])
+@cross_origin()
+def delete_advanced_emotion(char_id, emotion):
+    emotion_path = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'{emotion}.png')
+    default_path = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'default.png')
+
+    if os.path.exists(emotion_path):
+        os.remove(emotion_path)
+        if emotion == 'default' and os.path.exists(default_path):
+            # If the emotion is 'default', remove the default sprite as well
+            os.remove(default_path)
+        return jsonify({'success': f'Character emotion {emotion} deleted.'})
+    else:
+        return jsonify({'failure': f'Character does not have an image for the {emotion} emotion.'})
 
 @app.route('/api/advanced-character/<char_id>/<emotion>', methods=['GET'])
 @cross_origin()
@@ -943,11 +960,14 @@ def get_advanced_emotion(char_id, emotion):
 @cross_origin()
 def save_advanced_emotion(char_id, emotion):
     # Get the emotion image file from the request object
+    if(request.files.get('emotion') is None):
+        return jsonify({'error': 'No emotion image file found'}), 500
+    if(not os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))):
+        os.mkdir(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))
+
     emotion_file = request.files['emotion']
-    # Split the uploaded file name into its base name and extension
-    base_name, extension = os.path.splitext(emotion_file.filename)
     # Construct the new file name using the emotion name and extension
-    emotion_file_name = f"{emotion}{extension}"
+    emotion_file_name = f"{emotion}.png"
     # Save the image file to the character's folder with the new file name
     emotion_file.save(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id, emotion_file_name))
     # Return the frontend path to the image file
@@ -1031,6 +1051,15 @@ def save_user_avatar():
     # Return a response to the client
     return {'avatar': f'{avatar_count}.png'}, 200
 
+@app.route('/api/user-avatar', methods=['GET'])
+@cross_origin()
+def get_user_avatars():
+    if os.path.exists(app.config['USER_IMAGES_FOLDER']):
+        all_files = os.listdir(app.config['USER_IMAGES_FOLDER'])
+        png_files = [file for file in all_files if os.path.splitext(file)[1].lower() == '.png']
+        return jsonify({'success': 'User Avatars found', 'avatars': png_files})
+    else:
+        return jsonify({'failure': 'User Avatars not found.'})
 
 #########################
 #### SETTINGS ROUTES ####

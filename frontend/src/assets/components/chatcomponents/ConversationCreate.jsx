@@ -95,13 +95,11 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
     }));
 
     const formatOptionLabel = ({ label, avatar }) => (
-    <div style={{marginLeft : 'auto', marginRight : 'auto', padding: '1rem'}}>
-    <div className='incoming-avatar'>
-        <img src={getCharacterImageUrl(avatar)} title={label}/>
-    </div>
-    <div className='sender-name'>
-    {label}
-    </div>
+    <div className='flex items-center space-x-2'>
+        <img className='rounded-full object-cover w-8 h-8' src={getCharacterImageUrl(avatar)} title={label} alt='avatar'/>
+        <div className='font-medium text-white'>
+            {label}
+        </div>
     </div>
     );
 
@@ -109,12 +107,6 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
         menu: (provided) => ({
             ...provided,
             width: 'fit-content',
-            backgroundColor: 'rgba(11, 11, 11, 0.636)',
-            backdropFilter: 'blur(10px)',
-            color: 'white'
-        }),
-        singleValue: (provided) => ({
-            ...provided,
             backgroundColor: 'rgba(11, 11, 11, 0.636)',
             backdropFilter: 'blur(10px)',
             color: 'white'
@@ -134,24 +126,39 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
             boxShadow: '0px 0px 10px 0px rgba(57, 57, 57, 0.737)',
             backdropFilter: 'blur(11px)',
             scrollbehavior: 'smooth',
-            color: 'white',
+            color: 'black',
         }),
         option: (provided, state) => ({
             ...provided,
             backgroundColor: 'rgba(11, 11, 11, 0.636)',
             color: 'white',
         }),
-      };
+        singleValue: (provided) => ({
+            ...provided,
+            color: 'black'
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: 'gray'
+        }),
+    };
+    
+    
 
 return (
 <div className='modal-overlay'>
-    <div className='create-conversation-menu'>
-        <h2 className="centered">Create Group Conversation</h2>
-        <div className="create-menu-wrapper">
-            <form>
-                <label>Conversation Name:</label>
-                <input className='character-input' type="text" value={conversationName} onChange={handleConversationNameChange}/>
-                <label>Participants:</label>
+    <div className='absolute top-0 left-0 right-0 bottom-0'></div>
+    <div className='relative bg-selected-bb rounded-lg z-50'>
+        <span className="absolute top-0 right-0 p-4 text-xl font-bold cursor-pointer hover:text-red-600" onClick={handleCancelCreateConversation}>&times;</span>
+        <h2 className="text-white text-center text-2xl font-semibold py-4">Create Group Conversation</h2>
+        <div className="create-menu-wrapper px-6 py-4">
+            <form onSubmit={handleCreateConversationSubmit}>
+                <div className='mb-4'>
+                    <label className='block text-white font-medium mb-2'>Conversation Name:</label>
+                    <input className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" value={conversationName} onChange={handleConversationNameChange}/>
+                </div>
+                <div className='mb-4'>
+                    <label className='block text-white font-medium mb-2'>Participants:</label>
                     <Select
                     isMulti
                     options={characterOptions}
@@ -160,12 +167,15 @@ return (
                     value={selectedParticipants}
                     styles={customStyles}
                     />
-                <div className="form-bottom-buttons">
-                    <button className='icon-button-small' type="button" id='cancel' onClick={handleCancelCreateConversation}>
-                        <ImCancelCircle className='react-icon'/>
+                </div>
+                <div className="form-bottom-buttons flex justify-end space-x-2">
+                    <button className='text-selected-text bg-selected hover:bg-red-600 py-2 px-4 rounded' type="button" id='cancel' onClick={handleCancelCreateConversation}>
+                        <ImCancelCircle className='w-6 h-6'/>
+                        <span className='sr-only'>Cancel</span>
                     </button>
-                    <button className='icon-button-small' id='submit' type="submit" onClick={handleCreateConversationSubmit}>
-                        <FiSave className='react-icon'/>
+                    <button className='text-selected-text bg-selected hover:bg-blue-600 py-2 px-4 rounded' id='submit' type="submit">
+                        <FiSave className='w-6 h-6'/>
+                        <span className='sr-only'>Save</span>
                     </button>
                 </div>
             </form>

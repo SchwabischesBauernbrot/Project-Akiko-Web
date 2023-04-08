@@ -46,7 +46,10 @@ export async function fetchCharacter(charId) {
   return response.data;
 }
 
-
+export async function fetchUserAvatars() {
+  const response = await axios.get(`${API_URL}/user-avatar`);
+  return response.data.avatars;
+}
 
 export async function fetchConfig(setBotToken, setChannels) {
   try {
@@ -261,6 +264,11 @@ export async function saveAdvancedCharacterEmotion(character, emotionName, emoti
   formData.append('emotion', emotionFile);
   const response = await axios.post(`${API_URL}/advanced-character/${character.char_id}/${emotionName}`, formData);
   return response.data['path'];
+}
+
+export async function deleteAdvancedCharacterEmotion(character, emotion) {
+  const response = await axios.delete(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
+  return response.data;
 }
 
 export async function updateAdvancedCharacter(advancedCharacter) {

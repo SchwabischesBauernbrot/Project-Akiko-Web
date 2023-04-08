@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiUsers, FiSliders, FiImage } from "react-icons/fi";
+import { FiSliders, FiImage } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
 import { BsPersonCheck, BsPersonCheckFill } from "react-icons/bs";
 import GenSettingsMenu from "./GenSettingsMenu";
@@ -50,6 +51,7 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
   const handleImageUpload = async (file) => {
     setMessageImage(file);
   };
+
   const handleUserMenuClose = async (user) => {
     if(user !== null){
       userEdit(user);
@@ -58,6 +60,7 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
       setUserMenuOpen(false);
     }
   };
+  
   return (
     <>
     {userMenuOpen && (
@@ -66,10 +69,10 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
     {GenSettingsMenuIsOpen && (
       <GenSettingsMenu onClose={() => setGenSettingsMenuIsOpen(false)}/>
     )}
-    <div className="input-box">
-      <div className="send-input">
+    <div className="input-box relative overflow-x-auto max-w-[750px] flex flex-col justify-start p-2 selected-bb-color rounded-b-lg px-1 mt-1 h-18 send-input-container">
+      <div className="send-input flex justify-between items-center">
         <div id="FiMenu" onClick={() => setUserMenuOpen(true)} title={'Change User Profile Settings'}>
-          <FiUsers />
+          <CgProfile />
         </div>
         <div id="FiSliders" onClick={() => setGenSettingsMenuIsOpen(true)} title={'Change Generation Settings'}>
           <FiSliders />
@@ -99,7 +102,9 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
           placeholder="Type your message..."
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
-          ref={textAreaRef}/>
+          ref={textAreaRef}
+          className="min-h-[1rem] bg-transparent backdrop-blur border-none outline-none text-selected-text-color flex-grow ml-2 h-auto overflow-y-scroll resize-none noto-sans-font"
+        />
         <div onClick={handleSendClick} id="FiSend" title={'Send message'}>
           <HiOutlinePaperAirplane />
         </div>
