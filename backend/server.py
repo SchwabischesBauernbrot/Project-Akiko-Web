@@ -1051,6 +1051,14 @@ def save_user_avatar():
     # Return a response to the client
     return {'avatar': f'{avatar_count}.png'}, 200
 
+@app.route('/api/user-avatar', methods=['GET'])
+@cross_origin()
+def get_user_avatars():
+    if(os.path.exists(app.config['USER_IMAGES_FOLDER'])):
+        avatars = os.listdir(app.config['USER_IMAGES_FOLDER'])
+        return jsonify({'success': 'User Avatars found', 'avatars': avatars})
+    else:
+        return jsonify({'failure': 'User Avatars not found.'})
 
 #########################
 #### SETTINGS ROUTES ####

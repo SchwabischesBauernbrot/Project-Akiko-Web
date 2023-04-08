@@ -5,6 +5,7 @@ import { capitalizeFirstLetter } from "../miscfunctions";
 
 const EmotionSprites = ({ character }) => {
     const possibleEmotions = [
+        'default',
         'admiration', 
         'amusement', 
         'anger', 
@@ -12,8 +13,7 @@ const EmotionSprites = ({ character }) => {
         'approval', 
         'caring', 
         'confusion', 
-        'curiosity', 
-        'default', 
+        'curiosity',  
         'desire', 
         'disappointment', 
         'disapproval', 

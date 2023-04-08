@@ -46,7 +46,10 @@ export async function fetchCharacter(charId) {
   return response.data;
 }
 
-
+export async function fetchUserAvatars() {
+  const response = await axios.get(`${API_URL}/user-avatar`);
+  return response.data.avatars;
+}
 
 export async function fetchConfig(setBotToken, setChannels) {
   try {
