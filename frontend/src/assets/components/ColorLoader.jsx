@@ -30,7 +30,7 @@ function ColorLoader() {
       }
     });
 
-    const storedBackground = localStorage.getItem("backgroundColor");
+    const storedBackground = localStorage.getItem("background");
     if (storedBackground) {
       const background = JSON.parse(storedBackground);
       if (background.url) {
