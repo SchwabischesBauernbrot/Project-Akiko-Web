@@ -22,22 +22,12 @@ function ColorPicker() {
   const [textItalicColor, setTextItalicColor] = useState(() =>
     getLocalStorageColor("textItalicColor", { r: 255, g: 255, b: 255, a: 1 })
   );
-  const [backgroundColor, setBackgroundColor] = useState(() =>
-    getLocalStorageColor("backgroundColor", {
-      r: 255,
-      g: 255,
-      b: 255,
-      a: 1,
-      url: "",
-    })
-  );
 
   const colorSetters = {
     backdrop: setBackdropColor,
     buttonBox: setButtonBoxColor,
     textIcon: setTextIconColor,
     textItalic: setTextItalicColor,
-    background: setBackgroundColor,
   };
 
   const colors = {
@@ -45,7 +35,6 @@ function ColorPicker() {
     buttonBox: buttonBoxColor,
     textIcon: textIconColor,
     textItalic: textItalicColor,
-    background: backgroundColor,
   };
 
   useEffect(() => {
@@ -74,13 +63,6 @@ function ColorPicker() {
             break;
           case "textItalic":
             root.style.setProperty("--selected-italic-color", colorString);
-            break;
-          case "background":
-            root.style.setProperty("--selected-background-color", colorString);
-            root.style.setProperty(
-              "--selected-background",
-              `url(${prevColor.url})`
-            );
             break;
           default:
             break;
@@ -111,7 +93,6 @@ function ColorPicker() {
         <option value="buttonBox">Buttons/Boxes</option>
         <option value="textIcon">Normal Text/Icons</option>
         <option value="textItalic">Italic Text</option>
-        <option value="background">Background Color</option>
       </select>
       <h3>Selected Color:</h3>
       <ChromePicker

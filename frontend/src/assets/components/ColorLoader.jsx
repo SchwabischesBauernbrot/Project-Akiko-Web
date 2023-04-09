@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getBackgroundImageUrl } from "./api";
 
 const colorKeys = [
   "backdropColor",
@@ -32,9 +33,9 @@ function ColorLoader() {
 
     const storedBackground = localStorage.getItem("background");
     if (storedBackground) {
-      const background = JSON.parse(storedBackground);
-      if (background.url) {
-        root.style.setProperty("--selected-background", `url(${background.url})`);
+      const background = getBackgroundImageUrl(storedBackground);
+      if (background) {
+        root.style.setProperty("--selected-background", `url(${background})`);
       }
     }
   }, []);

@@ -23,6 +23,7 @@ const BackgroundSelector = ({ onBackgroundChange }) => {
   useEffect(() => {
     if (background !== null) {
       localStorage.setItem("background", background);
+      console.log("Setting background to: " + background);
       root.style.setProperty(
         "--selected-background",
         `url(${getBackgroundImageUrl(background)})`
