@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChromePicker } from "react-color";
+import BackgroundSelector from "../BackgroundSelector";
 
 function getLocalStorageColor(key, defaultColor) {
   const storedColor = localStorage.getItem(key);
@@ -93,16 +94,6 @@ function ColorPicker() {
     setSelectedElement(event.target.value);
   }
 
-  function handleBackgroundUrlChange(event) {
-    setBackgroundColor((prevColor) => {
-      const newColors = { ...prevColor, url: event.target.value };
-      const root = document.documentElement;
-      root.style.setProperty("--selected-background", `url(${event.target.value})`);
-      localStorage.setItem("backgroundColor", JSON.stringify(newColors));
-      return newColors;
-    });
-  }
-
   function clearBackgroundColor() {
     setBackgroundColor({ r: 255, g: 255, b: 255, a: 1, url: "" });
     const root = document.documentElement;
@@ -122,16 +113,6 @@ function ColorPicker() {
         <option value="textItalic">Italic Text</option>
         <option value="background">Background Color</option>
       </select>
-      {selectedElement === "background" && (
-        <div>
-          <h3>Background Image URL:</h3>
-          <input
-            type="text"
-            value={colors.background.url}
-            onChange={handleBackgroundUrlChange}
-          />
-        </div>
-      )}
       <h3>Selected Color:</h3>
       <ChromePicker
         color={colors[selectedElement]}
@@ -140,6 +121,7 @@ function ColorPicker() {
       <button className="connect-button" onClick={clearBackgroundColor}>
         Clear Background Color
       </button>
+      <BackgroundSelector/>
     </div>
   );
   

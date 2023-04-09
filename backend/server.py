@@ -991,12 +991,12 @@ def get_advanced_emotions(char_id):
 ##########################################
 
 
-##########################################
+##############################
 #### LAYOUT/DESIGN ROUTES ####
-##########################################
+##############################
 
 
-@app.route('/api/design/background', methods=['POST'])
+@app.route('/api/backgrounds', methods=['POST'])
 @cross_origin()
 def upload_background():
     if 'background' not in request.files:
@@ -1005,25 +1005,45 @@ def upload_background():
     if file.filename == '':
         return {'error': 'No selected file.'}, 400
     filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
-    file.save(filepath)
-    return {'path': filepath}, 200
+    if(os.path.exists(app.config['BACKGROUNDS_FOLDER'])):
+        filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
+        file.save(filepath)
+        return {'filename': filename}, 200  # Return only the filename
+    else:
+        os.mkdir(app.config['BACKGROUNDS_FOLDER'])
+        filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
+        file.save(filepath)
+        return {'filename': filename}, 200  # Return only the filename
+    
 
-@app.route('/api/design/background', methods=['GET'])
+@app.route('/api/backgrounds', methods=['GET'])
 @cross_origin()
 def get_backgrounds():
-    backgrounds = []
-    for file in os.listdir(app.config['BACKGROUNDS_FOLDER']):
-        if file.lower().endswith(('.png', '.jpg')):
-            filename = os.path.splitext(file)[0]
-            backgrounds.append({
-                'value': filename,
-                'label': filename.capitalize(),
-                'imagePath': f'/api/design/background/{filename}.png'
-            })
-    return {'backgrounds': backgrounds}, 200
+    if os.path.exists(app.config['BACKGROUNDS_FOLDER']):
+        all_files = os.listdir(app.config['BACKGROUNDS_FOLDER'])
+        img_files = [file for file in all_files if os.path.splitext(file)[1].lower() in ['.png', '.jpg']]
+        return {'backgrounds': img_files}, 200
+    else:
+        return {'failure': 'No backgrounds found.'}, 404
 
+@app.route('/api/backgrounds/<string:filename>', methods=['DELETE'])
+@cross_origin()
+def delete_background(filename):
+    if not filename:
+        return {'error': 'No filename provided.'}, 400
 
+    # Check if the file exists
+    filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
+    if not os.path.exists(filepath):
+        return {'error': f'File {filename} not found.'}, 404
+
+    # Delete the file
+    try:
+        os.remove(filepath)
+        return {'success': f'File {filename} deleted.'}, 200
+    except Exception as e:
+        return {'error': str(e)}, 500
+    
 #####################################
 #### END OF LAYOUT/DESIGN ROUTES ####
 #####################################

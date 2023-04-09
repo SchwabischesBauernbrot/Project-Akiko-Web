@@ -5,6 +5,7 @@ const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${
 const AVATARS_FOLDER = 'src/shared_data/character_images';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
 const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
+const BACKGROUNDS_FOLDER = 'src/shared_data/backgrounds';
 
 export function downloadImage(imageUrl, fileName) {
   const link = document.createElement('a');
@@ -49,6 +50,11 @@ export async function fetchCharacter(charId) {
 export async function fetchUserAvatars() {
   const response = await axios.get(`${API_URL}/user-avatar`);
   return response.data.avatars;
+}
+
+export async function fetchBackgrounds() {
+  const response = await axios.get(`${API_URL}/backgrounds`);
+  return response.data.backgrounds;
 }
 
 export async function fetchConfig(setBotToken, setChannels) {
@@ -143,6 +149,36 @@ export function getCharacterImageUrl(avatar) {
 export function getUserImageUrl(avatar) {
   return `${CURRENT_URL}/${USER_AVATAR_FOLDER}/${avatar}`;
 }
+export function getBackgroundImageUrl(background) {
+  return `${CURRENT_URL}/${BACKGROUNDS_FOLDER}/${background}`;
+}
+
+export const uploadBackground = async (file) => {
+  const formData = new FormData();
+  formData.append("background", file);
+
+  try {
+    const response = await axios.post(`${API_URL}/backgrounds`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data.filename ? response.data : null; // Update this line
+  } catch (error) {
+    console.error("Error uploading background:", error);
+    return null;
+  }
+};
+
+export const deleteBackground = async (filename) => {
+  try {
+    const response = await axios.delete(`${API_URL}/backgrounds/${filename}`);
+    return response.data.success ? response.data : null;
+  } catch (error) {
+    console.error(`Error deleting background: ${error}`);
+    return null;
+  }
+};
 
 export async function deleteCharacter(charId) {
   const response = await axios.delete(`${API_URL}/characters/${charId}`);
