@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChromePicker } from "react-color";
+import BackgroundSelector from "../BackgroundSelector";
 
 function getLocalStorageColor(key, defaultColor) {
   const storedColor = localStorage.getItem(key);
@@ -21,22 +22,12 @@ function ColorPicker() {
   const [textItalicColor, setTextItalicColor] = useState(() =>
     getLocalStorageColor("textItalicColor", { r: 255, g: 255, b: 255, a: 1 })
   );
-  const [backgroundColor, setBackgroundColor] = useState(() =>
-    getLocalStorageColor("backgroundColor", {
-      r: 255,
-      g: 255,
-      b: 255,
-      a: 1,
-      url: "",
-    })
-  );
 
   const colorSetters = {
     backdrop: setBackdropColor,
     buttonBox: setButtonBoxColor,
     textIcon: setTextIconColor,
     textItalic: setTextItalicColor,
-    background: setBackgroundColor,
   };
 
   const colors = {
@@ -44,7 +35,6 @@ function ColorPicker() {
     buttonBox: buttonBoxColor,
     textIcon: textIconColor,
     textItalic: textItalicColor,
-    background: backgroundColor,
   };
 
   useEffect(() => {
@@ -74,13 +64,6 @@ function ColorPicker() {
           case "textItalic":
             root.style.setProperty("--selected-italic-color", colorString);
             break;
-          case "background":
-            root.style.setProperty("--selected-background-color", colorString);
-            root.style.setProperty(
-              "--selected-background",
-              `url(${prevColor.url})`
-            );
-            break;
           default:
             break;
         }
@@ -91,16 +74,6 @@ function ColorPicker() {
 
   function handleElementChange(event) {
     setSelectedElement(event.target.value);
-  }
-
-  function handleBackgroundUrlChange(event) {
-    setBackgroundColor((prevColor) => {
-      const newColors = { ...prevColor, url: event.target.value };
-      const root = document.documentElement;
-      root.style.setProperty("--selected-background", `url(${event.target.value})`);
-      localStorage.setItem("backgroundColor", JSON.stringify(newColors));
-      return newColors;
-    });
   }
 
   function clearBackgroundColor() {
@@ -120,18 +93,7 @@ function ColorPicker() {
         <option value="buttonBox">Buttons/Boxes</option>
         <option value="textIcon">Normal Text/Icons</option>
         <option value="textItalic">Italic Text</option>
-        <option value="background">Background Color</option>
       </select>
-      {selectedElement === "background" && (
-        <div>
-          <h3>Background Image URL:</h3>
-          <input
-            type="text"
-            value={colors.background.url}
-            onChange={handleBackgroundUrlChange}
-          />
-        </div>
-      )}
       <h3>Selected Color:</h3>
       <ChromePicker
         color={colors[selectedElement]}
@@ -140,6 +102,7 @@ function ColorPicker() {
       <button className="connect-button" onClick={clearBackgroundColor}>
         Clear Background Color
       </button>
+      <BackgroundSelector/>
     </div>
   );
   
