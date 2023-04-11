@@ -43,7 +43,24 @@ function Chatbox({ endpoint, endpointType }) {
   const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
   const [toggleBranch, setToggleBranch] = useState(true);
-  const hideBranchButtons = useRef(null);
+
+
+  const handleBranchToggle = () => {
+    setToggleBranch(!toggleBranch);
+    localStorage.setItem('branchState', toggleBranch);
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const toggled = localStorage.getItem('branchState');
+      if(toggled === null) {
+        setToggleBranch(true);
+      } else {
+        setToggleBranch(toggled);
+      };
+    }
+    fetchData();
+  }, []);
   
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -511,7 +528,7 @@ function Chatbox({ endpoint, endpointType }) {
               <div className="flex ml-1">
               <h4>Chat branching enabled</h4>
               <div className="flex items-center ml-1">
-            <input type='checkbox'className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name='branchtoggle' checked={toggleBranch} onChange={(e) => setToggleBranch(e.target.checked)}/>
+            <input type='checkbox'className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name='branchtoggle' checked={toggleBranch} onChange={handleBranchToggle}/>
           </div>
           </div>
               <div className="title-wrapper"> 
@@ -553,6 +570,7 @@ function Chatbox({ endpoint, endpointType }) {
                 handleOpenUserProfile={handleOpenUserProfile}
                 selectedCharacter={userCharacter}
                 messages={messages}
+                branchingEnabled={toggleBranch}
               />
               ))}
             <div ref={messagesEndRef}></div>
