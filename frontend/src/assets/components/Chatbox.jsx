@@ -43,24 +43,6 @@ function Chatbox({ endpoint, endpointType }) {
   const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
   const [toggleBranch, setToggleBranch] = useState(true);
-
-
-  const handleBranchToggle = () => {
-    setToggleBranch(!toggleBranch);
-    localStorage.setItem('branchState', toggleBranch);
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const toggled = localStorage.getItem('branchState');
-      if(toggled === null) {
-        setToggleBranch(true);
-      } else {
-        setToggleBranch(toggled);
-      };
-    }
-    fetchData();
-  }, []);
   
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -130,6 +112,13 @@ function Chatbox({ endpoint, endpointType }) {
             setUseEmotionClassifier('true');
           } else {
             setUseEmotionClassifier('false');
+          }
+        }
+        if(localStorage.getItem('toggleBranch') !== null) {
+          if(localStorage.getItem('toggleBranch') === 'true') {
+            setToggleBranch(true);
+          } else {
+            setToggleBranch(false);
           }
         }
       };
@@ -489,6 +478,11 @@ function Chatbox({ endpoint, endpointType }) {
     }
   };
   
+  const handleCheckToggle = () => {
+    localStorage.setItem('toggleBranch', !toggleBranch);
+    setToggleBranch(!toggleBranch);
+  }
+
   return (
     <>
     {openUserProfile && (
@@ -528,7 +522,7 @@ function Chatbox({ endpoint, endpointType }) {
               <div className="flex ml-1">
               <h4>Chat branching enabled</h4>
               <div className="flex items-center ml-1">
-            <input type='checkbox'className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name='branchtoggle' checked={toggleBranch} onChange={handleBranchToggle}/>
+            <input type='checkbox'className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name='branchtoggle' checked={toggleBranch} onChange={() => handleCheckToggle()}/>
           </div>
           </div>
               <div className="title-wrapper"> 
