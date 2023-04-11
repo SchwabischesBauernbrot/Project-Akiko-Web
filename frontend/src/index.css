@@ -428,7 +428,7 @@ Settings Pages CSS
 
 #input-container {
 	border: none;
-	width: 10%
+	width: fit-content;
 }
 
 .settings-panel-header {
