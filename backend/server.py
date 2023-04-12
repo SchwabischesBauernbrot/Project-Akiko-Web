@@ -376,6 +376,8 @@ def generate_text(prompt: str, settings: dict) -> str:
 def synthesize_speech(ssml_string, speech_key, service_region):
     # Set up the Azure Speech Config with your subscription key and region
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
+    # Set the desired output audio format
+    speech_config.set_audio_output_format(speechsdk.AudioOutputFormat['riff-48khz-16bit-mono-pcm'])
     # Set the output path for the speech file
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     output_path = os.path.join(app.config['AUDIO_OUTPUT'], f'{current_time}.wav')
