@@ -92,3 +92,7 @@ function insertPauseInAsteriskEncapsulatedText(inputText, pauseDuration = "1.5s"
 function replaceItalicizedTextWithPause(inputText, pauseDuration = "1s") {
   return inputText.replace(/\*(.*?)\*/g, `<break time="${pauseDuration}"/>`);
 }
+
+export function separateWords(text) {
+  return text.replace(/([A-Z])/g, ' $1').trim();
+}

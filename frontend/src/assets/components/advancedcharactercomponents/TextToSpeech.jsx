@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Select from 'react-select';
+import { regions, customStyles } from '../Arrays';
+import { capitalizeFirstLetter, separateWords } from '../miscfunctions';
 
 const TextToSpeech = ({}) => {
     const [voiceName, setVoiceName] = useState('');
@@ -9,38 +12,8 @@ const TextToSpeech = ({}) => {
     const [speechKey, setSpeechKey] = useState('');
     const [speechRegion, setSpeechRegion] = useState('');
     const [availableVoices, setAvailableVoices] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
 
-    const regions = [
-        { geography: 'Africa', region: 'South Africa North', identifier: 'southafricanorth' },
-        { geography: 'Asia Pacific', region: 'East Asia', identifier: 'eastasia' },
-        { geography: 'Asia Pacific', region: 'Southeast Asia', identifier: 'southeastasia' },
-        { geography: 'Asia Pacific', region: 'Australia East', identifier: 'australiaeast' },
-        { geography: 'Asia Pacific', region: 'Central India', identifier: 'centralindia' },
-        { geography: 'Asia Pacific', region: 'Japan East', identifier: 'japaneast' },
-        { geography: 'Asia Pacific', region: 'Japan West', identifier: 'japanwest' },
-        { geography: 'Asia Pacific', region: 'Korea Central', identifier: 'koreacentral' },
-        { geography: 'Canada', region: 'Canada Central', identifier: 'canadacentral' },
-        { geography: 'Europe', region: 'North Europe', identifier: 'northeurope' },
-        { geography: 'Europe', region: 'West Europe', identifier: 'westeurope' },
-        { geography: 'Europe', region: 'France Central', identifier: 'francecentral' },
-        { geography: 'Europe', region: 'Germany West Central', identifier: 'germanywestcentral' },
-        { geography: 'Europe', region: 'Norway East', identifier: 'norwayeast' },
-        { geography: 'Europe', region: 'Switzerland North', identifier: 'switzerlandnorth' },
-        { geography: 'Europe', region: 'Switzerland West', identifier: 'switzerlandwest' },
-        { geography: 'Europe', region: 'UK South', identifier: 'uksouth' },
-        { geography: 'Middle East', region: 'UAE North', identifier: 'uaenorth' },
-        { geography: 'South America', region: 'Brazil South', identifier: 'brazilsouth' },
-        { geography: 'US', region: 'Central US', identifier: 'centralus' },
-        { geography: 'US', region: 'East US', identifier: 'eastus' },
-        { geography: 'US', region: 'East US 2', identifier: 'eastus2' },
-        { geography: 'US', region: 'North Central US', identifier: 'northcentralus' },
-        { geography: 'US', region: 'South Central US', identifier: 'southcentralus' },
-        { geography: 'US', region: 'West Central US', identifier: 'westcentralus' },
-        { geography: 'US', region: 'West US', identifier: 'westus' },
-        { geography: 'US', region: 'West US 2', identifier: 'westus2' },
-        { geography: 'US', region: 'West US 3', identifier: 'westus3' },
-    ];
-      
     async function fetchVoices(speechKey, region) {
         const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/voices/list`;
         const headers = {
@@ -92,39 +65,101 @@ const TextToSpeech = ({}) => {
         localStorage.setItem('service_region', speechRegion);
     }, [voiceName, lang, prosodyRate, prosodyPitch, speechKey, speechRegion]);
 
+    const regionOptions = regions.map((region) => ({
+        value: region.identifier,
+        label: `${region.geography} - ${region.region}`,
+    }));
+    
+    const voiceOptions = availableVoices.map((voice) => ({
+        value: voice.Name,
+        label: voice.Name,
+    }));
+
+    const getSelectedVoice = () => {
+        return availableVoices.find((voice) => voice.Name === voiceName) || {};
+    };
+    
+    const selectedVoice = getSelectedVoice();
+    
+    const toggleOpen = () => setIsOpen(!isOpen);
+
+    const renderVoiceDetails = () => {
+        if (!selectedVoice.Name) return null;
+        return (
+          <>
+            {isOpen ? (
+              <>
+                <button onClick={toggleOpen} className="bg-selected p-2 rounded-lg">
+                  Hide Voice Details
+                </button>
+                <div className="bg-selected p-4 mt-4 rounded-lg">
+                  <h1 className="text-xl font-bold mb-2">Voice Details:</h1>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    <ul className="space-y-2">
+                      {Object.entries(selectedVoice).map(([key, value]) => (
+                        <li key={key} className="bg-selected p-2 rounded-lg">
+                          <strong className="font-semibold">{separateWords(key)}:</strong>{' '}
+                          {Array.isArray(value) ? (
+                            <ul className="mt-1 space-y-1">
+                              {value.map((item, idx) => (
+                                <li key={`${key}-${idx}`} className="bg-selected p-1 rounded-md justify-center">{capitalizeFirstLetter(item)}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <>
+                              <br />
+                              <span>{value}</span>
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <button onClick={toggleOpen} className="bg-selected p-2 rounded-lg justify-center"> Show Voice Details</button>
+              </>
+            )}
+          </>
+        );
+      };          
+
     return (
-    <div>
+        <div className='relative bg-selected p-4 mt-4 rounded-lg'>
+        <h1 className='text-xl font-bold mb-2'>Text to Speech Settings</h1>
+        <br />
         <label>
             Speech Region:
-        <select
-            className='character-field'
-            value={speechRegion}
-            onChange={(e) => setSpeechRegion(e.target.value)}
-        >
-            <option value="">Select a region</option>
-            {regions.map((region, i) => (
-            <option key={i} value={region.identifier}>
-                {region.geography} - {region.region}
-            </option>
-            ))}
-        </select>
+            <Select
+            value={regionOptions.find((option) => option.value === speechRegion)}
+            onChange={(selectedOption) => setSpeechRegion(selectedOption.value)}
+            options={regionOptions}
+            styles={customStyles}
+            />
         </label>
         <br />
         <label>
             Speech Key:
-            <input type="text" value={speechKey} onChange={(e) => setSpeechKey(e.target.value)} className='character-field'/>
+            <input
+            type="text"
+            value={speechKey}
+            onChange={(e) => setSpeechKey(e.target.value)}
+            className="character-field"
+            />
         </label>
         <br />
         <label>
             Voice Name:
-            <select value={voiceName} onChange={(e) => setVoiceName(e.target.value)} className='character-field'>
-            {availableVoices.map((voice, i) => (
-                <option key={i} value={voice.Name}>
-                {voice.Name}
-                </option>
-            ))}
-            </select>
+            <Select
+            value={voiceOptions.find((option) => option.value === voiceName)}
+            onChange={(selectedOption) => setVoiceName(selectedOption.value)}
+            options={voiceOptions}
+            styles={customStyles}
+            />
         </label>
+        {renderVoiceDetails()}
         <br />
         <label>
             Language:
