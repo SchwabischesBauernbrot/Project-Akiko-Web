@@ -192,11 +192,13 @@ const Characters = () => {
       )}
       {showDeleteModal && (
         <div className="modal-overlay">
-          <div className="modal-small-box">
-            <h2 className="centered">Delete Character</h2>
+          <div className="relative flex flex-col items-center justify-center p-10 bg-selected text-selected-text rounded shadow-lg">
+            <h1>Delete Character</h1>
             <p className="centered">Are you sure you want to delete {characterToDelete.name}?</p>
-            <button className="submit-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-            <button className="cancel-button" onClick={() => handleDelete()}>Delete</button>
+            <div className="flex justify-center gap-6">
+              <button className="text-selected-text bg-selected h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+              <button className="text-selected-text bg-selected h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-red-600" onClick={() => handleDelete()}>Delete</button>
+            </div>
           </div>
         </div>
       )}
