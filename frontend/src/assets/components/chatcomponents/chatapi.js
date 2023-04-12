@@ -264,16 +264,14 @@ const akiko_defaults = {
   export async function generate_Speech(response, emotion) {
     if(!response) return;
     if(!emotion) emotion = 'neutral';
-    //if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
-      //console.log('No Azure Speech Key or Region set.');
-      //alert('No Azure Speech Key or Region set.');
-      //return;
-    //}
-    //const speech_key = localStorage.getItem('speech_key');
-    //const service_region = localStorage.getItem('service_region');
-    //const name = localStorage.getItem('azureTTSName');
-    const service_region = 'eastus';
-    const name = 'en-US-JaneNeural';
+    if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
+      console.log('No Azure Speech Key or Region set.');
+      alert('No Azure Speech Key or Region set.');
+      return;
+    }
+    const speech_key = localStorage.getItem('speech_key');
+    const service_region = localStorage.getItem('service_region');
+    const name = localStorage.getItem('azureTTSName');
     const ssml = createSsml(response, name, emotion);
     const audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
     const audio = new Audio();

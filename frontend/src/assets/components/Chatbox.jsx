@@ -275,7 +275,9 @@ function Chatbox({ endpoint, endpointType }) {
         console.error('Invalid classification data:', classification);
       }
     }
-    await generate_Speech(generatedText, emotion);   
+    if(localStorage.getItem('voice') === 'true'){
+      await generate_Speech(generatedText, emotion);
+    }
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {
