@@ -178,7 +178,7 @@ const GenSettingsMenu = ({onClose}) => {
                             <input className="col-span-1" type="range" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
                             <input className="col-span-1 character-field" type="number" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
                         </div>
-                        </>
+                    </>
           ) : (
             <>
                     <div className="grid grid-cols-3 gap-4">

@@ -18,6 +18,7 @@ from random import randint
 from werkzeug.utils import secure_filename
 from colorama import Fore, Style, init as colorama_init
 import openai
+import azure.cognitiveservices.speech as speechsdk
 
 colorama_init()
 # Constants
@@ -154,6 +155,7 @@ app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
+app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'json'}
 
@@ -370,6 +372,30 @@ def generate_text(prompt: str, settings: dict) -> str:
         return results
     else:
         return {'text': "This is an empty message. Something went wrong. Please check your code!"}
+
+def synthesize_speech(ssml_string, speech_key, service_region):
+    # Set up the Azure Speech Config with your subscription key and region
+    speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
+    # Set the output path for the speech file
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    output_path = os.path.join(app.config['AUDIO_OUTPUT'], f'{current_time}.wav')
+    # Create an AudioConfig for saving the synthesized speech to a file
+    audio_output = speechsdk.audio.AudioOutputConfig(filename=output_path)
+
+    # Create a Speech Synthesizer with the Speech Config and Audio Output Config
+    synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_output)
+
+    # Synthesize the speech using the SSML string
+    result = synthesizer.speak_ssml_async(ssml_string).get()
+
+    if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        print("Speech synthesized successfully.")
+        return f'{current_time}.wav'
+    elif result.reason == speechsdk.ResultReason.Canceled:
+        cancellation_details = result.cancellation_details
+        print("Speech synthesis canceled: {}".format(cancellation_details.reason))
+        if cancellation_details.reason == speechsdk.CancellationReason.Error:
+            print("Error details: {}".format(cancellation_details.error_details))
 
 
 ################################
@@ -985,6 +1011,22 @@ def get_advanced_emotions(char_id):
     else:
         return jsonify({'failure': 'Character does not have any emotions.'})
     
+@app.route('/api/synthesize_speech', methods=['POST'])
+@cross_origin()
+def synthesize_speech_route():
+    data = request.get_json()
+    ssml_string = data.get('ssml', None)
+    speech_key = data.get('speech_key', None)
+    service_region = data.get('service_region', None)
+    if ssml_string and speech_key and service_region:
+        fileName = synthesize_speech(ssml_string, speech_key, service_region)
+        if(fileName == None):
+            return jsonify({"status": "error", "message": "Speech synthesis failed."})
+        else:
+            return jsonify({"status": "success", "message": "Speech synthesized successfully.", 'audio': fileName})
+    else:
+        return jsonify({"status": "error", "message": "Invalid input."})
+
 
 ##########################################
 #### END OF ADVANCED CHARACTER ROUTES ####

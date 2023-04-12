@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { fetchCharacter, getCharacterImageUrl, fetchConversation, saveConversation, deleteConversation, getAvailableModules } from "./api";
-import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
+import { characterTextGen, classifyEmotion, generate_Speech } from "./chatcomponents/chatapi";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
 import Message from "./chatcomponents/Message";
@@ -223,6 +223,7 @@ function Chatbox({ endpoint, endpointType }) {
   } 
   
   const handleChatbotResponse = async (chatHistory, image, currentCharacter) => {
+    let emotion = 'neutral';
     const isTypingNow = new Date();
     const isTyping = {
       sender: currentCharacter.name,
@@ -259,7 +260,7 @@ function Chatbox({ endpoint, endpointType }) {
         const characterIndex = currentEmotion.findIndex(emotion => emotion.char_id === currentCharacter.char_id);
   
         let newEmotions;
-  
+        emotion = label;
         if (characterIndex !== -1) {
           // If the character's char_id is found, update the emotion in the existing object
           newEmotions = currentEmotion.map((emotion, index) =>
@@ -273,7 +274,8 @@ function Chatbox({ endpoint, endpointType }) {
       } else {
         console.error('Invalid classification data:', classification);
       }
-    }   
+    }
+    await generate_Speech(generatedText, emotion);   
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {

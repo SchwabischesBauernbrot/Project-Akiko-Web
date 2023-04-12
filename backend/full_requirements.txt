@@ -12,3 +12,4 @@ accelerate
 git+https://github.com/huggingface/transformers
 git+https://github.com/huggingface/diffusers
 openai
+azure-cognitiveservices-speech

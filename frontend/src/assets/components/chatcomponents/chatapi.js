@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { createSsml } from '../miscfunctions';
 
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
-
+const AUDIO_LOCATION = 'src/audio'
 const kobold_defaults = {
   "max_context_length": 2048,
   "max_length": 180,
@@ -195,6 +196,7 @@ const akiko_defaults = {
       return responseText;
     } 
     else {
+      //playAudio('bettercallsen.mp3');
       return generatedText;
     }
 
@@ -233,3 +235,48 @@ const akiko_defaults = {
     const response = await axios.post(API_URL + '/textgen/status', { endpoint: endpoint, endpointType: endpointType});
     return response.data['result'];
   };
+
+  export async function sendSSMLToAPI(ssml, speech_key, service_region) {
+    try {
+      const response = await axios.post(`${API_URL}/synthesize_speech`, {
+        ssml: ssml,
+        speech_key: speech_key,
+        service_region: service_region
+      });
+  
+      if (response.data.status === 'success') {
+        console.log('Speech synthesized successfully.');
+        return response.data.audio;
+      } else {
+        console.error('Error:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  }
+
+  function playAudio(audioFile) {
+    const audio = new Audio();
+    audio.src = `${AUDIO_LOCATION}/${audioFile}`;
+    audio.play();
+  }
+
+  export async function generate_Speech(response, emotion) {
+    if(!response) return;
+    if(!emotion) emotion = 'neutral';
+    //if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
+      //console.log('No Azure Speech Key or Region set.');
+      //alert('No Azure Speech Key or Region set.');
+      //return;
+    //}
+    //const speech_key = localStorage.getItem('speech_key');
+    //const service_region = localStorage.getItem('service_region');
+    //const name = localStorage.getItem('azureTTSName');
+    const service_region = 'eastus';
+    const name = 'en-US-JaneNeural';
+    const ssml = createSsml(response, name, emotion);
+    const audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
+    const audio = new Audio();
+    audio.src = `${AUDIO_LOCATION}/${audioFile}`;
+    audio.play();
+  }
