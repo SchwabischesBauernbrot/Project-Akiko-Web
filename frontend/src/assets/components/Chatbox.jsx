@@ -42,6 +42,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [createMenuOn, setCreateMenuOn] = useState(false);
   const [toggleConnectMenu, setToggleConnectMenu] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
+  const [toggleBranch, setToggleBranch] = useState(true);
   
   const createNewConversation = async () => {
     const defaultMessage = {
@@ -111,6 +112,13 @@ function Chatbox({ endpoint, endpointType }) {
             setUseEmotionClassifier('true');
           } else {
             setUseEmotionClassifier('false');
+          }
+        }
+        if(localStorage.getItem('toggleBranch') !== null) {
+          if(localStorage.getItem('toggleBranch') === 'true') {
+            setToggleBranch(true);
+          } else {
+            setToggleBranch(false);
           }
         }
       };
@@ -328,6 +336,10 @@ function Chatbox({ endpoint, endpointType }) {
   };
 
   const handleMoveUp = (index) => {
+    if(!toggleBranch) {
+
+      return 
+    }
     if (index > 0) {
       const updatedMessages = messages.map((msg, i) => {
         if (i === index - 1) {
@@ -341,8 +353,10 @@ function Chatbox({ endpoint, endpointType }) {
       saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
     }
   };
-
   const handleMoveDown = (index) => {
+    if(!toggleBranch) {
+      return
+    }
     if (index < messages.length - 1) {
       const updatedMessages = messages.map((msg, i) => {
         if (i === index) {
@@ -356,6 +370,12 @@ function Chatbox({ endpoint, endpointType }) {
       saveConversation({conversationName: conversation.conversationName, participants: conversation.participants, messages: updatedMessages,});
     }
   };
+  useEffect(() => {
+    if (toggleBranch) {
+      handleMoveUp();
+      handleMoveDown();
+    }
+  }, [toggleBranch]);
 
   const sendImpersonation = () => {
     setActivateImpersonation(!activateImpersonation);
@@ -458,6 +478,11 @@ function Chatbox({ endpoint, endpointType }) {
     }
   };
   
+  const handleCheckToggle = () => {
+    localStorage.setItem('toggleBranch', !toggleBranch);
+    setToggleBranch(!toggleBranch);
+  }
+
   return (
     <>
     {openUserProfile && (
@@ -494,6 +519,12 @@ function Chatbox({ endpoint, endpointType }) {
               <div id="connect">
                 <Connect/>
               </div>
+              <div className="ml-1">
+              <h4>Chat branching enabled</h4>
+              <div className="flex items-center ml-1">
+            <input type='checkbox'className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name='branchtoggle' checked={toggleBranch} onChange={() => handleCheckToggle()}/>
+          </div>
+          </div>
               <div className="title-wrapper"> 
                 {conversation && (
                   <h4
@@ -533,6 +564,7 @@ function Chatbox({ endpoint, endpointType }) {
                 handleOpenUserProfile={handleOpenUserProfile}
                 selectedCharacter={userCharacter}
                 messages={messages}
+                branchingEnabled={toggleBranch}
               />
               ))}
             <div ref={messagesEndRef}></div>

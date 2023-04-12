@@ -43,7 +43,7 @@ return (
           <div className="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <div className="button-container w-48 h-16 sm:w-64 sm:h-20 md:w-48 md:h-16 flex justify-between">
               <button
-                className="cancel text-selected-text bg-selected w-1/3 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                className="cancel text-selected-text bg-selected w-1/3 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-red-600"
                 id="cancel"
                 onClick={() => delCharacter(character)}
                 title="Delete Character"

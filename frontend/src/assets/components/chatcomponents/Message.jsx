@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 import TextareaAutosize from 'react-textarea-autosize';
 
-function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages, handleOpenUserProfile }) {
+function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages, handleOpenUserProfile, branchingEnabled }) {
   const editedMessageRef = useRef(null);
   
   const isTyping = message.text.includes("is typing");
@@ -16,8 +16,11 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
       <div className="message-info flex flex-col">
         <div className="message-buttons absolute right-4 mt-4 flex flex-row">
           <button className="message-button" id={'edit'} onClick={(event) => handleEditMessage(event, index)} title={'Edit Message'}>{editedMessageIndex === index ? <FiCheck/> : <FiEdit/>}</button>
+          {branchingEnabled &&
+          <>
           <button className="message-button" id={'move-up'} onClick={() => handleMoveUp(index)} title={'Move Message Up One'}><FiArrowUp/></button>
           <button className="message-button" id={'move-down'} onClick={() => handleMoveDown(index)} title={'Move Message Down One'}><FiArrowDown/></button>
+          </>}
           <button className="message-button" id={'delete-message'} onClick={() => delMessage(index)} title={'Remove Message from Conversation'}><FiTrash2/></button>
           {index === Math.ceil(messages.length - 1) && message.sender !== selectedCharacter.name && (
             <button className="message-button" id={'regenerate'} onClick={() => handleReneration()} title={'Regenerate Message'}><FiRefreshCw/></button>

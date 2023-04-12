@@ -68,7 +68,7 @@ const EndpointSelector = () => {
         { value: 'Ooba', label: 'OobaTextUI' },
         { value: 'AkikoBackend', label: 'AkikoTextgen' },
         { value: 'Horde', label: 'Horde' },
-        { value: 'OAI', label: 'OpenAI' }
+        { value: 'OpenAI', label: 'OpenAI' }
     ];
   
     return (
