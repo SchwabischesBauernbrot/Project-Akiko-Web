@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { getCharacterImageUrl, fetchCharacter, updateAdvancedCharacter, fetchAdvancedCharacterEmotion } from "../assets/components/api";
 import EmotionSprites from "../assets/components/advancedcharactercomponents/EmotionSprites";
+import TextToSpeech from "../assets/components/advancedcharactercomponents/TextToSpeech";
 
 const AdvancedCharacter = () => {
     const [character, setCharacter] = useState(null);
@@ -22,9 +23,17 @@ const AdvancedCharacter = () => {
         <div>
         {character && (
         <>
-            <h1 className="settings-panel-header text-xl font-bold mb-4">{character === null ? 'Placeholder' : character.name} - Advanced Settings</h1><div className="settings-panel">
-            <EmotionSprites character={character}/>
+        <h1 className="settings-panel-header text-xl font-bold mb-4">{character === null ? 'Placeholder' : character.name} - Advanced Settings</h1>
+        <div className="settings-panel">
+            <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-12">
+                <div>
+                    <EmotionSprites character={character}/>
+                </div>
+                <div>
+                    <TextToSpeech character={character}/>
+                </div>
             </div>
+        </div>
         </>
         )}
         </div>

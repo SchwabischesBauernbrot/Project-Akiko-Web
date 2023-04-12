@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchAdvancedCharacterEmotions, fetchAdvancedCharacterEmotion, saveAdvancedCharacterEmotion, deleteAdvancedCharacterEmotion } from '../api';
 import { FiImage } from "react-icons/fi";
 import { capitalizeFirstLetter } from "../miscfunctions";
+import { TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 
 const EmotionSprites = ({ character }) => {
     const possibleEmotions = [
@@ -73,15 +74,17 @@ const EmotionSprites = ({ character }) => {
 
     
     return (
-        <div className="flex flex-col items-center mt-6" id="emotion-sprites">
+        <div className="relative flex flex-col items-center bg-selected p-4 mt-4 rounded-lg" id="emotion-sprites">
             <h1 className="text-xl font-bold">Emotion Sprites</h1>
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-6">
+            <br />
+            <br />
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 max-h-[600px] overflow-y-auto">
                 {possibleEmotions.map(emotion => (
                     <div key={emotion} className="bg-selected p-4 rounded-lg shadow-md flex-row justify-center">
                         <div className="flex flex-col items-center">
-                            <div className="text-base font-bold mb-2 text-center">{capitalizeFirstLetter(emotion)}</div>
+                            <div className="text-base font-bold mb-2 text-center w-auto">{capitalizeFirstLetter(emotion)}</div>
                             <div className="h-42 w-32 bg-selected-bb-color mb-4 flex items-center justify-center rounded-lg overflow-hidden">
-                                {sprites[emotion] ? <img src={sprites[emotion]} alt={`${emotion} sprite`} /> : <FiImage className="w-24 h-24 text-selected-text"/>}
+                                {sprites[emotion] ? <img src={sprites[emotion]} alt={`${emotion} sprite`} /> : <FiImage className="w-16 h-16 text-selected-text"/>}
                             </div>
                             <div className="flex">
                                 <input
@@ -90,12 +93,12 @@ const EmotionSprites = ({ character }) => {
                                     id={`upload-${emotion}`}
                                     onChange={(e) => handleFileUpload(emotion, e)}
                                 />
-                                <label htmlFor={`upload-${emotion}`} className="text-selected-text bg-selected w-1/2 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600">Upload</label>
+                                <label htmlFor={`upload-${emotion}`} className="text-selected-text bg-selected w-1/2 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600"><ArrowUpTrayIcon className="w-6 h-6"/></label>
                                 <button
                                     onClick={() => handleDelete(emotion)}
                                     className="text-selected-text bg-selected w-1/2 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-red-600"
                                 >
-                                    Delete
+                                    <TrashIcon className="w-6 h-6"/>
                                 </button>
                             </div>
                         </div>

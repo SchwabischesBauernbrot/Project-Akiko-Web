@@ -92,29 +92,30 @@ const TextToSpeech = ({}) => {
                 <button onClick={toggleOpen} className="bg-selected p-2 rounded-lg">
                   Hide Voice Details
                 </button>
-                <div className="bg-selected p-4 mt-4 rounded-lg">
-                  <h1 className="text-xl font-bold mb-2">Voice Details:</h1>
-                  <div className="max-h-[400px] overflow-y-auto">
+                <div className="relative bg-selected p-4 mt-4 rounded-lg">
+                <h1 className="text-xl font-bold mb-2">Voice Details:</h1>
+                <br />
+                <div className="max-h-[400px] overflow-y-auto">
                     <ul className="space-y-2">
-                      {Object.entries(selectedVoice).map(([key, value]) => (
+                    {Object.entries(selectedVoice).map(([key, value]) => (
                         <li key={key} className="bg-selected p-2 rounded-lg">
-                          <strong className="font-semibold">{separateWords(key)}:</strong>{' '}
-                          {Array.isArray(value) ? (
+                        <strong className="font-semibold">{separateWords(key)}:</strong>{' '}
+                        {Array.isArray(value) ? (
                             <ul className="mt-1 space-y-1">
-                              {value.map((item, idx) => (
+                            {value.map((item, idx) => (
                                 <li key={`${key}-${idx}`} className="bg-selected p-1 rounded-md justify-center">{capitalizeFirstLetter(item)}</li>
-                              ))}
+                            ))}
                             </ul>
-                          ) : (
+                        ) : (
                             <>
-                              <br />
-                              <span>{value}</span>
+                            <br />
+                            <span>{value}</span>
                             </>
-                          )}
+                        )}
                         </li>
-                      ))}
+                    ))}
                     </ul>
-                  </div>
+                </div>
                 </div>
               </>
             ) : (
@@ -130,8 +131,10 @@ const TextToSpeech = ({}) => {
         <div className='relative bg-selected p-4 mt-4 rounded-lg'>
         <h1 className='text-xl font-bold mb-2'>Text to Speech Settings</h1>
         <br />
+        <br />
         <label>
-            Speech Region:
+            <strong>Speech Region:</strong>
+            <br />
             <Select
             value={regionOptions.find((option) => option.value === speechRegion)}
             onChange={(selectedOption) => setSpeechRegion(selectedOption.value)}
@@ -141,7 +144,8 @@ const TextToSpeech = ({}) => {
         </label>
         <br />
         <label>
-            Speech Key:
+            <strong>Speech Key:</strong>
+            <br />
             <input
             type="text"
             value={speechKey}
@@ -151,7 +155,8 @@ const TextToSpeech = ({}) => {
         </label>
         <br />
         <label>
-            Voice Name:
+            <strong>Voice Name:</strong>
+            <br />
             <Select
             value={voiceOptions.find((option) => option.value === voiceName)}
             onChange={(selectedOption) => setVoiceName(selectedOption.value)}
@@ -162,12 +167,14 @@ const TextToSpeech = ({}) => {
         {renderVoiceDetails()}
         <br />
         <label>
-            Language:
+            <strong>Language:</strong>
+            <br />
             <input type="text" value={lang} onChange={(e) => setLang(e.target.value)} className='character-field'/>
         </label>
         <br />
         <label>
-            Prosody Rate:
+            <strong>Prosody Rate:</strong>
+            <br />
             <input
             type="range"
             min="0"
@@ -186,7 +193,8 @@ const TextToSpeech = ({}) => {
         </label>
         <br />
         <label>
-            Prosody Pitch:
+            <strong>Prosody Pitch:</strong>
+            <br />
             <input
             type="range"
             min="0"

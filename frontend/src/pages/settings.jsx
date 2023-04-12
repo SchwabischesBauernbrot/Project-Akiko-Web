@@ -4,7 +4,6 @@ import AvailableModules from '../assets/components/settingscomponents/AvailableM
 import { fetchSettings } from '../assets/components/api';
 import GroupChatSettings from '../assets/components/settingscomponents/GroupChatSettings';
 import ColorPicker from '../assets/components/menucomponents/ColorPickers';
-import TextToSpeech from '../assets/components/advancedcharactercomponents/TextToSpeech';
 
 function Settings() {
   const [settings, setSettings] = useState(null);
@@ -42,9 +41,6 @@ function Settings() {
           </div>
           <div>
             <GroupChatSettings settings={settings}/>
-          </div>
-          <div>
-            <TextToSpeech/>
           </div>
         </div>
       </div>
