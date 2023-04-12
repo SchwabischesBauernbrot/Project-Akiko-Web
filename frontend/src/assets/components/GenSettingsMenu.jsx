@@ -137,7 +137,7 @@ const GenSettingsMenu = ({onClose}) => {
     return (
         <div className="modal-overlay flex items-center justify-center">
           {invalidEndpoint ? (
-            <div className="relative inset-0 flex flex-col items-center justify-center p-8 bg-white text-black rounded shadow-lg z-50 w-3/4 md:w-1/2">
+            <div className="relative inset-0 flex flex-col items-center justify-center p-8 bg-selected text-black rounded shadow-lg z-50 w-3/4 md:w-1/2">
               <span
                 className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600"
                 onClick={onClose}
@@ -156,7 +156,7 @@ const GenSettingsMenu = ({onClose}) => {
               </button>
             </div>
           ) : (
-            <div className="relative flex flex-col items-center justify-center p-8 bg-white text-black rounded shadow-lg z-50 w-3/4 md:w-1/2">
+            <div className="relative flex flex-col items-center justify-center p-8 bg-selected text-white rounded shadow-lg z-50 w-3/4 md:w-1/2">
               <span
                 className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600"
                 onClick={onClose}
@@ -171,12 +171,12 @@ const GenSettingsMenu = ({onClose}) => {
                         <div className="grid grid-cols-3 gap-4">
                             <span className="col-span-1 font-bold">Max Generation Length</span>
                             <input className="col-span-1" type="range" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
-                            <input className="col-span-1" id='input-container' type="number" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
+                            <input className="col-span-1 character-field" id='character-field' type="number" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
                         </div>
                         <div className="grid grid-cols-3 gap-4">
                             <span className="col-span-1 font-bold">Min Generation Length</span>
                             <input className="col-span-1" type="range" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
-                            <input className="col-span-1" id='input-container' type="number" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
+                            <input className="col-span-1 character-field" type="number" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
                         </div>
                         </>
           ) : (
@@ -184,74 +184,71 @@ const GenSettingsMenu = ({onClose}) => {
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Max Context Length</span>
                         <input className="col-span-1" type="range" min='512' max='2048' value={maxContextLength} onChange={(e) => {setMaxContextLength(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='512' max='2048' value={maxContextLength} onChange={(e) => {setMaxContextLength(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='512' max='2048' value={maxContextLength} onChange={(e) => {setMaxContextLength(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Max Generation Length</span>
                         <input className="col-span-1" type="range" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='1' max='512' value={maxLength} onChange={(e) => {setMaxLength(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Min Generation Length</span>
                         <input className="col-span-1" type="range" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='1' max='512' value={minLength} onChange={(e) => {setMinLength(e.target.value); saveSettings();}} />
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Repitition Penalty</span>    
                         <input className="col-span-1" type="range" min='1' value={repPen} onChange={(e) => {setRepPen(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" value={repPen} onChange={(e) => {setRepPen(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" value={repPen} onChange={(e) => {setRepPen(e.target.value); saveSettings();}} />
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Repitition Pen Range</span>
                         <input className="col-span-1" type="range" min='0' max='512' value={repPenRange} onChange={(e) => {setRepetitionPenaltyRange(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='512' value={repPenRange} onChange={(e) => {setRepetitionPenaltyRange(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='512' value={repPenRange} onChange={(e) => {setRepetitionPenaltyRange(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Repitition Pen Slope</span>
                         <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={repPenSlope} onChange={(e) => {setRepetitionPenaltySlope(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='1' step='0.01' value={repPenSlope} onChange={(e) => {setRepetitionPenaltySlope(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={repPenSlope} onChange={(e) => {setRepetitionPenaltySlope(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Sampler Full Det.</span>
                         <input className="col-span-1" type="checkbox" checked={samplerFullDeterminism} onChange={(e) => {setSamplerFullDeterminism(e.target.checked); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="text" value={samplerFullDeterminism} disabled />
+                        <input className="col-span-1 character-field" id='input-container' type="text" value={samplerFullDeterminism} disabled />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Single Line Output</span>
                         <input className="col-span-1" type="checkbox" checked={singleline} onChange={(e) => {setSingleline(e.target.checked); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="text" value={singleline} disabled />
+                        <input className="col-span-1 character-field" id='input-container' type="text" value={singleline} disabled />
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Temperature</span>
                         <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='1' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Top A</span>
                         <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={topA} onChange={(e) => {setTopA(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='1' step='0.01' value={topA} onChange={(e) => {setTopA(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={topA} onChange={(e) => {setTopA(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Top K</span>
                         <input className="col-span-1" type="range" min='0' max='512' value={topK} onChange={(e) => {setTopK(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='512' value={topK} onChange={(e) => {setTopK(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='512' value={topK} onChange={(e) => {setTopK(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Top P</span>
                         <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={topP} onChange={(e) => {setTopP(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='1' step='0.01' value={topP} onChange={(e) => {setTopP(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={topP} onChange={(e) => {setTopP(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Typical</span>
                         <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
-                        <input className="col-span-1" id='input-container' type="number" min='0' max='1' step='0.01' value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
                     </div>
-
-                    
-
                     </>
           )}
         </div>
