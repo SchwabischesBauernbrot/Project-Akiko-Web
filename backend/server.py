@@ -19,6 +19,8 @@ from werkzeug.utils import secure_filename
 from colorama import Fore, Style, init as colorama_init
 import openai
 import azure.cognitiveservices.speech as speechsdk
+from azure.cognitiveservices.speech import SpeechConfig, SpeechSynthesisOutputFormat, SpeechSynthesizer
+from azure.cognitiveservices.speech.audio import AudioOutputConfig
 
 colorama_init()
 # Constants
@@ -372,20 +374,22 @@ def generate_text(prompt: str, settings: dict) -> str:
         return results
     else:
         return {'text': "This is an empty message. Something went wrong. Please check your code!"}
-
+    
 def synthesize_speech(ssml_string, speech_key, service_region):
+    print("Synthesizing speech...")
+    # Create an instance of a speech config with specified subscription key and service region.
     # Set up the Azure Speech Config with your subscription key and region
-    speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
+    speech_config = SpeechConfig(subscription=speech_key, region=service_region)
     # Set the desired output audio format
-    speech_config.set_audio_output_format(speechsdk.AudioOutputFormat['Audio48Khz96KBitRateMonoMp3'])
+    speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat.Audio48Khz96KBitRateMonoMp3)
     # Set the output path for the speech file
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     output_path = os.path.join(app.config['AUDIO_OUTPUT'], f'{current_time}.mp3')
     # Create an AudioConfig for saving the synthesized speech to a file
-    audio_output = speechsdk.audio.AudioOutputConfig(filename=output_path)
+    audio_output = AudioOutputConfig(filename=output_path)
     
     # Create a Speech Synthesizer with the Speech Config and Audio Output Config
-    synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_output)
+    synthesizer = SpeechSynthesizer(speech_config=speech_config, audio_config=audio_output)
 
     # Synthesize the speech using the SSML string
     result = synthesizer.speak_ssml_async(ssml_string).get()
@@ -398,6 +402,8 @@ def synthesize_speech(ssml_string, speech_key, service_region):
         print("Speech synthesis canceled: {}".format(cancellation_details.reason))
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
+
+
 
 
 ################################
@@ -1023,11 +1029,14 @@ def synthesize_speech_route():
     if ssml_string and speech_key and service_region:
         fileName = synthesize_speech(ssml_string, speech_key, service_region)
         if(fileName == None):
-            return jsonify({"status": "error", "message": "Speech synthesis failed."})
+            print("Speech synthesis failed.")
+            return jsonify({"status": "error", "message": "Speech synthesis failed."}), 500
         else:
-            return jsonify({"status": "success", "message": "Speech synthesized successfully.", 'audio': fileName})
+            print("Speech synthesized successfully.")
+            return jsonify({"status": "success", "message": "Speech synthesized successfully.", 'audio': fileName}), 200
     else:
-        return jsonify({"status": "error", "message": "Invalid input."})
+        print("Invalid input.")
+        return jsonify({"status": "error", "message": "Invalid input."}), 500
     
 @app.route('/api/character-speech/<char_id>', methods=['POST'])
 @cross_origin()

@@ -70,8 +70,9 @@ export function emotion2SsmlStyle(emotion) {
  * @param {string} style Voice style (see Azure demo) 
  * @returns 
  */
-export function createSsml(response, emotion, charId) {
-  const currentCharacterSettings = getCharacterSpeech(charId);
+export async function createSsml(response, emotion, charId) {
+  const currentCharacterSettings = await getCharacterSpeech(charId);
+  console.log(currentCharacterSettings);
   if (currentCharacterSettings == null) {
       return null;
   }

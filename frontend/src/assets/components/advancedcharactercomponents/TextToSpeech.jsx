@@ -13,7 +13,7 @@ const TextToSpeech = ({ character }) => {
     const [speechRegion, setSpeechRegion] = useState('');
     const [availableVoices, setAvailableVoices] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
-
+    
     async function fetchVoices(speechKey, region) {
         const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/voices/list`;
         const headers = {
@@ -28,14 +28,7 @@ const TextToSpeech = ({ character }) => {
           return [];
         }
     }
-    
-    function getStartingChars(dataList) {
-        const startingChars = new Set();
-        for (const data of dataList) {
-          startingChars.add(data.slice(0, 2));
-        }
-        return [...startingChars];
-      }
+
     async function addCharacterSpeech(voiceName, prosodyRate, prosodyPitch) {
         const characterSpeech = {
             char_id: character.char_id,
@@ -47,7 +40,7 @@ const TextToSpeech = ({ character }) => {
             console.log(res);
         });
     }
-      
+    
     useEffect(() => {
         if(character) {
             getCharacterSpeech(character.char_id).then((res) => {
@@ -84,12 +77,15 @@ const TextToSpeech = ({ character }) => {
 
     useEffect(() => {
         const saveState = async () => {
-            localStorage.setItem('speech_key', speechKey);
-            localStorage.setItem('service_region', speechRegion);
-            await addCharacterSpeech(voiceName, prosodyRate, prosodyPitch);
+          await addCharacterSpeech(voiceName, prosodyRate, prosodyPitch);
         };
         saveState();
-    }, [voiceName, prosodyRate, prosodyPitch, speechKey, speechRegion]);
+    }, [voiceName, prosodyRate, prosodyPitch]);
+      
+    useEffect(() => {
+        localStorage.setItem('speech_key', speechKey);
+        localStorage.setItem('service_region', speechRegion);
+    }, [speechKey, speechRegion]);      
 
     const regionOptions = regions.map((region) => ({
         value: region.identifier,
