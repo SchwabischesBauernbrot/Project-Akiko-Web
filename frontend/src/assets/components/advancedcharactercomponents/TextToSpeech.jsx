@@ -3,10 +3,10 @@ import axios from 'axios';
 import Select from 'react-select';
 import { regions, customStyles } from '../Arrays';
 import { capitalizeFirstLetter, separateWords } from '../miscfunctions';
+import { getCharacterSpeech, sendCharacterSpeech } from '../api';
 
-const TextToSpeech = ({}) => {
+const TextToSpeech = ({ character }) => {
     const [voiceName, setVoiceName] = useState('');
-    const [lang, setLang] = useState('en-US');
     const [prosodyRate, setProsodyRate] = useState(15);
     const [prosodyPitch, setProsodyPitch] = useState(15);
     const [speechKey, setSpeechKey] = useState('');
@@ -28,17 +28,43 @@ const TextToSpeech = ({}) => {
           return [];
         }
     }
-
+    
+    function getStartingChars(dataList) {
+        const startingChars = new Set();
+        for (const data of dataList) {
+          startingChars.add(data.slice(0, 2));
+        }
+        return [...startingChars];
+      }
+    async function addCharacterSpeech(voiceName, prosodyRate, prosodyPitch) {
+        const characterSpeech = {
+            char_id: character.char_id,
+            azureTTSName: voiceName,
+            prosodyRate: prosodyRate,
+            prosodyPitch: prosodyPitch
+        };
+        sendCharacterSpeech(characterSpeech, character.char_id).then((res) => {
+            console.log(res);
+        });
+    }
+      
     useEffect(() => {
+        if(character) {
+            getCharacterSpeech(character.char_id).then((res) => {
+                if(res) {
+                    setVoiceName(res.azureTTSName);
+                    setProsodyRate(res.prosodyRate);
+                    setProsodyPitch(res.prosodyPitch);
+                }
+            });
+        }else {
+            console.log('No character selected');
+        }
+
         const savedState = [
-            { key: 'azureTTSName', setter: setVoiceName },
-            { key: 'lang', setter: setLang },
-            { key: 'prosodyRate', setter: setProsodyRate },
-            { key: 'prosodyPitch', setter: setProsodyPitch },
             { key: 'speech_key', setter: setSpeechKey },
             { key: 'service_region', setter: setSpeechRegion },
         ];
-
         savedState.forEach(({ key, setter }) => {
             const savedValue = localStorage.getItem(key);
             if (savedValue) {
@@ -57,13 +83,13 @@ const TextToSpeech = ({}) => {
     }, [speechKey, speechRegion]);
 
     useEffect(() => {
-        localStorage.setItem('azureTTSName', voiceName);
-        localStorage.setItem('lang', lang);
-        localStorage.setItem('prosodyRate', prosodyRate);
-        localStorage.setItem('prosodyPitch', prosodyPitch);
-        localStorage.setItem('speech_key', speechKey);
-        localStorage.setItem('service_region', speechRegion);
-    }, [voiceName, lang, prosodyRate, prosodyPitch, speechKey, speechRegion]);
+        const saveState = async () => {
+            localStorage.setItem('speech_key', speechKey);
+            localStorage.setItem('service_region', speechRegion);
+            await addCharacterSpeech(voiceName, prosodyRate, prosodyPitch);
+        };
+        saveState();
+    }, [voiceName, prosodyRate, prosodyPitch, speechKey, speechRegion]);
 
     const regionOptions = regions.map((region) => ({
         value: region.identifier,
@@ -71,12 +97,12 @@ const TextToSpeech = ({}) => {
     }));
     
     const voiceOptions = availableVoices.map((voice) => ({
-        value: voice.Name,
+        value: voice.ShortName,
         label: voice.Name,
     }));
 
     const getSelectedVoice = () => {
-        return availableVoices.find((voice) => voice.Name === voiceName) || {};
+        return availableVoices.find((voice) => voice.ShortName === voiceName) || {};
     };
     
     const selectedVoice = getSelectedVoice();
@@ -84,7 +110,7 @@ const TextToSpeech = ({}) => {
     const toggleOpen = () => setIsOpen(!isOpen);
 
     const renderVoiceDetails = () => {
-        if (!selectedVoice.Name) return null;
+        if (!selectedVoice.ShortName) return null;
         return (
           <>
             {isOpen ? (
@@ -128,90 +154,88 @@ const TextToSpeech = ({}) => {
       };          
 
     return (
-        <div className='relative bg-selected p-4 mt-4 rounded-lg'>
-        <h1 className='text-xl font-bold mb-2'>Text to Speech Settings</h1>
-        <br />
-        <br />
-        <label>
-            <strong>Speech Region:</strong>
+    <>
+        {character && (
+            <div className='relative bg-selected p-4 mt-4 rounded-lg'>
+            <h1 className='text-xl font-bold mb-2'>Text to Speech Settings</h1>
             <br />
-            <Select
-            value={regionOptions.find((option) => option.value === speechRegion)}
-            onChange={(selectedOption) => setSpeechRegion(selectedOption.value)}
-            options={regionOptions}
-            styles={customStyles}
-            />
-        </label>
-        <br />
-        <label>
-            <strong>Speech Key:</strong>
             <br />
-            <input
-            type="text"
-            value={speechKey}
-            onChange={(e) => setSpeechKey(e.target.value)}
-            className="character-field"
-            />
-        </label>
-        <br />
-        <label>
-            <strong>Voice Name:</strong>
+            <label>
+                <strong>Speech Region:</strong>
+                <br />
+                <Select
+                value={regionOptions.find((option) => option.value === speechRegion)}
+                onChange={(selectedOption) => setSpeechRegion(selectedOption.value)}
+                options={regionOptions}
+                styles={customStyles}
+                />
+            </label>
             <br />
-            <Select
-            value={voiceOptions.find((option) => option.value === voiceName)}
-            onChange={(selectedOption) => setVoiceName(selectedOption.value)}
-            options={voiceOptions}
-            styles={customStyles}
-            />
-        </label>
-        {renderVoiceDetails()}
-        <br />
-        <label>
-            <strong>Language:</strong>
+            <label>
+                <strong>Speech Key:</strong>
+                <br />
+                <input
+                type="text"
+                value={speechKey}
+                onChange={(e) => setSpeechKey(e.target.value)}
+                className="character-field"
+                />
+            </label>
             <br />
-            <input type="text" value={lang} onChange={(e) => setLang(e.target.value)} className='character-field'/>
-        </label>
-        <br />
-        <label>
-            <strong>Prosody Rate:</strong>
+            <label>
+                <strong>Voice Name:</strong>
+                <br />
+                <Select
+                value={voiceOptions.find((option) => option.value === voiceName)}
+                onChange={(selectedOption) => setVoiceName(selectedOption.value)}
+                options={voiceOptions}
+                styles={customStyles}
+                />
+            </label>
+            {renderVoiceDetails()}
             <br />
-            <input
-            type="range"
-            min="0"
-            max="100"
-            value={prosodyRate}
-            onChange={(e) => setProsodyRate(e.target.value)}
-            />
-            <input
-            className='character-field'
-            type="number"
-            min="0"
-            max="100"
-            value={prosodyRate}
-            onChange={(e) => setProsodyRate(e.target.value)}
-            />%
-        </label>
-        <br />
-        <label>
-            <strong>Prosody Pitch:</strong>
+            <label>
+                <strong>Prosody Rate:</strong>
+                <br />
+                <input
+                type="range"
+                min="0"
+                max="100"
+                value={prosodyRate}
+                onChange={(e) => setProsodyRate(e.target.value)}
+                />
+                <input
+                className='character-field'
+                type="number"
+                min="0"
+                max="100"
+                value={prosodyRate}
+                onChange={(e) => setProsodyRate(e.target.value)}
+                />%
+            </label>
             <br />
-            <input
-            type="range"
-            min="0"
-            max="100"
-            value={prosodyPitch}
-            onChange={(e) => setProsodyPitch(e.target.value)}
-            />
-            <input
-            className='character-field'
-            type="number"
-            min="0"
-            max="100"
-            value={prosodyPitch}
-            onChange={(e) => setProsodyPitch(e.target.value)}
-            />%
-        </label>
-    </div>
+            <label>
+                <strong>Prosody Pitch:</strong>
+                <br />
+                <input
+                type="range"
+                min="0"
+                max="100"
+                value={prosodyPitch}
+                onChange={(e) => setProsodyPitch(e.target.value)}
+                />
+                <input
+                className='character-field'
+                type="number"
+                min="0"
+                max="100"
+                value={prosodyPitch}
+                onChange={(e) => setProsodyPitch(e.target.value)}
+                />%
+            </label>
+        </div>
+        )}
+    </>
   );
 }
 export default TextToSpeech;
