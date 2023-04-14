@@ -11,7 +11,7 @@ import { getAvailableModules } from './assets/components/api';
 import 'tailwindcss/tailwind.css';
 
 function App() {
-  const [showNavBar, setShowNavBar] = useState(false);
+  const [showNavBar, setShowNavBar] = useState(true);
 
   useEffect(() => {
     async function fetchModules() {

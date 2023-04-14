@@ -376,14 +376,18 @@ def generate_text(prompt: str, settings: dict) -> str:
         return {'text': "This is an empty message. Something went wrong. Please check your code!"}
     
 def synthesize_speech(ssml_string, speech_key, service_region):
+    for filename in os.listdir(app.config['AUDIO_OUTPUT']):
+        if not filename.startswith('bettercallsen'):
+            os.remove(os.path.join(app.config['AUDIO_OUTPUT'], filename))
     print("Synthesizing speech...")
     # Create an instance of a speech config with specified subscription key and service region.
     # Set up the Azure Speech Config with your subscription key and region
     speech_config = SpeechConfig(subscription=speech_key, region=service_region)
     # Set the desired output audio format
     speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat.Audio48Khz96KBitRateMonoMp3)
-    # Set the output path for the speech file
+    # Get the current time to use as the file name
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # Set the output path for the speech file
     output_path = os.path.join(app.config['AUDIO_OUTPUT'], f'{current_time}.mp3')
     # Create an AudioConfig for saving the synthesized speech to a file
     audio_output = AudioOutputConfig(filename=output_path)

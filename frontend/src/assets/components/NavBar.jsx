@@ -36,7 +36,7 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
 
   const toggleSlide = () => {
     setDoSlide(!doSlide);
-    if(doSlide === true) {
+    if(doSlide !== false) {
       localStorage.setItem('doSlide', 'true');
       setShowNavBar(true);
     }else {
