@@ -2,22 +2,6 @@ import React, {useEffect, useState} from "react";
 
 const GenSettingsMenu = ({onClose}) => {
     const [endpointType, setEndpointType] = useState('');
-    useEffect(() => {
-    
-        const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
-        const closeOnOutsideClick = e => {
-          if (modalRef.current && !modalRef.current.contains(e.target)) {
-            onClose();
-          }
-        };
-        document.body.addEventListener("keydown", closeOnEscapeKey);
-        window.addEventListener("mousedown", closeOnOutsideClick);
-      
-        return () => {
-          document.body.removeEventListener("keydown", closeOnEscapeKey);
-          window.removeEventListener("mousedown", closeOnOutsideClick);
-        };
-      }, []);  
     const [invalidEndpoint, setInvalidEndpoint] = useState(false);
     const [maxContextLength, setMaxContextLength] = useState(2048);
     const [maxLength, setMaxLength] = useState(180);
@@ -33,6 +17,22 @@ const GenSettingsMenu = ({onClose}) => {
     const [topP, setTopP] = useState(0.9);
     const [typical, setTypical] = useState(1);
     const [minLength, setMinLength] = useState(10);
+    
+    useEffect(() => {
+        const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
+        const closeOnOutsideClick = e => {
+          if (modalRef.current && !modalRef.current.contains(e.target)) {
+            onClose();
+          }
+        };
+        document.body.addEventListener("keydown", closeOnEscapeKey);
+        window.addEventListener("mousedown", closeOnOutsideClick);
+      
+        return () => {
+          document.body.removeEventListener("keydown", closeOnEscapeKey);
+          window.removeEventListener("mousedown", closeOnOutsideClick);
+        };
+    }, []);  
 
     useEffect(() => {
         var endpoint = localStorage.getItem('endpointType');

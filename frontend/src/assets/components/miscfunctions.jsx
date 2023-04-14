@@ -1,4 +1,5 @@
 import GPT3Tokenizer from 'gpt3-tokenizer';
+import { getCharacterSpeech } from './api';
 
 const tokenizer = new GPT3Tokenizer({ type: 'gpt3' });
 
@@ -66,18 +67,25 @@ export function emotion2SsmlStyle(emotion) {
  * aspects about how you want the speech output to be like. For example, there are different voices (Jenny, Jane, John, etc).
  * You can use SSML to choose which voice. This helper method just formats certain variables into a proper SSML string.
  * @param {string} response What you want her to say
- * @param {string} name Voice name (see Azure demo)
  * @param {string} style Voice style (see Azure demo) 
  * @returns 
  */
-export function createSsml(response, name, emotion) {
+export async function createSsml(response, emotion, charId) {
+  const currentCharacterSettings = await getCharacterSpeech(charId);
+  console.log(currentCharacterSettings);
+  if (currentCharacterSettings == null) {
+      return null;
+  }
+  var name = currentCharacterSettings.azureTTSName;
+  var prosodyRate = currentCharacterSettings.prosodyRate;
+  var prosodyPitch = currentCharacterSettings.prosodyPitch;
   var style = emotion2SsmlStyle(emotion);
   var textToSpeak = replaceItalicizedTextWithPause(response);
   return `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">
                   <voice name="${name}">
                       <mstts:viseme type="FacialExpression"/>
                       <mstts:express-as style="${style}" >
-                          <prosody rate="25%" pitch="0%">
+                          <prosody rate="${prosodyRate}%" pitch="${prosodyPitch}%">
                               ${textToSpeak}
                           </prosody>
                       </mstts:express-as>
@@ -91,4 +99,8 @@ function insertPauseInAsteriskEncapsulatedText(inputText, pauseDuration = "1.5s"
 
 function replaceItalicizedTextWithPause(inputText, pauseDuration = "1s") {
   return inputText.replace(/\*(.*?)\*/g, `<break time="${pauseDuration}"/>`);
+}
+
+export function separateWords(text) {
+  return text.replace(/([A-Z])/g, ' $1').trim();
 }

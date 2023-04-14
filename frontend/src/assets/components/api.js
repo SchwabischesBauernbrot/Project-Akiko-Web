@@ -127,6 +127,20 @@ export async function saveUserAvatar(image) {
   }
 }
 
+export async function sendCharacterSpeech(characterSpeech, char_id) {
+  const response = await axios.post(`${API_URL}/character-speech/${char_id}`, characterSpeech);
+  return response.data;
+}
+
+export async function getCharacterSpeech(charId) {
+  return axios.get(`${API_URL}/character-speech/${charId}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error(`Error fetching character speech for ${charId}: ${error}`);
+      return null;
+    });
+}
+
 export async function createCharacter(newCharacter) {
   const formData = new FormData();
   formData.append('char_id', newCharacter.char_id);

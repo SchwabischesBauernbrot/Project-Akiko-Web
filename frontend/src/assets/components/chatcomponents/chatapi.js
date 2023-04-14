@@ -261,7 +261,7 @@ const akiko_defaults = {
     audio.play();
   }
 
-  export async function generate_Speech(response, emotion) {
+  export async function generate_Speech(response, emotion, currentCharacter) {
     if(!response) return;
     if(!emotion) emotion = 'neutral';
     if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
@@ -272,7 +272,8 @@ const akiko_defaults = {
     const speech_key = localStorage.getItem('speech_key');
     const service_region = localStorage.getItem('service_region');
     const name = localStorage.getItem('azureTTSName');
-    const ssml = createSsml(response, name, emotion);
+    const ssml = await createSsml(response, emotion, currentCharacter.char_id);
+    console.log(ssml);
     const audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;
