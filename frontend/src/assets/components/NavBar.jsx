@@ -36,6 +36,12 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
 
   const toggleSlide = () => {
     setDoSlide(!doSlide);
+    if(doSlide === true) {
+      localStorage.setItem('doSlide', 'true');
+      setShowNavBar(true);
+    }else {
+      localStorage.setItem('doSlide', 'false');
+    }
   };
 
   useEffect(() => {
@@ -47,16 +53,8 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
   }, [doSlide]);
 
   useEffect(() => {
-    if(doSlide === true) {
-      localStorage.setItem('doSlide', 'true');
-      setShowNavBar(true);
-    }else {
-      localStorage.setItem('doSlide', 'false');
-    }
-  }, [doSlide]);
-
-  useEffect(() => {
     const slide = localStorage.getItem('doSlide');
+    console.log(slide)
     if(slide === 'true') {
       setDoSlide(true);
     }else if (slide === 'false' || slide === null){

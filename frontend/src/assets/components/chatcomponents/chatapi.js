@@ -196,7 +196,6 @@ const akiko_defaults = {
       return responseText;
     } 
     else {
-      //playAudio('bettercallsen.mp3');
       return generatedText;
     }
 
@@ -271,9 +270,7 @@ const akiko_defaults = {
     }
     const speech_key = localStorage.getItem('speech_key');
     const service_region = localStorage.getItem('service_region');
-    const name = localStorage.getItem('azureTTSName');
     const ssml = await createSsml(response, emotion, currentCharacter.char_id);
-    console.log(ssml);
     const audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;

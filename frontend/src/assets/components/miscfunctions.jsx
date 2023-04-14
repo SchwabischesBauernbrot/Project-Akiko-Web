@@ -72,7 +72,6 @@ export function emotion2SsmlStyle(emotion) {
  */
 export async function createSsml(response, emotion, charId) {
   const currentCharacterSettings = await getCharacterSpeech(charId);
-  console.log(currentCharacterSettings);
   if (currentCharacterSettings == null) {
       return null;
   }
