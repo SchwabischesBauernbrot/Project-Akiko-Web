@@ -9,6 +9,7 @@ import DiscordBot from './pages/discordbot';
 import AdvancedCharacter from './pages/advancedcharacter';
 import { getAvailableModules } from './assets/components/api';
 import 'tailwindcss/tailwind.css';
+import GuidePage from './pages/guide';
 
 function App() {
   const [showNavBar, setShowNavBar] = useState(true);
@@ -35,6 +36,8 @@ function App() {
           <Route path="/discordbot" element={<DiscordBot />} />
           <Route path="/test" element={<test />} />
           <Route path="/advcharacter" element={<AdvancedCharacter />} />
+          <Route path="*" element={<h1>404: Not Found</h1>} />
+          <Route path="/guide" element={<GuidePage />} />
         </Routes>
       </main>
     </Router>

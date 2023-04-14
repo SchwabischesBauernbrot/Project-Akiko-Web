@@ -160,12 +160,12 @@ const UserInfo = ({onClose, handleSave}) => {
                                 />
                         </div>
                     <div className="flex justify-center">
-                    <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-red-600 text-selected-text" onClick={() => handleDefault()}title='Reset to default'>
-                        <RxReset className="react-icon"/>
-                    </button>
-                    <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" type="submit">
-                        <FiSave className="react-icon"/>
-                    </button>
+                        <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-red-600 text-selected-text" onClick={() => handleDefault()}title='Reset to default'>
+                            <RxReset className="react-icon"/>
+                        </button>
+                        <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" type="submit">
+                            <FiSave className="react-icon"/>
+                        </button>
                     </div>
                 </form>
                 </div>

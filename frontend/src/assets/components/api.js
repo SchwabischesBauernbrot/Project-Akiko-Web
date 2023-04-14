@@ -31,6 +31,10 @@ export async function fetchCharacters() {
   return response.data;
 }
 
+export async function fetchGuides() {
+  const response = await axios.get(`${API_URL}/guides`);
+  return response.data;
+}
 
 export async function fetchSettings() {
   try {

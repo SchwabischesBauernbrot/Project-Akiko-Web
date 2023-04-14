@@ -158,6 +158,7 @@ app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
+app.config['GUIDE_FOLDER'] = '../frontend/src/guides/'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'json'}
 
@@ -1056,6 +1057,7 @@ def save_character_speech(char_id):
     return 'Character speech saved successfully!'
 
 @app.route('/api/character-speech/<char_id>', methods=['GET'])
+@cross_origin()
 def get_character_speech(char_id):
     char_folder = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id)
     if not os.path.exists(char_folder):
@@ -1200,6 +1202,52 @@ def save_settings():
 #### END OF SETTINGS ROUTES ####
 ################################
 
+
+#################################
+##### START OF GUIDE ROUTES #####
+#################################
+
+@app.route('/api/guides', methods=['GET'])
+@cross_origin()
+def get_guides():
+    guides = []
+    for filename in os.listdir(app.config['GUIDE_FOLDER']):
+        if filename.endswith('.json'):
+            with open(os.path.join(app.config['GUIDE_FOLDER'], filename)) as f:
+                guide = json.load(f)
+                guides.append(guide)
+    # return the list of characters as a JSON response
+    return jsonify({'guides': guides})
+
+@app.route('/api/guides', methods=['POST'])
+@cross_origin()
+def save_guide():
+    guide = request.json
+    filename_path = os.path.join(app.config['GUIDE_FOLDER'], f'{guide["id"]}.json')
+    with open(filename_path, 'w') as f:
+        json.dump(guide, f)
+    return jsonify({'success': 'Guide saved'})
+
+@app.route('/api/guides/<string:guide_id>', methods=['DELETE'])
+@cross_origin()
+def delete_guide(guide_id):
+    filename_path = os.path.join(app.config['GUIDE_FOLDER'], f'{guide_id}.json')
+    if os.path.exists(filename_path):
+        os.remove(filename_path)
+        return jsonify({'success': 'Guide deleted'})
+    else:
+        return jsonify({'failure': 'Guide not found'})
+
+@app.route('/api/guides/<string:guide_id>', methods=['GET'])
+@cross_origin()
+def get_guide(guide_id):
+    filename_path = os.path.join(app.config['GUIDE_FOLDER'], f'{guide_id}.json')
+    if os.path.exists(filename_path):
+        with open(filename_path) as f:
+            guide = json.load(f)
+            return jsonify({'success': 'Guide found', 'guide': guide})
+    else:
+        return jsonify({'failure': 'Guide not found'})
 
 if args.share:
     from flask_cloudflared import _run_cloudflared

@@ -4,6 +4,8 @@ import { RxDiscordLogo } from 'react-icons/rx';
 import { HiChevronDoubleRight } from 'react-icons/hi2'
 import { Link } from 'react-router-dom';
 import { AiFillUnlock, AiFillLock } from 'react-icons/ai';
+import { GoBook } from 'react-icons/go';
+
 const Navbar = ({showNavBar, setShowNavBar}) => {
   const navbarRef = useRef(null);
   const [doSlide, setDoSlide] = useState(false);
@@ -118,6 +120,14 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
               to="/discordbot"
             >
               <RxDiscordLogo className="w-8 h-8"/>
+            </Link>
+            <Link
+              title="Guide"
+              className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
+              style={{ color: 'var(--selected-text-color)' }}
+              to="/guide"
+            >
+              <GoBook className="w-8 h-8"/>
             </Link>
             <Link
               title="Settings"
