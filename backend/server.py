@@ -18,6 +18,9 @@ from random import randint
 from werkzeug.utils import secure_filename
 from colorama import Fore, Style, init as colorama_init
 import openai
+import azure.cognitiveservices.speech as speechsdk
+from azure.cognitiveservices.speech import SpeechConfig, SpeechSynthesisOutputFormat, SpeechSynthesizer
+from azure.cognitiveservices.speech.audio import AudioOutputConfig
 
 colorama_init()
 # Constants
@@ -154,6 +157,8 @@ app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
+app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
+app.config['GUIDE_FOLDER'] = '../frontend/src/guides/'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'json'}
 
@@ -370,6 +375,40 @@ def generate_text(prompt: str, settings: dict) -> str:
         return results
     else:
         return {'text': "This is an empty message. Something went wrong. Please check your code!"}
+    
+def synthesize_speech(ssml_string, speech_key, service_region):
+    for filename in os.listdir(app.config['AUDIO_OUTPUT']):
+        if not filename.startswith('bettercallsen'):
+            os.remove(os.path.join(app.config['AUDIO_OUTPUT'], filename))
+    print("Synthesizing speech...")
+    # Create an instance of a speech config with specified subscription key and service region.
+    # Set up the Azure Speech Config with your subscription key and region
+    speech_config = SpeechConfig(subscription=speech_key, region=service_region)
+    # Set the desired output audio format
+    speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat.Audio48Khz96KBitRateMonoMp3)
+    # Get the current time to use as the file name
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # Set the output path for the speech file
+    output_path = os.path.join(app.config['AUDIO_OUTPUT'], f'{current_time}.mp3')
+    # Create an AudioConfig for saving the synthesized speech to a file
+    audio_output = AudioOutputConfig(filename=output_path)
+    
+    # Create a Speech Synthesizer with the Speech Config and Audio Output Config
+    synthesizer = SpeechSynthesizer(speech_config=speech_config, audio_config=audio_output)
+
+    # Synthesize the speech using the SSML string
+    result = synthesizer.speak_ssml_async(ssml_string).get()
+
+    if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        print("Speech synthesized successfully.")
+        return f'{current_time}.mp3'
+    elif result.reason == speechsdk.ResultReason.Canceled:
+        cancellation_details = result.cancellation_details
+        print("Speech synthesis canceled: {}".format(cancellation_details.reason))
+        if cancellation_details.reason == speechsdk.CancellationReason.Error:
+            print("Error details: {}".format(cancellation_details.error_details))
+
+
 
 
 ################################
@@ -985,6 +1024,51 @@ def get_advanced_emotions(char_id):
     else:
         return jsonify({'failure': 'Character does not have any emotions.'})
     
+@app.route('/api/synthesize_speech', methods=['POST'])
+@cross_origin()
+def synthesize_speech_route():
+    data = request.get_json()
+    ssml_string = data.get('ssml', None)
+    speech_key = data.get('speech_key', None)
+    service_region = data.get('service_region', None)
+    if ssml_string and speech_key and service_region:
+        fileName = synthesize_speech(ssml_string, speech_key, service_region)
+        if(fileName == None):
+            print("Speech synthesis failed.")
+            return jsonify({"status": "error", "message": "Speech synthesis failed."}), 500
+        else:
+            print("Speech synthesized successfully.")
+            return jsonify({"status": "success", "message": "Speech synthesized successfully.", 'audio': fileName}), 200
+    else:
+        print("Invalid input.")
+        return jsonify({"status": "error", "message": "Invalid input."}), 500
+    
+@app.route('/api/character-speech/<char_id>', methods=['POST'])
+@cross_origin()
+def save_character_speech(char_id):
+    character_speech = request.get_json()
+    if character_speech is None:
+        return jsonify({'error': 'No character speech data found'}), 500
+    char_folder = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id)
+    if not os.path.exists(char_folder):
+        os.mkdir(char_folder)
+    with open(os.path.join(char_folder, 'character_speech.json'), 'w') as f:
+        json.dump(character_speech, f)
+    return 'Character speech saved successfully!'
+
+@app.route('/api/character-speech/<char_id>', methods=['GET'])
+@cross_origin()
+def get_character_speech(char_id):
+    char_folder = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id)
+    if not os.path.exists(char_folder):
+        return jsonify({'error': 'Character folder not found'}), 404
+    speech_file = os.path.join(char_folder, 'character_speech.json')
+    if not os.path.exists(speech_file):
+        return jsonify({'error': 'Speech file not found'}), 404
+    with open(speech_file, 'r') as f:
+        character_speech = json.load(f)
+    return jsonify(character_speech)
+
 
 ##########################################
 #### END OF ADVANCED CHARACTER ROUTES ####
@@ -1118,6 +1202,52 @@ def save_settings():
 #### END OF SETTINGS ROUTES ####
 ################################
 
+
+#################################
+##### START OF GUIDE ROUTES #####
+#################################
+
+@app.route('/api/guides', methods=['GET'])
+@cross_origin()
+def get_guides():
+    guides = []
+    for filename in os.listdir(app.config['GUIDE_FOLDER']):
+        if filename.endswith('.json'):
+            with open(os.path.join(app.config['GUIDE_FOLDER'], filename)) as f:
+                guide = json.load(f)
+                guides.append(guide)
+    # return the list of characters as a JSON response
+    return jsonify({'guides': guides})
+
+@app.route('/api/guides', methods=['POST'])
+@cross_origin()
+def save_guide():
+    guide = request.json
+    filename_path = os.path.join(app.config['GUIDE_FOLDER'], f'{guide["id"]}.json')
+    with open(filename_path, 'w') as f:
+        json.dump(guide, f)
+    return jsonify({'success': 'Guide saved'})
+
+@app.route('/api/guides/<string:guide_id>', methods=['DELETE'])
+@cross_origin()
+def delete_guide(guide_id):
+    filename_path = os.path.join(app.config['GUIDE_FOLDER'], f'{guide_id}.json')
+    if os.path.exists(filename_path):
+        os.remove(filename_path)
+        return jsonify({'success': 'Guide deleted'})
+    else:
+        return jsonify({'failure': 'Guide not found'})
+
+@app.route('/api/guides/<string:guide_id>', methods=['GET'])
+@cross_origin()
+def get_guide(guide_id):
+    filename_path = os.path.join(app.config['GUIDE_FOLDER'], f'{guide_id}.json')
+    if os.path.exists(filename_path):
+        with open(filename_path) as f:
+            guide = json.load(f)
+            return jsonify({'success': 'Guide found', 'guide': guide})
+    else:
+        return jsonify({'failure': 'Guide not found'})
 
 if args.share:
     from flask_cloudflared import _run_cloudflared

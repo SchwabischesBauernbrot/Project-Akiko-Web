@@ -3,6 +3,7 @@ import { saveUserAvatar, getUserImageUrl, fetchUserAvatars } from '../api';
 import { FiImage, FiSave } from 'react-icons/fi';
 import { RxReset } from 'react-icons/rx';
 import Select from 'react-select';
+import { customUserStyles } from '../Arrays';
 
 const UserInfo = ({onClose, handleSave}) => {
     const [userImage, setUserImage] = useState(null);
@@ -73,46 +74,6 @@ const UserInfo = ({onClose, handleSave}) => {
         setUserImage(selectedAvatar);
     }
 
-    const customStyles = {
-        menu: (provided) => ({
-            ...provided,
-            width: 'fit-content',
-            backgroundColor: 'rgba(11, 11, 11, 0.636)',
-            backdropFilter: 'blur(10px)',
-            color: 'white'
-        }),
-        dropdownIndicator: (provided) => ({
-            ...provided,
-            color: 'white'
-        }),
-        container: (provided) => ({
-            ...provided,
-            color: 'white'
-        }),
-        control: (provided) => ({
-            ...provided,
-            width: 'fit-content',
-            backgroundColor: 'rgba(18, 18, 18, 0.737)',
-            boxShadow: '0px 0px 10px 0px rgba(57, 57, 57, 0.737)',
-            backdropFilter: 'blur(11px)',
-            scrollbehavior: 'smooth',
-            color: 'black',
-        }),
-        option: (provided, state) => ({
-            ...provided,
-            backgroundColor: 'rgba(11, 11, 11, 0.636)',
-            color: 'white',
-        }),
-        singleValue: (provided) => ({
-            ...provided,
-            color: 'white'
-        }),
-        placeholder: (provided) => ({
-            ...provided,
-            color: 'gray'
-        }),
-    };
-
     async function handleSubmit(event) {
         event.preventDefault();
         let avatar;
@@ -178,7 +139,7 @@ const UserInfo = ({onClose, handleSave}) => {
                                 Available avatars:
                             </label>
                             <Select
-                                styles={customStyles}
+                                styles={customUserStyles}
                                 options={options}
                                 formatOptionLabel={formatOptionLabel}
                                 value={options.find((option) => option.value === userImage)}
@@ -199,12 +160,12 @@ const UserInfo = ({onClose, handleSave}) => {
                                 />
                         </div>
                     <div className="flex justify-center">
-                    <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-red-600 text-selected-text" onClick={() => handleDefault()}title='Reset to default'>
-                        <RxReset className="react-icon"/>
-                    </button>
-                    <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" type="submit">
-                        <FiSave className="react-icon"/>
-                    </button>
+                        <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-red-600 text-selected-text" onClick={() => handleDefault()}title='Reset to default'>
+                            <RxReset className="react-icon"/>
+                        </button>
+                        <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" type="submit">
+                            <FiSave className="react-icon"/>
+                        </button>
                     </div>
                 </form>
                 </div>

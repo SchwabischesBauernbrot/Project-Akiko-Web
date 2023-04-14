@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { fetchCharacter, getCharacterImageUrl, fetchConversation, saveConversation, deleteConversation, getAvailableModules } from "./api";
-import { characterTextGen, classifyEmotion } from "./chatcomponents/chatapi";
+import { characterTextGen, classifyEmotion, generate_Speech } from "./chatcomponents/chatapi";
 import ChatboxInput from './ChatBoxInput';
 import Avatar from './Avatar';
 import Message from "./chatcomponents/Message";
@@ -223,6 +223,7 @@ function Chatbox({ endpoint, endpointType }) {
   } 
   
   const handleChatbotResponse = async (chatHistory, image, currentCharacter) => {
+    let emotion = 'neutral';
     const isTypingNow = new Date();
     const isTyping = {
       sender: currentCharacter.name,
@@ -259,7 +260,7 @@ function Chatbox({ endpoint, endpointType }) {
         const characterIndex = currentEmotion.findIndex(emotion => emotion.char_id === currentCharacter.char_id);
   
         let newEmotions;
-  
+        emotion = label;
         if (characterIndex !== -1) {
           // If the character's char_id is found, update the emotion in the existing object
           newEmotions = currentEmotion.map((emotion, index) =>
@@ -273,7 +274,10 @@ function Chatbox({ endpoint, endpointType }) {
       } else {
         console.error('Invalid classification data:', classification);
       }
-    }   
+    }
+    if(localStorage.getItem('speech_key') != null && localStorage.getItem('speech_key') != 'none'){
+      await generate_Speech(generatedText, emotion, currentCharacter);
+    }
     // Add new incoming message to state
     const now = new Date();
     const newIncomingMessage = {
@@ -520,7 +524,7 @@ function Chatbox({ endpoint, endpointType }) {
                 <Connect/>
               </div>
               <div className="ml-1">
-              <h4>Chat branching enabled</h4>
+              <h4>Enable message shuffling</h4>
               <div className="flex items-center ml-1">
             <input type='checkbox'className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name='branchtoggle' checked={toggleBranch} onChange={() => handleCheckToggle()}/>
           </div>

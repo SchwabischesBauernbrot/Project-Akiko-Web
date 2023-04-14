@@ -5,3 +5,4 @@ markdown
 Pillow
 colorama
 openai
+azure-cognitiveservices-speech

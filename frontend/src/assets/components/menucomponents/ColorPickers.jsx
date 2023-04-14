@@ -88,7 +88,7 @@ function ColorPicker() {
     <div className="centered settings-box">
       <h2>Custom UI Options</h2>
       <h3>Element to Change:</h3>
-      <select value={selectedElement} onChange={handleElementChange}>
+      <select value={selectedElement} onChange={handleElementChange} className="character-field">
         <option value="backdrop">Central UI Backdrop</option>
         <option value="buttonBox">Buttons/Boxes</option>
         <option value="textIcon">Normal Text/Icons</option>

@@ -6,6 +6,14 @@ import {FiPlus, FiTrash2} from "react-icons/fi";
 const ConversationSelectionMenu = ({setConvo, handleChatMenuClose}) => {
   const [conversations, setConversations] = useState([]);
   
+  useEffect(() => {
+    const closeOnEscapeKey = e => e.key === "Escape" ? handleChatMenuClose() : null;
+    document.body.addEventListener("keydown", closeOnEscapeKey);
+    return () => {
+        document.body.removeEventListener("keydown", closeOnEscapeKey);
+    };
+  }, []);
+
   const fetchConversationData = async () => {
     const data = await fetchConversations();
     setConversations(data);

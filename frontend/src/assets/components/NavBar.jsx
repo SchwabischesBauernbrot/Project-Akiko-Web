@@ -3,39 +3,65 @@ import { HomeIcon, WrenchScrewdriverIcon, UserGroupIcon, ChatBubbleLeftRightIcon
 import { RxDiscordLogo } from 'react-icons/rx';
 import { HiChevronDoubleRight } from 'react-icons/hi2'
 import { Link } from 'react-router-dom';
+import { AiFillUnlock, AiFillLock } from 'react-icons/ai';
+import { GoBook } from 'react-icons/go';
 
 const Navbar = ({showNavBar, setShowNavBar}) => {
   const navbarRef = useRef(null);
+  const [doSlide, setDoSlide] = useState(false);
 
   const handleMouseMove = (e) => {
     if (e.clientY <= 10) {
       setShowNavBar(true);
     } else {
-      const navbar = navbarRef.current;
-      if (navbar) {
-        const rect = navbar.getBoundingClientRect();
-        const isMouseInside =
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom;
-
-        if (!isMouseInside) {
-          setShowNavBar(false);
+      if (!doSlide) {
+        const navbar = navbarRef.current;
+        if (navbar) {
+          const rect = navbar.getBoundingClientRect();
+          const isMouseInside =
+            e.clientX >= rect.left &&
+            e.clientX <= rect.right &&
+            e.clientY >= rect.top &&
+            e.clientY <= rect.bottom;
+  
+          if (!isMouseInside) {
+            setShowNavBar(false);
+          }
         }
       }
     }
-  };
+  };  
+
   const toggleMenu = () => {
     setShowNavBar(!showNavBar);
   };
-  
+
+  const toggleSlide = () => {
+    setDoSlide(!doSlide);
+    if(doSlide !== false) {
+      localStorage.setItem('doSlide', 'true');
+      setShowNavBar(true);
+    }else {
+      localStorage.setItem('doSlide', 'false');
+    }
+  };
+
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
+  }, [doSlide]);
+
+  useEffect(() => {
+    const slide = localStorage.getItem('doSlide');
+    console.log(slide)
+    if(slide === 'true') {
+      setDoSlide(true);
+    }else if (slide === 'false' || slide === null){
+      setDoSlide(false);
+    }
   }, []);
 
   return (
@@ -96,6 +122,14 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
               <RxDiscordLogo className="w-8 h-8"/>
             </Link>
             <Link
+              title="Guide"
+              className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
+              style={{ color: 'var(--selected-text-color)' }}
+              to="/guide"
+            >
+              <GoBook className="w-8 h-8"/>
+            </Link>
+            <Link
               title="Settings"
               className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
               style={{ color: 'var(--selected-text-color)' }}
@@ -103,6 +137,11 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
             >
               <WrenchScrewdriverIcon className="w-8 h-8"/>
             </Link>
+          </div>
+          <div>
+            <button className="absolute top-0 right-0 p-2" onClick={() => toggleSlide()}>
+              { doSlide ? <AiFillLock className="w-6 h-6"/> : <AiFillUnlock className="w-6 h-6"/>}
+            </button>
           </div>
         </div>
         )}
