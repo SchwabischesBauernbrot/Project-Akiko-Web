@@ -72,12 +72,53 @@ const EmotionSprites = ({ character }) => {
         }
     };
 
+    const handleBulkFileUpload = async (e) => {
+        const files = Array.from(e.target.files);
+    
+        const emotionFileMap = files.reduce((acc, file) => {
+          const matchedEmotion = possibleEmotions.find((emotion) =>
+            file.name.toLowerCase().includes(emotion)
+          );
+    
+          if (matchedEmotion) {
+            acc[matchedEmotion] = file;
+          }
+          return acc;
+        }, {});
+    
+        const uploadPromises = Object.entries(emotionFileMap).map(
+          async ([emotion, file]) => {
+            await handleFileUpload(emotion, { target: { files: [file] } });
+          }
+        );
+    
+        try {
+          await Promise.all(uploadPromises);
+        } catch (error) {
+          console.error("Error uploading bulk files:", error);
+        }
+    };
     
     return (
         <div className="relative flex flex-col items-center bg-selected p-4 mt-4 rounded-lg" id="emotion-sprites">
             <h1 className="text-xl font-bold">Emotion Sprites</h1>
             <br />
             <br />
+            <div className="mb-4">
+                <input
+                type="file"
+                className="hidden"
+                id="upload-bulk"
+                onChange={handleBulkFileUpload}
+                multiple
+                />
+                <label
+                htmlFor="upload-bulk"
+                className="text-selected-text bg-selected w-1/2 h-full p-2 rounded-lg shadow-md backdrop-blur-md border-none outline-none justify-center cursor-pointer hover:bg-blue-600"
+                >
+                Upload All Emotions
+                </label>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 max-h-[600px] overflow-y-auto">
                 {possibleEmotions.map(emotion => (
                     <div key={emotion} className="bg-selected p-4 rounded-lg shadow-md flex-row justify-center">

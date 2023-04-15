@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchConversation } from "../api";
 import ReactMarkdown from "react-markdown";
-
+import { convertToReadableDateTime } from "../miscfunctions";
 const Conversation = ({ conversation }) => {
   const [lastMessage, setLastMessage] = useState(null);
   const [convo, setConvo] = useState(null);
@@ -23,7 +23,7 @@ const Conversation = ({ conversation }) => {
 
   return (
   <div className="conversation-info">
-      <b>{convo.conversationName}</b>
+      <b>{convertToReadableDateTime(convo.conversationName)}</b>
       <p><b>Participants:</b></p>
       <div className="participant-list">
       {convo.participants && convo.participants.map((participant, index) => (
