@@ -15,10 +15,30 @@ const Characters = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [characterToDelete, setCharacterToDelete] = useState(null);
 
-  const handleImageUpload = async (file) => {
-    const importData = await uploadTavernCharacter(file);
-    setCharacters([...characters, {...importData}]);
-  }
+  const handleImageUpload = async (files) => {
+    const filesArray = Array.from(files);
+  
+    const uploadPromises = filesArray.map(async (file) => {
+      try {
+        const importData = await uploadTavernCharacter(file);
+        return importData;
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  
+    try {
+      const importedDataArray = await Promise.all(uploadPromises);
+      setCharacters((prevCharacters) => [
+        ...prevCharacters,
+        ...importedDataArray.filter((data) => data),
+      ]);
+    } catch (error) {
+      console.error("Error processing multiple files:", error);
+    }
+  };
+  
+  
 
   const fetchAndSetCharacters = async () => {
     try {
@@ -147,8 +167,9 @@ const Characters = () => {
             type="file"
             accept="image/png, application/json"
             id="character-image-input"
-            onChange={(e) => handleImageUpload(e.target.files[0])}
+            onChange={(e) => handleImageUpload(e.target.files)}
             style={{ display: 'none' }}
+            multiple={true}
           />
           <div className="chara-search-bar col-span-2">
             <input

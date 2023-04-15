@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chatbox from '../assets/components/Chatbox';
 import 'tailwindcss/tailwind.css';
+import SlideMenu from "../assets/components/SlideMenu";
 
 const Chat = () => {
 const [configuredEndpoint, setconfiguredEndpoint] = useState('http://localhost:5100/');
@@ -21,8 +22,11 @@ useEffect(() => {
 }, []);
 
 return (
+    <>
+    <SlideMenu/>
     <Chatbox endpoint={configuredEndpoint} endpointType={configuredEndpointType}/>
-    );
+    
+    </>);
 };
 
 export default Chat;

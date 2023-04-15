@@ -23,7 +23,7 @@ const GuideForm = ({onClose}) => {
     return (
         <>
         <div className="modal-overlay">
-            <div className="relative bg-selected text-selected-text rounded shadow-lg backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
+            <div className="relative bg-selected w-4/5 text-selected-text rounded shadow-lg backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
                 <span className="absolute top-0 right-0 m-2 cursor-pointer" onClick={() => onClose(false)}>&times;</span>
                 <h1 className="text-xl font-bold">Guide Form</h1>
                 <div className="flex flex-col w-full max-w-md p-4 bg-selected-color rounded-lg">

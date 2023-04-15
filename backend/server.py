@@ -495,6 +495,7 @@ def api_keywords():
 
 
 @app.route('/api/discord-bot/config', methods=['GET'])
+@cross_origin()
 def get_discord_bot_config():
     # Read the .config file if it exists, otherwise return default values
     if os.path.isfile('.config'):
