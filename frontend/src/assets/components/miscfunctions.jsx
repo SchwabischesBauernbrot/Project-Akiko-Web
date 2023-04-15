@@ -103,3 +103,31 @@ function replaceItalicizedTextWithPause(inputText, pauseDuration = "1s") {
 export function separateWords(text) {
   return text.replace(/([A-Z])/g, ' $1').trim();
 }
+
+export function convertToReadableDateTime(inputString) {
+  const regex = /(\D+)_+(\d+)/;
+  const match = inputString.match(regex);
+
+  if (match) {
+    const namePart = match[1];
+    const timestamp = parseInt(match[2], 10);
+
+    if (!isNaN(timestamp)) {
+      const date = new Date(timestamp);
+
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short',
+      };
+
+      return namePart + ' ' + date.toLocaleString(undefined, options);
+    }
+  }
+
+  return inputString;
+}

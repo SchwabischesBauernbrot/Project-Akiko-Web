@@ -29,9 +29,17 @@ const Characters = () => {
   
     try {
       const importedDataArray = await Promise.all(uploadPromises);
+      const uniqueCharacters = importedDataArray.filter(
+        (character, index, self) =>
+          index ===
+          self.findIndex(
+            (char) => char.name === character.name && char.name !== undefined
+          )
+      );
+  
       setCharacters((prevCharacters) => [
         ...prevCharacters,
-        ...importedDataArray.filter((data) => data),
+        ...uniqueCharacters.filter((data) => data),
       ]);
     } catch (error) {
       console.error("Error processing multiple files:", error);
@@ -39,7 +47,7 @@ const Characters = () => {
   };
   
   
-
+  
   const fetchAndSetCharacters = async () => {
     try {
       try {
