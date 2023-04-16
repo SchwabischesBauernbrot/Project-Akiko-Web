@@ -727,10 +727,14 @@ def get_character(char_id):
 @app.route('/api/characters/<char_id>', methods=['DELETE'])
 @cross_origin()
 def delete_character(char_id):
+    advanced_character_folder = app.config['CHARACTER_ADVANCED_FOLDER'] + str(char_id)
     character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
     image_path = app.config['CHARACTER_IMAGES_FOLDER'] + str(char_id) + '.png'
     try:
         os.remove(character_path)
+        if(os.path.exists(advanced_character_folder)):
+            shutil.rmtree(advanced_character_folder)
+            os.remove(advanced_character_folder)
         if(os.path.exists(image_path)):
             os.remove(image_path)
         else:
