@@ -81,6 +81,8 @@ npx vite --host
 - Horde Support. **(Done)**
 - Fully Color Custom UI. **(Done)**
 - Good Character Creation Page. **(Done)**
+- Azure TTS with multiple voices for group chats. **(Done)**
+- Multi-sprites/emotion detection for group chats. **(Done)**
 ## Backend Features:
 - Connect to Kobold, Ooba, horde, or use Akiko's own backend. With Pygmalion and LLaMA support. **(Mostly Done)**
 - Emotion Detection. **(Done)**
@@ -92,14 +94,14 @@ npx vite --host
 - Character Card Import/Export
 - Guide Page full of info for creating characters in every available style, AliChat, W++, and more.
 ## Chat with Characters:
-- Character creation and character management with exports to Character Cards (TavernCardPNG). **(Done)**
+- Character creation and character management with exports to Character Cards (CharaCardPNG), and JSON. **(Done)**
 - Chat with your favorite Character through a polished UI. **(Done)**
 - Chat with multiple characters in character groups. **(Done)**
 - Chat regeneration (swipes), Editable Messages, Impersonation, Branching Chats. **(75% Done)**
 - Emotion detection with corresponding emotional display for set-characters (configuration required). **(Done)
 - Send images to your character and have them recognize what the image is. **(Done)**
 - Live2D models with emotion display. **(50% Done)**
-- Text-to-speech with AzureTTS or (maybe) other alternatives. (this will also allow you to see lips moving on Live2D models.)
+- Text-to-speech with AzureTTS or (maybe) other alternatives. (this will also allow you to see lips moving on Live2D models.) **(75% Done, Azure TTS with multi chara support is finished.)**
 ### Custom Chat Settings:
 - Configure whether or not you want your bot to know what the current time of day is.
 - Configure 'time since' to show your bot how long it has been since you last messaged them.
