@@ -644,7 +644,10 @@ def textgen_status():
             return jsonify({'result': 'Horde heartbeat is steady.'})
         return jsonify({'error': 'Horde heartbeat failed.'}), 500
     elif(endpointType == 'AkikoBackend'):
-        results = {'result': text_model}
+        if(torch.cuda.is_available()):
+            results = {'result': text_model}
+        else:
+            results = {'error': 'No Torch detected.'}
         return jsonify(results)
 
 ##############################################
