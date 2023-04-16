@@ -13,7 +13,7 @@ import GuidePage from './pages/guide';
 
 function App() {
   const [showNavBar, setShowNavBar] = useState(true);
-
+  
   useEffect(() => {
     async function fetchModules() {
       await getAvailableModules();

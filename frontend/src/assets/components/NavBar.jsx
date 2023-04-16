@@ -8,7 +8,11 @@ import { GoBook } from 'react-icons/go';
 
 const Navbar = ({showNavBar, setShowNavBar}) => {
   const navbarRef = useRef(null);
-  const [doSlide, setDoSlide] = useState(false);
+  const [doSlide, setDoSlide] = useState(() => {
+    const storedDoSlide = localStorage.getItem('doSlide');
+    return storedDoSlide === null ? true : storedDoSlide === 'true';
+  });
+  
 
   const handleMouseMove = (e) => {
     if (e.clientY <= 10) {
@@ -37,15 +41,16 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
   };
 
   const toggleSlide = () => {
-    setDoSlide(!doSlide);
-    if(doSlide !== false) {
-      localStorage.setItem('doSlide', 'true');
-      setShowNavBar(true);
-    }else {
-      localStorage.setItem('doSlide', 'false');
-    }
-  };
-
+    setDoSlide((prevDoSlide) => {
+      const newDoSlide = !prevDoSlide;
+      localStorage.setItem('doSlide', newDoSlide ? 'true' : 'false');
+      if (newDoSlide) {
+        setShowNavBar(true);
+      }
+      return newDoSlide;
+    });
+  };  
+  
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
 
@@ -53,16 +58,6 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [doSlide]);
-
-  useEffect(() => {
-    const slide = localStorage.getItem('doSlide');
-    console.log(slide)
-    if(slide === 'true') {
-      setDoSlide(true);
-    }else if (slide === 'false' || slide === null){
-      setDoSlide(false);
-    }
-  }, []);
 
   return (
     <>
