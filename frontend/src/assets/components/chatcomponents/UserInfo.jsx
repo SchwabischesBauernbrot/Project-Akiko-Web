@@ -104,7 +104,7 @@ const UserInfo = ({onClose, handleSave}) => {
     }
     return (
         <div className="modal-overlay">
-            <div className="relative bg-selected w-4/5 text-selected-text rounded shadow-lg backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
+            <div className="relative bg-selected text-selected-text rounded shadow-lg backdrop-blur-10 focus-within:opacity-100 focus-within:button-container:flex justify-center">
             <span className="absolute top-0 right-0 p-4 text-xl font-bold cursor-pointer hover:text-red-600" onClick={onClose}>&times;</span>
             <div className="flex flex-col w-full max-w-md p-4 bg-selected-color rounded-lg">
                 <h1 className="text-xl font-bold mb-4 text-center mx-auto">User Details</h1>
