@@ -148,7 +148,7 @@ const akiko_defaults = {
   }
       
   function parseTextEnd(text, endpointType, results) {
-    if(endpointType !== 'OAI' && endpointType !== 'Ooba') {
+    if(endpointType !== 'OAI') {
     return text.split("\n").map(line => line.trim());
   }
     else {
@@ -190,7 +190,6 @@ const akiko_defaults = {
     const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings, hordeModel: hordeModel ? hordeModel : 'PygmalionAI/pygmalion-6b', configuredName: configuredName ? configuredName : 'You'});
 
     const generatedText = response.data.results[0];
-    print(generatedText)
     if(endpointType !== 'OAI') {
       const parsedText = parseTextEnd(generatedText.text);
       const responseText = parsedText[0] !== undefined ? parsedText[0] : '';

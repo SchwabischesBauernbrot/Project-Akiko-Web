@@ -557,7 +557,7 @@ def textgen(endpointType):
                 payload
             ]
         }).json()
-        results = response["data"]
+        results = response["data"][0]
         print(results)
         return jsonify(results)
 
