@@ -544,23 +544,11 @@ def textgen(endpointType):
             # Get the results from the response
             results = response.json()
             return jsonify(results)
+        
     elif(endpointType == 'Ooba'):
         params = {
             'prompt': data['prompt'],
-            'max_new_tokens': data['settings']['max_new_tokens'],
-            'do_sample': data['settings']['do_sample'],
-            'temperature': data['settings']['temperature'],
-            'top_p': data['settings']['top_p'],
-            'typical_p': data['settings']['typical_p'],
-            'repetition_penalty': data['settings']['repetition_penalty'],
-            'encoder_repetition_penalty': data['settings']['encoder_repetition_penalty'],
-            'top_k': data['settings']['top_k'],
-            'min_length': data['settings']['min_length'],
-            'no_repeat_ngram_size': data['settings']['no_repeat_ngram_size'],
-            'num_beams': data['settings']['num_beams'],
-            'penalty_alpha': data['settings']['penalty_alpha'],
-            'length_penalty': data['settings']['length_penalty'],
-            'early_stopping': data['settings']['early_stopping']
+
         }
         prompt = data['prompt']
         payload = json.dumps([prompt, params])
@@ -569,9 +557,9 @@ def textgen(endpointType):
                 payload
             ]
         }).json()
-        reply = response["data"][0]
-        print(reply)
-        return jsonify(reply)
+        results = response["data"]
+        print(results)
+        return jsonify(results)
 
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
