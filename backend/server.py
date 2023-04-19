@@ -548,18 +548,24 @@ def textgen(endpointType):
     elif(endpointType == 'Ooba'):
         params = {
             'prompt': data['prompt'],
-
         }
         prompt = data['prompt']
         payload = json.dumps([prompt, params])
+
+        # Send a request to the Ooba endpoint with the payload
         response = requests.post(f"{endpoint}/run/textgen", json={
             "data": [
                 payload
             ]
         }).json()
-        results = response["data"][0]
-        print(results)
-        return jsonify(results)
+        # Extract the raw reply from the response
+        raw_reply = response["data"][0]
+        print("Raw reply:", raw_reply)
+        response_half = raw_reply.split(data['prompt'])[1]
+        print(response_half)
+        return jsonify(response_half)
+
+
 
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
