@@ -507,7 +507,7 @@ def api_keywords():
     return jsonify({'keywords': keywords})
 
 
-@app.route('/api/discord-bot/config', methods=['GET'])
+@app.route('/api/discord-bot/config', methods=['GET', 'OPTIONS'])
 @cross_origin()
 def get_discord_bot_config():
     # Read the .config file if it exists, otherwise return default values
@@ -557,27 +557,29 @@ def textgen(endpointType):
             # Get the results from the response
             results = response.json()
             return jsonify(results)
+        
     elif(endpointType == 'Ooba'):
-        response = requests.put(f"{endpoint}/run/textgen", json={    
-        "data": [
-        data['prompt'],
-        data['settings']['max_new_tokens'],
-        data['settings']['do_sample'],
-        data['settings']['temperature'],
-        data['settings']['top_p'],
-        data['settings']['typical_p'],
-        data['settings']['repetition_penalty'],
-        data['settings']['encoder_repetition_penalty'],
-        data['settings']['top_k'],
-        data['settings']['min_length'],
-        data['settings']['no_repeat_ngram_size'],
-        data['settings']['num_beams'],
-        data['settings']['penalty_alpha'],
-        data['settings']['length_penalty'],
-        data['settings']['early_stopping'],
-        ]})
-        reply = {'results': response["data"][0]}
-        return jsonify(reply)
+        params = {
+            'prompt': data['prompt'],
+        }
+        prompt = data['prompt']
+        payload = json.dumps([prompt, params])
+
+        # Send a request to the Ooba endpoint with the payload
+        response = requests.post(f"{endpoint}/run/textgen", json={
+            "data": [
+                payload
+            ]
+        }).json()
+        # Extract the raw reply from the response
+        raw_reply = response["data"][0]
+        print("Raw reply:", raw_reply)
+        response_half = raw_reply.split(data['prompt'])[1]
+        print(response_half)
+        return jsonify(response_half)
+
+
+
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
