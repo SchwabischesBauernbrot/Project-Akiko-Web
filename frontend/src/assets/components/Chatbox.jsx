@@ -17,7 +17,6 @@ import {VscDebugDisconnect} from 'react-icons/vsc';
 import Model from "./Model";
 import ConnectMenu from "./chatcomponents/ConnectMenu";
 import UserInfo from "./chatcomponents/UserInfo";
-
 function Chatbox({ endpoint, endpointType }) {
   const [messages, setMessages] = useState([]);
   const [configuredName, setconfiguredName] = useState('You');
@@ -36,7 +35,6 @@ function Chatbox({ endpoint, endpointType }) {
   const messagesEndRef = useRef(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [conversation, setConversation] = useState(null);
-  const [settings, setSettings] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [createMenuOn, setCreateMenuOn] = useState(false);
