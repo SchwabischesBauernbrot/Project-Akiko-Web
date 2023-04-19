@@ -123,22 +123,20 @@ This feature and it's components will be optional.
 ## Discord Bot Integration:
 - Chat with your bot through discord.
 - Send images to the bot.
-- Ask for images from the bot (spicy or not).
+Ask for images from the bot (spicy or not).
 - Custom Chat Settings are also available on the discord bot.
 # Current State of the UI (Obviously WIP submit suggestions to the form above):
 ## Character Page:
-![image](https://user-images.githubusercontent.com/26259870/229264713-62bd4895-5c09-487c-a780-f295cca96950.png)
-![image](https://user-images.githubusercontent.com/26259870/229264719-b3446bc5-31ac-4f09-9cc4-50255e3b1aa0.png)
-![image](https://user-images.githubusercontent.com/26259870/229264730-275c191e-8013-4318-a445-ac9f2dbb6890.png)
+![CharaPage](https://user-images.githubusercontent.com/26259870/233136083-3ca970d4-9f30-45cc-8ced-31ceba307a64.png)
+![EditChara](https://user-images.githubusercontent.com/26259870/233136129-0e290bc0-1064-4812-9861-8b67d6b191d2.png)
+## Adv. Character Page:
+![AdvancedCharaPage](https://user-images.githubusercontent.com/26259870/233136320-246b45e2-3d2c-4da1-a3fc-dbccda9face4.png)
 ## Chat Page:
-![image](https://user-images.githubusercontent.com/26259870/229265249-09794bea-14c1-45cb-be69-d30fab848a88.png)
-![image](https://user-images.githubusercontent.com/26259870/229264860-5632fe81-af11-4463-8e46-9707296b4d51.png)
-![image](https://user-images.githubusercontent.com/26259870/229264957-f6e906ff-91a0-46c0-b6a3-fce8f5c61345.png)
-![image](https://user-images.githubusercontent.com/26259870/229264971-8a2cbbf7-e433-4c13-9700-f268b8aad6c6.png)
-![image](https://user-images.githubusercontent.com/26259870/229264989-9a3728fa-7adc-42d3-98b3-c5116a759b4e.png)
-![image](https://user-images.githubusercontent.com/26259870/229265012-a8156186-652f-4571-871e-899124676ad3.png)
+![Chat](https://user-images.githubusercontent.com/26259870/233136157-236bbc67-10c2-416e-82ec-9e9f7534cb10.png)
+![Group](https://user-images.githubusercontent.com/26259870/233136167-03ee376f-5b26-4ed0-96c5-c07a6c1fc4ef.png)
 ## Settings Page:
-![image](https://user-images.githubusercontent.com/26259870/229264847-a79b1c15-3b49-41fb-b0fb-502a6f62aa67.png)
+![Settings](https://user-images.githubusercontent.com/26259870/233136194-8674e5ed-1173-4b9e-9147-87bc32727dc0.png)
+![DiscordBotPage](https://user-images.githubusercontent.com/26259870/233136206-c61acba2-53aa-47d7-9ee2-9c419c41f55e.png)
 Custom Color Example:
 ![image](https://user-images.githubusercontent.com/26259870/229264937-d08567ff-c231-48b8-b5bb-45820112c30c.png)
 
