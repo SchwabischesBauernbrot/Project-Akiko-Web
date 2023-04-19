@@ -18,6 +18,7 @@ from random import randint
 from werkzeug.utils import secure_filename
 from colorama import Fore, Style, init as colorama_init
 import openai
+import whisper
 import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.speech import SpeechConfig, SpeechSynthesisOutputFormat, SpeechSynthesizer
 from azure.cognitiveservices.speech.audio import AudioOutputConfig
@@ -65,7 +66,7 @@ class SplitArgs(argparse.Action):
 
 # Script arguments
 parser = argparse.ArgumentParser(
-    prog='TavernAI Extras', description='Web API for transformers models')
+    prog='Project Akiko', description='Web API for transformers models')
 parser.add_argument('--port', type=int,
                     help="Specify the port on which the application is hosted")
 parser.add_argument('--listen', action='store_true',
@@ -159,6 +160,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
 app.config['GUIDE_FOLDER'] = '../frontend/src/guides/'
+app.config['STT_FOLDER'] = '../frontend/src/stt/'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'json'}
 
@@ -408,7 +410,19 @@ def synthesize_speech(ssml_string, speech_key, service_region):
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
 
+def stt_transcribe(filepath):
+    model = whisper.load_model("base")
+    audio = whisper.load_audio(filepath)
+    audio = whisper.pad_or_trim(audio)
 
+    mel = whisper.log_mel_spectrogram(audio).to(model.device)
+
+    _, probs = model.detect_language(mel)
+
+    options = whisper.DecodingOptions()
+    result = whisper.decode(model, mel, options)
+
+    return result.text
 
 
 ################################
@@ -420,7 +434,6 @@ def synthesize_speech(ssml_string, speech_key, service_region):
 # Request time measuring
 def before_request():
     request.start_time = time.time()
-
 
 @app.after_request
 def after_request(response):
@@ -494,7 +507,7 @@ def api_keywords():
     return jsonify({'keywords': keywords})
 
 
-@app.route('/api/discord-bot/config', methods=['GET'])
+@app.route('/api/discord-bot/config', methods=['GET', 'OPTIONS'])
 @cross_origin()
 def get_discord_bot_config():
     # Read the .config file if it exists, otherwise return default values
@@ -544,27 +557,29 @@ def textgen(endpointType):
             # Get the results from the response
             results = response.json()
             return jsonify(results)
+        
     elif(endpointType == 'Ooba'):
-        response = requests.put(f"{endpoint}/run/textgen", json={    
-        "data": [
-        data['prompt'],
-        data['settings']['max_new_tokens'],
-        data['settings']['do_sample'],
-        data['settings']['temperature'],
-        data['settings']['top_p'],
-        data['settings']['typical_p'],
-        data['settings']['repetition_penalty'],
-        data['settings']['encoder_repetition_penalty'],
-        data['settings']['top_k'],
-        data['settings']['min_length'],
-        data['settings']['no_repeat_ngram_size'],
-        data['settings']['num_beams'],
-        data['settings']['penalty_alpha'],
-        data['settings']['length_penalty'],
-        data['settings']['early_stopping'],
-        ]})
-        reply = {'results': response["data"][0]}
-        return jsonify(reply)
+        params = {
+            'prompt': data['prompt'],
+        }
+        prompt = data['prompt']
+        payload = json.dumps([prompt, params])
+
+        # Send a request to the Ooba endpoint with the payload
+        response = requests.post(f"{endpoint}/run/textgen", json={
+            "data": [
+                payload
+            ]
+        }).json()
+        # Extract the raw reply from the response
+        raw_reply = response["data"][0]
+        print("Raw reply:", raw_reply)
+        response_half = raw_reply.split(data['prompt'])[1]
+        print(response_half)
+        return jsonify(response_half)
+
+
+
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
@@ -1257,6 +1272,33 @@ def get_guide(guide_id):
     else:
         return jsonify({'failure': 'Guide not found'})
 
+
+#################################
+##### END OF GUIDE ROUTES #######
+#################################
+
+################################
+##### START OF STT ROUTES ######
+################################
+
+
+@app.route('/api/stt', methods=['POST'])
+@cross_origin()
+def upload_audio():
+    audio_file = request.files.get('audio')
+    if audio_file:
+        if(not os.path.exists(app.config['STT_FOLDER'])):
+            os.makedirs(app.config['STT_FOLDER'])
+        file_path = os.path.join(app.config['STT_FOLDER'], f'{audio_file.filename}.wav')
+        audio_file.save(file_path)
+        transcription = stt_transcribe(file_path)
+        return {
+            'message': 'Audio file uploaded and transcribed successfully.',
+            'transcription': transcription
+        }, 200
+    else:
+        return {'error': 'No audio file found in the request.'}, 400
+    
 if args.share:
     from flask_cloudflared import _run_cloudflared
     import inspect

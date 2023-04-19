@@ -12,7 +12,6 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
     const storedDoSlide = localStorage.getItem('doSlide');
     return storedDoSlide === null ? true : storedDoSlide === 'true';
   });
-  
 
   const handleMouseMove = (e) => {
     if (e.clientY <= 10) {
@@ -27,7 +26,6 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
             e.clientX <= rect.right &&
             e.clientY >= rect.top &&
             e.clientY <= rect.bottom;
-  
           if (!isMouseInside) {
             setShowNavBar(false);
           }
