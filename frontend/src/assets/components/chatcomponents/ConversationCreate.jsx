@@ -46,7 +46,8 @@ const ConversationCreate = ({ CreateConvo, setCreateMenuOn }) => {
     if(participants.length > 1){
         const groupChatMessage = {
             sender: 'ProjectAkiko',
-            avatar: 'system',
+            avatar: 'icon.png',
+            isIncoming: true,
             text: 'This is a group chat. Say hi to everyone!',
             image: null,
             timestamp: new Date().getTime(),

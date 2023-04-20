@@ -18,27 +18,29 @@
 4. Go to the 'Settings' tab and configure your Textgen Endpoint. 
 5. Start chatting!
 # Advanced User Guide
-1. Clone the repo to your local machine. 
-2. Go into the 'setup.bat' (and or 'setup.sh' on Linux).
-For windows users change this:
+
+1. Clone the repo to your local machine.
+2. Change the following lines on your Setup script (.bat || .sh)
+
+For Windows users:
 ```
-start cmd /k "cd backend && pip install -r requirements.txt && python server.py"
+start cmd /k "cd frontend && npm run install && npm run base"
 ```
 to this
 ```
-start cmd /k "cd backend && pip install -r full_requirements.txt && python server.py"
+start cmd /k "cd frontend && npm run install-full && npm run full"
 ```
 For Linux users change this:
 ```
-cd backend && pip install -r requirements.txt && python server.py&
+cd frontend && npm run install && npm run base &
 ```
 to this
 ```
-cd backend && pip install -r full_requirements.txt && python server.py&
+cd frontend && npm run install-full && npm run full &
 ```
 After running it should boot you into Akiko.
  
-3. Adding in modules.
+3. Custom Scripts, Modules, and Arguments.
 
 ## Special Stuff
 
@@ -47,7 +49,34 @@ After running it should boot you into Akiko.
 | Image Captioning | Send a cute picture to your bot!<br><br>Picture select option will appear next to the text input box. | `caption`                    | <img src="https://user-images.githubusercontent.com/26259870/229362131-1344c4bd-2fd0-467c-a842-f115f7b2dc83.png" style="max-width:200px" />  |
 | Character Expressions | See your character reacting to your messages!<br><br>**You need to provide your own character images!**<br><br>| `classify` | <img style="max-width:200px" alt="image" src="https://user-images.githubusercontent.com/26259870/229362238-beb65e82-ffb3-4756-8e36-7d66c1d39c86.png"> |
 
+| NPM Script Name| Description |
+|------------------|-------------|
+| install          |Installs the required components for the base version of Akiko.|
+| install-full     |Installs the full requirements for running the entire Akiko feature list.|
+| base             |Runs the base version of Akiko, with server, frontend, and backend.|
+| base-remote      |Runs the base version of Akiko, with remote access enabled for server and frontend, and backend.|
+| caption          |Runs the caption module of Akiko, with server, frontend, and backend.|
+| caption-remote   |Runs the caption module of Akiko, with remote access enabled for server, frontend, and backend.|
+| classify         |Runs the classification module of Akiko, with server, frontend, and backend.|
+| classify-remote  |Runs the classification module of Akiko, with remote access enabled for server, frontend, and backend.|
+| full             |Runs the full Akiko feature list, with server, frontend, and backend, enabling both caption and classification.|
+| full-remote      |Runs the full Akiko feature list, with remote access enabled for server, frontend, and backend, enabling both caption and classification.|
+| custom |Runs the user's custom arguments from the cmd. ```--cpu --share --enable-modules=``` <-- those kind of args. **(WARNING, HOST IS ENABLED FOR FRONTEND FOR ALL CUSTOM ARGS. IF YOU DON'T WANT THIS, EDIT THE PACKAGE.JSON INSIDE OF THE FRONTEND DIRECTORY.)** |
 
+To change which script you are running, edit your Start ( .bat || .sh )
+Change the last section of the line from
+```
+npm run base
+```
+to 
+```
+npm run SCRIPT_NAME
+```
+
+Using Custom Arguments (example)
+```
+npm run custom --port --cpu --listen
+```
 ## Modules
 
 | Name        | Description                       | Included in default requirements.txt       |
@@ -67,15 +96,6 @@ After running it should boot you into Akiko.
 | `--classification-model` | Load a custom sentiment classification model.<br>Expects a HuggingFace model ID.<br>Default (6 emotions): [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion)<br>Other solid option is (28 emotions): [joeddav/distilbert-base-uncased-go-emotions-student](https://huggingface.co/joeddav/distilbert-base-uncased-go-emotions-student) |
 | `--captioning-model`     | Load a custom captioning model.<br>Expects a HuggingFace model ID.<br>Default: [Salesforce/blip-image-captioning-large](https://huggingface.co/Salesforce/blip-image-captioning-large) |
 | `--keyphrase-model`      | Load a custom key phrase extraction model.<br>Expects a HuggingFace model ID.<br>Default: [ml6team/keyphrase-extraction-distilbert-inspec](https://huggingface.co/ml6team/keyphrase-extraction-distilbert-inspec) |
-
-Add any of those arguments to the ``start.bat`` or ``start.sh`` like this:
-```
-python server.py --enable-modules=caption,classify --listen
-```
-To make your site public, use this in the same file:
-```
-npx vite --host
-```
 # Planned Features:
 ## Highlighted Features:
 - Horde Support. **(Done)**
