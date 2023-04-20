@@ -45,6 +45,22 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Signal handling
+process.on('SIGINT', () => {
+  console.log('Closing server...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('Closing server...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
 // GET /api/characters
 app.get('/characters', (req, res) => {
     const characters = [];
