@@ -7,7 +7,6 @@ import argparse
 import requests
 import unicodedata
 import time
-import signal
 import sys
 from glob import glob
 import json
@@ -145,14 +144,8 @@ if 'text' in modules:
     text_tokenizer = AutoTokenizer.from_pretrained(text_model)
     text_transformer = AutoModelForCausalLM.from_pretrained(text_model, torch_dtype=torch.float16).to(device)
 
-def shutdown_server(signal, frame):
-    print("Shutting down Flask server")
-    sys.exit(0)
-
 # Flask init
 app = Flask(__name__)
-signal.signal(signal.SIGINT, shutdown_server)
-signal.signal(signal.SIGTERM, shutdown_server)
 cors = CORS(app) # allow cross-domain requests
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
