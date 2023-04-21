@@ -2,4 +2,4 @@
 
 git pull
 
-cd frontend && npm run install &
+cd frontend && npm run install && npm run base &
