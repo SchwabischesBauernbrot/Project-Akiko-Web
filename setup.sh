@@ -2,4 +2,5 @@
 
 git pull
 
-cd frontend && npm i && npm run install && npm run base &
+cd frontend && npm install
+cd backend && pip install -r requirements.txt
