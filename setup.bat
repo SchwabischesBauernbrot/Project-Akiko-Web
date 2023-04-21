@@ -2,4 +2,5 @@
 
 git pull
 
-start cmd /k "cd frontend && npm i && npm run install && npm run base"
+start cmd /c "cd frontend && npm install"
+start cmd /c "cd backend && pip install -r requirements.txt"
