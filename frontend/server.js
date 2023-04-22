@@ -221,18 +221,18 @@ app.get('/tts/fetchvoices/', async (req, res) => {
 });
 
 // STREAMING AUDIO
-app.get('/tts/stream/:voice_id', async (req, res) => { // <- Add a parameter to capture the voice_id from the URL
+app.get(`/tts/generate/${voice_id}`, async (req, res, voice_id) => {
   try {
-    const { voice_id } = req.params; // <- Extract the voice_id from the request parameters
-    const payload = { // <- Define the payload object outside of the fetch options object
+    const { voice_id } = req.params;
+    const payload = {
       text: prompt,
       voice_settings: {
         stability: 0.5,
         similarity_boost: 0.5
       }
     };
-    const stream = await fetch(
-      `${ELEVENLABS_ENDPOINT}/text-to-speech/${voice_id}/stream`,
+    const generate = await fetch(
+      `${ELEVENLABS_ENDPOINT}/text-to-speech/${voice_id}`,
       {
         method: 'POST',
         headers: {
@@ -243,8 +243,9 @@ app.get('/tts/stream/:voice_id', async (req, res) => { // <- Add a parameter to 
         body: JSON.stringify(payload)
       }
     );
-    const results = await payload.json();
-    res.send(results);
+    const audioBlob = await generate.blob();
+    res.set('Content-Type', 'audio/wav');
+    res.send(audioBlob);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
