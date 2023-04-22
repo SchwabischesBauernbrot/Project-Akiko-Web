@@ -19,6 +19,7 @@ const upload = multer({ dest: 'uploads/' });
 const CHARACTER_FOLDER = './src/shared_data/character_info/';
 const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
 const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 
 function allowed_file(filename) {
     const allowed_extensions = ['png', 'jpg', 'jpeg', 'gif'];
@@ -61,6 +62,15 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+
+/*
+############################################
+##                                        ##
+##          CHARACTER ROUTES              ##
+##                                        ##
+############################################
+*/
+
 // GET /api/characters
 app.get('/characters', (req, res) => {
     const characters = [];
@@ -175,4 +185,68 @@ app.put('/characters/:char_id', upload.single('avatar'), (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+
+/*
+############################################
+##                                        ##
+##             TTS ROUTES                 ##
+##                                        ##
+############################################
+*/
+
+// FETCH VOICE IDS
+const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1/';
+app.get('/tts/fetchvoices/', async (req, res) => {
+  try {
+    const fetch_voice = await fetch(
+      `${ELEVENLABS_ENDPOINT}/voices`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ELEVENLABS_API_KEY,
+        },
+      }
+    );
+    voice_id = await fetch_voice.json(['voices'][0]['voice_id']);
+    const results = voice_id
+    res.send(results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+  return voice_id
+});
+
+// STREAMING AUDIO
+app.get('/tts/stream/:voice_id', async (req, res) => { // <- Add a parameter to capture the voice_id from the URL
+  try {
+    const { voice_id } = req.params; // <- Extract the voice_id from the request parameters
+    const payload = { // <- Define the payload object outside of the fetch options object
+      text: prompt,
+      voice_settings: {
+        stability: 0.5,
+        similarity_boost: 0.5
+      }
+    };
+    const stream = await fetch(
+      `${ELEVENLABS_ENDPOINT}/text-to-speech/${voice_id}/stream`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ELEVENLABS_API_KEY,
+          'voice_id': voice_id
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+    const results = await payload.json();
+    res.send(results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
