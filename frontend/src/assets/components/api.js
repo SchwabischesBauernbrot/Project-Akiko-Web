@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
 const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+const API_URL = `${CURRENT_URL}/v1`;
+const JS_API = `${CURRENT_URL}/api`;
 const AVATARS_FOLDER = 'src/shared_data/character_images';
 const EXPORTS_FOLDER = 'src/shared_data/exports';
 const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
@@ -27,7 +28,7 @@ export async function imageExists(url) {
 }
 
 export async function fetchCharacters() {
-  const response = await axios.get(`${API_URL}/characters`);
+  const response = await axios.get(`${JS_API}/characters`);
   return response.data;
 }
 
@@ -47,7 +48,7 @@ export async function fetchSettings() {
 
 
 export async function fetchCharacter(charId) {
-  const response = await axios.get(`${API_URL}/characters/${charId}`);
+  const response = await axios.get(`${JS_API}/characters/${charId}`);
   return response.data;
 }
 
@@ -156,7 +157,7 @@ export async function createCharacter(newCharacter) {
   formData.append('mes_example', newCharacter.mes_example);
   formData.append('avatar', newCharacter.avatar);
 
-  const response = await axios.post(`${API_URL}/characters`, formData);
+  const response = await axios.post(`${JS_API}/characters`, formData);
 
   return response.data;
 }
@@ -199,7 +200,7 @@ export const deleteBackground = async (filename) => {
 };
 
 export async function deleteCharacter(charId) {
-  const response = await axios.delete(`${API_URL}/characters/${charId}`);
+  const response = await axios.delete(`${JS_API}/characters/${charId}`);
   return response.data;
 }
 
@@ -214,7 +215,7 @@ export async function updateCharacter(updatedCharacter) {
   formData.append('mes_example', updatedCharacter.mes_example);
   formData.append('avatar', updatedCharacter.avatar);
 
-  const response = await axios.put(`${API_URL}/characters/${updatedCharacter.char_id}`, formData);
+  const response = await axios.put(`${JS_API}/characters/${updatedCharacter.char_id}`, formData);
 
   return response.data;
 }

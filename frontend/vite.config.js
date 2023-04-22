@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import mkcert from 'vite-plugin-mkcert' // Import the plugin
+import fs from 'fs'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,8 +18,15 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5001',
         changeOrigin: true,
+        secure: false, // Allow self-signed certificates
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/v1': {
+        target: 'https://127.0.0.1:5100/api', // Use HTTPS
+        changeOrigin: true,
+        secure: false, // Allow self-signed certificates
+        rewrite: (path) => path.replace(/^\/v1/, '')
       }
     }
-  }
+  }  
 })

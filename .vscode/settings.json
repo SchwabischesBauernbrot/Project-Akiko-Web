@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./conda/envs/windows/Lib/site-packages"
+    ]
+}

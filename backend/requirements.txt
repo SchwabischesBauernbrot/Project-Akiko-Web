@@ -7,3 +7,4 @@ colorama
 openai
 azure-cognitiveservices-speech
 openai-whisper
+Flask-SSLify
