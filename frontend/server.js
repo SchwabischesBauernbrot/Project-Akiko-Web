@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -195,57 +196,55 @@ app.listen(port, () => {
 ##                                        ##
 ############################################
 */
-
+const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1';
 // FETCH VOICE IDS
-const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1/';
 app.get('/tts/fetchvoices/', async (req, res) => {
   try {
-    const fetch_voice = await fetch(
-      `${ELEVENLABS_ENDPOINT}/voices`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': ELEVENLABS_API_KEY,
-        },
-      }
-    );
-    voice_id = await fetch_voice.json(['voices'][0]['voice_id']);
-    const results = voice_id
-    res.send(results);
+    const response = await axios.get(`${ELEVENLABS_ENDPOINT}/voices`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ELEVENLABS_API_KEY,
+      },
+    });
+
+    const voice_id = response.data.voices[0].voice_id;
+    res.send(voice_id);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-  return voice_id
 });
 
 // STREAMING AUDIO
-app.get(`/tts/generate/${voice_id}`, async (req, res, voice_id) => {
+app.get('/tts/generate/:voice_id', async (req, res) => {
   try {
-    const { voice_id } = req.params;
+    const voice_id = req.params.voice_id;
+    const prompt = req.params.prompt;
+    const stability = req.params.stability;
+    const similarity_boost = req.params.similarity_boost;
+
     const payload = {
       text: prompt,
       voice_settings: {
-        stability: 0.5,
-        similarity_boost: 0.5
-      }
+        stability: stability,
+        similarity_boost: similarity_boost,
+      },
     };
-    const generate = await fetch(
+
+    const response = await axios.post(
       `${ELEVENLABS_ENDPOINT}/text-to-speech/${voice_id}`,
+      payload,
       {
-        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': ELEVENLABS_API_KEY,
-          'voice_id': voice_id
         },
-        body: JSON.stringify(payload)
+        responseType: 'arraybuffer',
       }
     );
-    const audioBlob = await generate.blob();
-    res.set('Content-Type', 'audio/wav');
-    res.send(audioBlob);
+
+    res.set('Content-Type', 'audio/mpeg');
+    res.send(response.data);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

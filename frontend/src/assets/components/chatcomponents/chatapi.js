@@ -261,17 +261,37 @@ const akiko_defaults = {
   }
 
   export async function generate_Speech(response, emotion, currentCharacter) {
+    let audioFile = null;
     if(!response) return;
     if(!emotion) emotion = 'neutral';
-    if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
+    if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null || localStorage.getItem('ttsType') === null){
       console.log('No Azure Speech Key or Region set.');
       alert('No Azure Speech Key or Region set.');
       return;
     }
-    const speech_key = localStorage.getItem('speech_key');
-    const service_region = localStorage.getItem('service_region');
-    const ssml = await createSsml(response, emotion, currentCharacter.char_id);
-    const audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
+    if(localStorage.getItem('ttsType') === 'ElevenTTS'){
+      audioFile = await sendElevenTTS(response);
+      return;
+    }
+    if(localStorage.getItem('ttsType') === 'AzureTTS'){
+      const speech_key = localStorage.getItem('speech_key');
+      const service_region = localStorage.getItem('service_region');
+      const ssml = await createSsml(response, emotion, currentCharacter.char_id);
+      audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
+      return;
+    }
+    if(localStorage.getItem('ttsType') === 'GoogleTTS'){
+      audioFile = await sendGoogleTTS(response);
+      return;
+    }
+    const audio = new Audio();
+    audio.src = `${AUDIO_LOCATION}/${audioFile}`;
+    audio.play();
+  }
+
+  export async function generateElevenTTS(response, char_id) {
+    if(!response) return;
+    const audioFile = await sendElevenTTS(ssml);
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;
     audio.play();
