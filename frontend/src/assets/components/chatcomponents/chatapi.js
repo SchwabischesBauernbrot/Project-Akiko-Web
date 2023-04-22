@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createSsml } from '../miscfunctions';
+import { getCharacterSpeech } from '../api';
 
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
 const AUDIO_LOCATION = 'src/audio'
@@ -254,6 +255,30 @@ const akiko_defaults = {
     }
   }
 
+  export async function sendElevenTTS(text, charId) {
+    let characterTTS = await getCharacterSpeech(charId)
+    try {
+
+      const response = await axios.post(
+        `http://localhost:3000/tts/generate/${voiceId}`,
+        {
+          prompt : text,
+          stability : stability,
+          voice_id: voiceId,
+          similarity_boost: similarityBoost,
+        },
+        {
+          responseType: 'text',
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
   function playAudio(audioFile) {
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;
@@ -270,7 +295,7 @@ const akiko_defaults = {
       return;
     }
     if(localStorage.getItem('ttsType') === 'ElevenTTS'){
-      audioFile = await sendElevenTTS(response);
+      audioFile = await sendElevenTTS(response, currentCharacter.char_id);
       return;
     }
     if(localStorage.getItem('ttsType') === 'AzureTTS'){

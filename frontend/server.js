@@ -20,6 +20,7 @@ const upload = multer({ dest: 'uploads/' });
 const CHARACTER_FOLDER = './src/shared_data/character_info/';
 const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
 const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
+const AUDIO_LOCATION = './src/audio/';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 
 function allowed_file(filename) {
@@ -216,7 +217,7 @@ app.get('/tts/fetchvoices/', async (req, res) => {
 });
 
 // STREAMING AUDIO
-app.get('/tts/generate/:voice_id', async (req, res) => {
+app.post('/tts/generate/:voice_id', async (req, res) => {
   try {
     const voice_id = req.params.voice_id;
     const prompt = req.params.prompt;
@@ -243,8 +244,12 @@ app.get('/tts/generate/:voice_id', async (req, res) => {
       }
     );
 
-    res.set('Content-Type', 'audio/mpeg');
-    res.send(response.data);
+    const date = new Date();
+    const fileName = `${date.getTime()}.mp3`;
+    const audioFilePath = path.join(__dirname, fileName);
+    fs.writeFileSync(audioFilePath, response.data);
+
+    res.send(fileName);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
