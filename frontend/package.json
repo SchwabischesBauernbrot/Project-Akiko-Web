@@ -16,7 +16,7 @@
     "predeploy": "npm run build",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "nodemon server.js"
+    "server": "nodemon --delay 2s --watch server.js server.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",

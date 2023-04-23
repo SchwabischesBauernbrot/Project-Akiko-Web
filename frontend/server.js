@@ -634,7 +634,6 @@ app.post('/textgen/:endpointType', async (req, res) => {
             results = results.join(' ');
           }
           // Send the results back to the client
-          console.log(results);
           res.json(results);
         }
         break;
@@ -652,7 +651,28 @@ app.post('/textgen/:endpointType', async (req, res) => {
         const responseHalf = rawReply.split(prompt)[1];
         res.json(responseHalf);
         break;
-      
+      case 'OAI':
+        // Create a configuration object with your key
+        const configuration = new Configuration({
+          apiKey: endpoint,
+        });
+    
+        // Create an openaiApi object with your configuration and headers
+        const openaiApi = new OpenAIApi(configuration);
+        try{
+          response = await openaiApi.createCompletion({
+            model: 'text-davinci-003',
+            prompt: prompt,
+            temperature: settings.temperature,
+            max_tokens: settings.max_tokens,
+            stop: [`${configuredName}:`],
+          });
+          res.json({ results: [response.data.choices[0].text]})
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+  
       case 'Horde':
         const hordeKey = endpoint ? endpoint : '0000000000';
         const taskId = uuidv4();
