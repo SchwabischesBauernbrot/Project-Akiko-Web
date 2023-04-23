@@ -904,13 +904,15 @@ app.post('/textgen/:endpointType', async (req, res) => {
   
       case 'Horde':
         const hordeKey = endpoint ? endpoint : '0000000000';
-        const taskId = uuidv4();
         const payload = { prompt, params: settings, models: [hordeModel] };
         response = await axios.post(
           `${HORDE_API_URL}v2/generate/text/async`,
           payload,
           { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
         );
+        // Use the received taskId from the API response
+        const taskId = response.data.id;
+      
         while (true) {
           await new Promise(resolve => setTimeout(resolve, 5000));
           const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
