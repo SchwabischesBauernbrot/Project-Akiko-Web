@@ -222,7 +222,7 @@ export async function updateCharacter(updatedCharacter) {
 
 export const saveConversation = async (convo) => {
   try {
-    const response = await axios.post(`${API_URL}/conversation`, convo);
+    const response = await axios.post(`${JS_API}/conversation`, convo);
     if (response.data.status === 'success') {
       console.log('Conversation saved');
     } else {
