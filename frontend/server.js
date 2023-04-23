@@ -404,12 +404,16 @@ app.post('/tavern-character', upload.single('image'), async (req, res) => {
       // import the tavern character from the image file
       _json = await import_tavern_character(file.path, char_id);
     } else if (file.mimetype === 'application/json') {
-      _json = JSON.parse(await fs.promises.readFile(path.join(CHARACTER_FOLDER, file.filename), 'utf-8'));
+      // use fs.copyFile to copy the file from the temp folder to the destination folder
+      const filename = secure_filename(`${char_id}.json`);
+      const filepath = path.join(CHARACTER_FOLDER, filename);
+      await fs.promises.copyFile(file.path, filepath);
+      _json = JSON.parse(await fs.promises.readFile(filepath, 'utf-8'));
       _json.char_id = char_id;
       _json.avatar = 'default.png';
-
+    
       // Save the updated JSON back to the file
-      await fs.promises.writeFile(path.join(CHARACTER_FOLDER, file.filename), JSON.stringify(_json));
+      await fs.promises.writeFile(filepath, JSON.stringify(_json)); // Use 'filepath' instead of 'path.join(CHARACTER_FOLDER, file.filename)'
     }
   } catch (error) {
     console.error(`Error saving character: ${error}`);
