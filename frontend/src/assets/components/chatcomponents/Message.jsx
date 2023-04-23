@@ -1,11 +1,12 @@
 import React, {useRef, useState, useEffect} from 'react';
 import ReactMarkdown from 'react-markdown';
 import { FiArrowDown, FiArrowUp, FiCheck, FiEdit, FiRefreshCw, FiTrash2 } from "react-icons/fi";
+import { AiOutlineEye } from "react-icons/ai";
 import TextareaAutosize from 'react-textarea-autosize';
+import { convertUnixTimestampToDateTime } from '../miscfunctions';
 
-function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages, handleOpenUserProfile, branchingEnabled }) {
+function Message({ message, index, editedMessageIndex, handleEditMessage, handleTextEdit, handleMessageKeyDown, handleMoveUp, handleMoveDown, delMessage, handleReneration, handleOpenCharacterProfile, selectedCharacter, messages, handleOpenUserProfile, branchingEnabled, isSeen }) {
   const editedMessageRef = useRef(null);
-  
   const isTyping = message.text.includes("is typing");
 
   return (
@@ -26,7 +27,7 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
             <button className="message-button" id={'regenerate'} onClick={() => handleReneration()} title={'Regenerate Message'}><FiRefreshCw/></button>
           )}
         </div>
-        <p className="sender-name m-0 inline-flex items-end font-bold mt-4">{message.sender}</p>
+        <p className="sender-name m-0 inline-flex items-end font-bold mt-4">{message.sender}<p className='opacity-50 ml-1'>{convertUnixTimestampToDateTime(message.timestamp)}</p>{isSeen && <AiOutlineEye className="mb-1 ml-1 opacity-50"/>}</p>
         {editedMessageIndex === index ? (
           <div className="flex items-center flex-wrap w-full">
             <TextareaAutosize

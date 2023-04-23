@@ -106,7 +106,7 @@ export function separateWords(text) {
 
 export function convertToReadableDateTime(inputString) {
   const regex = /(\D+)_+(\d+)/;
-  const match = inputString.match(regex);
+  const match = inputString.toString().match(regex);
 
   if (match) {
     const namePart = match[1];
@@ -130,4 +130,15 @@ export function convertToReadableDateTime(inputString) {
   }
 
   return inputString;
+}
+
+export function convertUnixTimestampToDateTime(timestamp) {
+  const date = new Date(timestamp);
+  return date.toLocaleString(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "numeric"
+  });
 }

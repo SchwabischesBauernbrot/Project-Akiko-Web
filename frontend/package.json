@@ -4,20 +4,20 @@
   "version": "0.9.3",
   "type": "module",
   "scripts": {
-    "base": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && python server.py\"",
-    "base-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && python server.py --listen\"",
-    "caption": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && python server.py --enable-modules=caption\"",
-    "caption-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && python server.py --enable-modules=caption --listen\"",
-    "classify": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && python server.py --enable-modules=classify\"",
-    "classify-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && python server.py --enable-modules=classify --listen\"",
-    "full": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && python server.py --enable-modules=caption,classify\"",
-    "full-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && python server.py --enable-modules=caption,classify --listen\"",
-    "custom": "concurrently --kill-others-on-fail -- \"npm run server\" \"vite --host\" \"cd ../backend && python server.py\"",
+    "base": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r requirements.txt && python server.py\"",
+    "base-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r requirements.txt && python server.py --listen\"",
+    "caption": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r requirements.txt && python server.py --enable-modules=caption\"",
+    "caption-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r requirements.txt && python server.py --enable-modules=caption --listen\"",
+    "classify": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r requirements.txt && python server.py --enable-modules=classify\"",
+    "classify-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r requirements.txt && python server.py --enable-modules=classify --listen\"",
+    "full": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r requirements.txt && python server.py --enable-modules=caption,classify\"",
+    "full-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r requirements.txt && python server.py --enable-modules=caption,classify --listen\"",
+    "custom": "concurrently --kill-others-on-fail -- \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r requirements.txt && python server.py\"",
     "predeploy": "npm run build",
     "build": "vite build",
     "preview": "vite preview",
     "server": "node server.js"
-  },  
+  },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
     "autoprefixer": "^10.4.14",
@@ -42,6 +42,7 @@
     "react-select": "^5.7.1",
     "react-textarea-autosize": "^8.4.1",
     "redux": "^4.2.1",
+    "selfsigned": "^2.1.1",
     "socket.io-client": "^4.6.1",
     "styled-components": "^5.3.8"
   },
@@ -51,6 +52,7 @@
     "@vitejs/plugin-react": "^3.1.0",
     "concurrently": "^8.0.1",
     "tailwindcss": "^3.3.1",
-    "vite": "^4.1.0"
+    "vite": "^4.1.0",
+    "vite-plugin-mkcert": "^1.14.0"
   }
 }

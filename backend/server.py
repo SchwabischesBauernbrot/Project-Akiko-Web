@@ -1,6 +1,7 @@
 import datetime
 from functools import wraps
 import io
+import ssl
 from flask import Flask, jsonify, request, render_template_string, abort, send_file, send_from_directory
 from flask_cors import CORS, cross_origin
 import argparse
@@ -23,6 +24,7 @@ import whisper
 import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.speech import SpeechConfig, SpeechSynthesisOutputFormat, SpeechSynthesizer
 from azure.cognitiveservices.speech.audio import AudioOutputConfig
+from flask_sslify import SSLify
 
 colorama_init()
 # Constants
@@ -147,6 +149,8 @@ if 'text' in modules:
 # Flask init
 app = Flask(__name__)
 cors = CORS(app) # allow cross-domain requests
+sslify = SSLify(app) # force https
+
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
 app.config['SETTINGS_FOLDER'] = '../frontend/src/shared_data/'
@@ -156,7 +160,7 @@ app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_i
 app.config['USER_IMAGES_FOLDER'] = '../frontend/src/shared_data/user_avatars/'
 app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
@@ -1311,5 +1315,5 @@ if args.share:
     else:
         cloudflare = _run_cloudflared(port)
     print("Running on", cloudflare)
-
-app.run(host=host, port=port, debug=True)
+    
+app.run(host=host, port=port, ssl_context='adhoc')  # Add the ssl_context parameter

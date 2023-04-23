@@ -37,6 +37,7 @@ const TextToSpeech = ({ character }) => {
             await sendCharacterSpeech({ char_id: character.char_id, azureTTSName: voiceName, prosodyRate, prosodyPitch }, character.char_id);
             localStorage.setItem('speech_key', speechKey);
             localStorage.setItem('service_region', speechRegion);
+            localStorage.setItem('ttsType', 'AzureTTS');
         }
         if (character && dataFetched) saveData();
     }, [voiceName, prosodyRate, prosodyPitch, speechKey, speechRegion, character, dataFetched]);

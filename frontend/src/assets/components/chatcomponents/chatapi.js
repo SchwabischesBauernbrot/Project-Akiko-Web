@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { createSsml } from '../miscfunctions';
+import { getCharacterSpeech } from '../api';
 
-const API_URL = `${window.location.protocol}//${window.location.hostname}:5100/api`;
+const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+const API_URL = `${CURRENT_URL}/v1`;
+const JS_API = `${CURRENT_URL}/api`;
 const AUDIO_LOCATION = 'src/audio'
 const kobold_defaults = {
   "max_context_length": 2048,
@@ -254,6 +257,30 @@ const akiko_defaults = {
     }
   }
 
+  export async function sendElevenTTS(text, charId) {
+    let characterTTS = await getCharacterSpeech(charId)
+    try {
+
+      const response = await axios.post(
+        `${JS_API}/tts/generate/`,
+        {
+          prompt : text,
+          stability : stability,
+          voice_id: voiceId,
+          similarity_boost: similarityBoost,
+        },
+        {
+          responseType: 'text',
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
   function playAudio(audioFile) {
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;
@@ -261,17 +288,40 @@ const akiko_defaults = {
   }
 
   export async function generate_Speech(response, emotion, currentCharacter) {
+    let audioFile = null;
     if(!response) return;
     if(!emotion) emotion = 'neutral';
-    if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
-      console.log('No Azure Speech Key or Region set.');
-      alert('No Azure Speech Key or Region set.');
+    if(localStorage.getItem('ttsType') === 'ElevenTTS'){
+      audioFile = await sendElevenTTS(response, currentCharacter.char_id);
       return;
     }
-    const speech_key = localStorage.getItem('speech_key');
-    const service_region = localStorage.getItem('service_region');
-    const ssml = await createSsml(response, emotion, currentCharacter.char_id);
-    const audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
+    if(localStorage.getItem('ttsType') === 'AzureTTS'){
+      if(localStorage.getItem('speech_key') === null || localStorage.getItem('service_region') === null){
+        console.log('No Azure Speech Key or Region set.');
+        alert('No Azure Speech Key or Region set.');
+        return;
+      }
+      const speech_key = localStorage.getItem('speech_key');
+      const service_region = localStorage.getItem('service_region');
+      const ssml = await createSsml(response, emotion, currentCharacter.char_id);
+      audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
+      if(audioFile){
+        playAudio(audioFile);
+      }
+      return;
+    }
+    if(localStorage.getItem('ttsType') === 'GoogleTTS'){
+      audioFile = await sendGoogleTTS(response);
+      if(audioFile){
+        playAudio(audioFile);
+      }
+      return;
+    }
+  }
+
+  export async function generateElevenTTS(response, char_id) {
+    if(!response) return;
+    const audioFile = await sendElevenTTS(ssml);
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;
     audio.play();

@@ -14,3 +14,4 @@ git+https://github.com/huggingface/diffusers
 openai
 azure-cognitiveservices-speech
 openai-whisper
+Flask-SSLify

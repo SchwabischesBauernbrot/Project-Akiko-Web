@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,6 +20,8 @@ const upload = multer({ dest: 'uploads/' });
 const CHARACTER_FOLDER = './src/shared_data/character_info/';
 const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
 const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
+const AUDIO_LOCATION = './src/audio/';
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 
 function allowed_file(filename) {
     const allowed_extensions = ['png', 'jpg', 'jpeg', 'gif'];
@@ -61,6 +64,15 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+
+/*
+############################################
+##                                        ##
+##          CHARACTER ROUTES              ##
+##                                        ##
+############################################
+*/
+
 // GET /api/characters
 app.get('/characters', (req, res) => {
     const characters = [];
@@ -175,4 +187,71 @@ app.put('/characters/:char_id', upload.single('avatar'), (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+
+/*
+############################################
+##                                        ##
+##             TTS ROUTES                 ##
+##                                        ##
+############################################
+*/
+const ELEVENLABS_ENDPOINT = 'https://api.elevenlabs.io/v1';
+// FETCH VOICE IDS
+app.get('/tts/fetchvoices/', async (req, res) => {
+  try {
+    const response = await axios.get(`${ELEVENLABS_ENDPOINT}/voices`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ELEVENLABS_API_KEY,
+      },
+    });
+
+    const voice_id = response.data.voices[0].voice_id;
+    res.send(voice_id);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// STREAMING AUDIO
+app.post('/tts/generate/:voice_id', async (req, res) => {
+  try {
+    const voice_id = req.params.voice_id;
+    const prompt = req.params.prompt;
+    const stability = req.params.stability;
+    const similarity_boost = req.params.similarity_boost;
+
+    const payload = {
+      text: prompt,
+      voice_settings: {
+        stability: stability,
+        similarity_boost: similarity_boost,
+      },
+    };
+
+    const response = await axios.post(
+      `${ELEVENLABS_ENDPOINT}/text-to-speech/${voice_id}`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ELEVENLABS_API_KEY,
+        },
+        responseType: 'arraybuffer',
+      }
+    );
+
+    const date = new Date();
+    const fileName = `${date.getTime()}.mp3`;
+    const audioFilePath = path.join(__dirname, fileName);
+    fs.writeFileSync(audioFilePath, response.data);
+
+    res.send(fileName);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
