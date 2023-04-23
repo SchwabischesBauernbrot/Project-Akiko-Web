@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createSsml } from '../miscfunctions';
 import { getCharacterSpeech } from '../api';
+import { Configuration, OpenAIApi } from "openai"; // use default import syntax
 
 const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const API_URL = `${CURRENT_URL}/v1`;
@@ -161,6 +162,8 @@ const akiko_defaults = {
   }
   
   export async function characterTextGen(character, history, endpoint, endpointType, image, configuredName) {
+    let response;
+    let generatedText;
     let customSettings = null;
     let hordeModel = null;
     if(localStorage.getItem('generationSettings') !== null){
@@ -190,9 +193,13 @@ const akiko_defaults = {
     const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
     const convo = 'Current Conversation:\n' + history + (imgText ? imgText : '') +'\n';
     const createdPrompt = basePrompt + convo + character.name + ':';
-    const response = await axios.post(API_URL + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings, hordeModel: hordeModel ? hordeModel : 'PygmalionAI/pygmalion-6b', configuredName: configuredName ? configuredName : 'You'});
-
-    const generatedText = response.data.results[0];
+    if(endpointType !== 'OAI'){
+      response = await axios.post(JS_API + `/textgen/${endpointType}`, { endpoint: endpoint, prompt: createdPrompt, settings: customSettings, hordeModel: hordeModel ? hordeModel : 'PygmalionAI/pygmalion-6b', configuredName: configuredName ? configuredName : 'You'});
+      generatedText = response.data.results[0];
+    }else{
+      response = await genOAI(endpoint, configuredName, createdPrompt, customSettings);
+      generatedText = response;
+    }
     if(endpointType !== 'OAI') {
       const parsedText = parseTextEnd(generatedText.text);
       const responseText = parsedText[0] !== undefined ? parsedText[0] : '';
@@ -254,6 +261,30 @@ const akiko_defaults = {
       }
     } catch (error) {
       console.error('Error:', error.message);
+    }
+  }
+
+  async function genOAI(key, configuredName, prompt, settings) {
+    let response;
+    // Create a configuration object with your key
+    const configuration = new Configuration({
+      apiKey: key
+    });
+
+    // Create an openaiApi object with your configuration and headers
+    const openaiApi = new OpenAIApi(configuration);
+    try{
+      response = await openaiApi.createCompletion({
+        model: 'text-davinci-003',
+        prompt: prompt,
+        temperature: settings.temperature,
+        max_tokens: settings.max_tokens,
+        stop: [`${configuredName}:`],
+      });
+      return response.data.choices[0].text;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   }
 

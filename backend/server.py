@@ -577,6 +577,7 @@ def textgen(endpointType):
         response_half = raw_reply.split(data['prompt'])[1]
         print(response_half)
         return jsonify(response_half)
+    
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
@@ -597,6 +598,7 @@ def textgen(endpointType):
             return jsonify(results)
         else:
             print('There was no response.')
+            
     elif(endpointType == 'Horde'):
         if(data['endpoint'] == ''):
             api_key = 0000000000
