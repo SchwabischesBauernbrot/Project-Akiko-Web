@@ -10,6 +10,11 @@ import axios from 'axios';
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { v4 as uuidv4 } from 'uuid';
 import { Configuration, OpenAIApi } from "openai"; // use default import syntax
+import extract from 'png-chunks-extract';
+import PNGtext from 'png-chunk-text';
+import encode from 'png-chunks-encode';
+import { PNG } from 'pngjs';
+import base64 from 'base-64';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,6 +34,7 @@ const AUDIO_OUTPUT = './src/audio/';
 const HORDE_API_URL = 'https://aihorde.net/api/';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
+const CHARACTER_EXPORT_FOLDER = './src/shared_data/exports/';
 function allowed_file(filename) {
     const allowed_extensions = ['png', 'jpg', 'jpeg', 'gif'];
     const extension = path.extname(filename).slice(1).toLowerCase();
@@ -38,7 +44,9 @@ function allowed_file(filename) {
 function secure_filename(filename) {
     return filename.replace(/[^a-zA-Z0-9.\-_]/g, '_');
 }
-  
+app.use(express.urlencoded({ extended: true }));
+app.use(upload.none());
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.resolve(__dirname, 'dist')));
 
@@ -325,6 +333,210 @@ app.route('/conversation/:conversation_name')
       }
   });
 
+  async function import_tavern_character(img_url, char_id) {
+    try {
+      let format;
+      if (img_url.indexOf('.webp') !== -1) {
+        format = 'webp';
+      } else {
+        format = 'png';
+      }
+  
+      let decoded_string;
+      switch (format) {
+        case 'webp':
+          const exif_data = await ExifReader.load(fs.readFileSync(img_url));
+          const char_data = exif_data['UserComment']['description'];
+          if (char_data === 'Undefined' && exif_data['UserComment'].value && exif_data['UserComment'].value.length === 1) {
+            decoded_string = exif_data['UserComment'].value[0];
+          } else {
+            decoded_string = char_data;
+          }
+          break;
+        case 'png':
+          const buffer = fs.readFileSync(img_url);
+          const chunks = extract(buffer);
+  
+          const textChunks = chunks.filter(function (chunk) {
+            return chunk.name === 'tEXt';
+          }).map(function (chunk) {
+            return PNGtext.decode(chunk.data);
+          });
+          decoded_string = Buffer.from(textChunks[0].text, 'base64').toString('utf8');
+          break;
+        default:
+          break;
+      }
+  
+      const _json = JSON.parse(decoded_string);
+  
+      const outfile_name = `${char_id}`;
+      const characterData = {
+        char_id: char_id,
+        name: _json.name,
+        description: _json.description,
+        personality: _json.personality,
+        first_mes: _json.first_mes,
+        mes_example: _json.mes_example,
+        scenario: _json.scenario,
+        avatar: `${outfile_name}.png`,
+      };
+  
+      // use fs.promises.writeFile to write the JSON file
+      await fs.promises.writeFile(`${CHARACTER_FOLDER}${outfile_name}.json`, JSON.stringify(characterData));
+  
+      return characterData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+app.post('/tavern-character', upload.single('image'), async (req, res) => {
+  const char_id = req.body.char_id;
+  const file = req.file;
+
+  let _json;
+
+  try {
+    if (file.mimetype === 'image/png' || file.mimetype === 'image/webp') {
+      // use fs.copyFile to copy the file from the temp folder to the destination folder
+      const filename = secure_filename(`${char_id}.png`);
+      const filepath = path.join(CHARACTER_IMAGES_FOLDER, filename);
+      await fs.promises.copyFile(file.path, filepath);
+      // import the tavern character from the image file
+      _json = await import_tavern_character(file.path, char_id);
+    } else if (file.mimetype === 'application/json') {
+      _json = JSON.parse(await fs.promises.readFile(path.join(CHARACTER_FOLDER, file.filename), 'utf-8'));
+      _json.char_id = char_id;
+      _json.avatar = 'default.png';
+
+      // Save the updated JSON back to the file
+      await fs.promises.writeFile(path.join(CHARACTER_FOLDER, file.filename), JSON.stringify(_json));
+    }
+  } catch (error) {
+    console.error(`Error saving character: ${error}`);
+    return res.status(500).json({ error: 'Character card failed to import' });
+  }
+
+  res.json(_json);
+});
+
+function export_tavern_character(char_id) {
+  // Set the file name based on the character id
+  let outfile_name = `${char_id}`;
+
+  // Read the character info from a JSON file
+  let character_info = JSON.parse(fs.readFileSync(path.join(CHARACTER_FOLDER, `${outfile_name}.json`), 'utf8'));
+
+  // Create an object containing the character information to export
+  let reverted_char_data = {
+    name: character_info['name'],
+    description: character_info['description'],
+    personality: character_info['personality'],
+    scenario: character_info["scenario"],
+    first_mes: character_info["first_mes"],
+    mes_example: character_info["mes_example"],
+    metadata: {
+      version: '1.0.0',
+      editor: 'ProjectAkiko',
+      date: new Date().toISOString()
+    }
+  };
+
+  // Load the image in any format and convert to PNG
+  let image;
+  try {
+    let png = new PNG();
+    // Pass a regular function to parse the image and bind it to png
+    image = png.parse(fs.readFileSync(path.join(CHARACTER_IMAGES_FOLDER, `${outfile_name}.png`)), function(err) {
+      // Handle any errors
+      if (err) {
+        console.error(err);
+        return;
+      }
+      // Set the exposeChunks option
+      this.exposeChunks = true;
+    }.bind(png));
+    // Listen for the 'parsed' event
+    image.on('parsed', function() {
+      // Now you can access the image data
+      console.log(image);
+      // Convert the object to a JSON string and then encode as base64
+      let json_data = JSON.stringify(reverted_char_data);
+      let base64_encoded_data = Buffer.from(json_data).toString('base64');
+
+      // Create a custom chunk with the encoded data
+      let custom_chunk = {
+        name: 'chara',
+        data: Buffer.from(base64_encoded_data)
+      };
+
+      // Encode the image chunks with the custom chunk
+      let encoded_chunks = encode(image.chunks.concat(custom_chunk));
+
+      // Save the modified image to the target location
+      fs.writeFileSync(path.join(CHARACTER_EXPORT_FOLDER, `${outfile_name}.png`), encoded_chunks);
+
+      return;
+    });
+  } catch (err) {
+    console.error(err);
+    return;
+  }
+}
+app.get('/tavern-character/:char_id', (req, res) => {
+  // Get the character id from the request parameters
+  let char_id = req.params.char_id;
+
+  // Try to export the character
+  try {
+    export_tavern_character(char_id);
+  } catch (e) {
+    // If there is an error, log it and send a response with status 500
+    console.error(`Error saving character: ${e}`);
+    res.status(500).json({ error: 'Character card failed to export' });
+    return;
+  }
+
+  // If successful, send a response with status 200
+  res.status(200).json({ success: 'Character card exported' });
+});
+
+app.post('/tavern-character/json-export', (req, res) => {
+  // Define the fields to get from the form
+  let fields = {
+    char_id: 'char_id',
+    name: 'name',
+    personality: 'personality',
+    description: 'description',
+    scenario: 'scenario',
+    first_mes: 'first_mes',
+    mes_example: 'mes_example'
+  };
+
+  // Create an object with the character information
+  let character = {};
+  for (let [field_key, field_value] of Object.entries(fields)) {
+    character[field_value] = req.body[field_key];
+  }
+
+  try {
+    // Convert the object to a JSON string
+    let json_data = JSON.stringify(character);
+
+    // Set the file name based on the character name
+    let outfile_name = `${character['name']}.AkikoJSON.json`;
+
+    // Send the JSON data as a file attachment
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename=${outfile_name}`);
+    res.send(json_data);
+  } catch (err) {
+    // Handle any errors
+    console.error(`Error saving character: ${err}`);
+    res.status(500).json({ error: 'Character JSON failed to export' });
+  }
+});
 /*
 ############################################
 ##                                        ##
@@ -365,26 +577,28 @@ app.get('/advanced-character/:char_id/:emotion', (req, res) => {
     }
 });
 
-app.post('/advanced-character/:char_id/:emotion', (req, res) => {
-    const { char_id, emotion } = req.params;
-    const char_folder = path.join(CHARACTER_ADVANCED_FOLDER, char_id);
-    if (!fs.existsSync(char_folder)) {
-        fs.mkdirSync(char_folder);
-    }
-    const emotion_file = req.files?.emotion;
-    if (!emotion_file) {
-        res.status(500).json({ error: 'No emotion image file found' });
-        return;
-    }
-    const emotion_file_name = `${emotion}.png`;
-    emotion_file.mv(path.join(char_folder, emotion_file_name), err => {
-        if (err) {
-            res.status(500).json({ error: 'An error occurred while saving the emotion image file.' });
-        } else {
-            const imagePath = path.join(CHARACTER_ADVANCED_FOLDER, char_id, emotion_file_name);
-            res.json({ path: imagePath });
-        }
-    });
+app.post('/advanced-character/:char_id/:emotion', upload.single('emotion'), (req, res) => {
+  const { char_id, emotion } = req.params;
+  const char_folder = path.join(CHARACTER_ADVANCED_FOLDER, char_id);
+  if (!fs.existsSync(char_folder)) {
+      fs.mkdirSync(char_folder);
+  }
+  const emotion_file = req.file;
+  if (!emotion_file) {
+      res.status(500).json({ error: 'No emotion image file found' });
+      return;
+  }
+  // use the char_id and emotion as the filename
+  const emotion_file_name = `${emotion}.png`;
+  const emotion_file_path = path.join(char_folder, emotion_file_name);
+  // use fs.copyFile to copy the file from the temp folder to the destination folder
+  fs.copyFile(emotion_file.path, emotion_file_path, err => {
+      if (err) {
+          res.status(500).json({ error: 'An error occurred while saving the emotion image file.' });
+      } else {
+          res.json({ path: emotion_file_path });
+      }
+  });
 });
 
 app.get('/advanced-character/:char_id', (req, res) => {
@@ -732,7 +946,6 @@ app.post('/text/status', async (req, res) => {
       case 'Kobold':
         response = await axios.get(`${endpointUrl}/api/v1/model`);
         if (response.status === 200) {
-          console.log(response.data.result);
           res.json(response.data.result);
         } else {
           res.status(404).json({ error: 'Kobold endpoint is not responding.' });

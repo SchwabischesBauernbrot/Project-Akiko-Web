@@ -633,37 +633,6 @@ def textgen(endpointType):
         return jsonify(results)
     return jsonify({'error': 'Invalid endpoint type or endpoint.'}), 404
 
-@app.route('/api/textgen/status', methods=['POST'])
-@cross_origin()
-def textgen_status():
-    data = request.get_json()
-    endpoint = data['endpoint']
-    endpointType = data['endpointType']
-    if(data['endpoint'].endswith('/')): endpoint = data['endpoint'][:-1]
-    if(endpointType == 'Kobold'):
-        try:
-            response = requests.get(f"{endpoint}/api/v1/model")
-            if response.status_code == 200:
-                results = response.json()
-                return jsonify(results)
-        except:
-            return jsonify({'error': 'Kobold endpoint is not responding.'}), 404
-    elif(endpointType == 'Ooba'):
-        return jsonify({'error': 'Ooba is not yet supported.'}), 500
-    elif(endpointType == 'OAI'):
-        return jsonify({'error': 'OAI is not yet supported.'}), 500
-    elif(endpointType == 'Horde'):
-        response = requests.get(HORDE_API_URL + f"v2/status/heartbeat")
-        if response.status_code == 200:
-            return jsonify({'result': 'Horde heartbeat is steady.'})
-        return jsonify({'error': 'Horde heartbeat failed.'}), 500
-    elif(endpointType == 'AkikoBackend'):
-        if(torch.cuda.is_available()):
-            results = {'result': text_model}
-        else:
-            results = {'error': 'No Torch detected.'}
-        return jsonify(results)
-
 ##############################################
 ##### END OF TXT GEN API HANDLING ROUTES #####
 ##############################################

@@ -19,7 +19,8 @@ export default defineConfig({
         target: 'http://localhost:5001',
         changeOrigin: true,
         secure: false, // Allow self-signed certificates
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        timeout: 10000
       },
       '/v1': {
         target: 'https://127.0.0.1:5100/api', // Use HTTPS
