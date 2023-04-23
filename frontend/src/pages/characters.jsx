@@ -14,7 +14,33 @@ const Characters = () => {
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [characterToDelete, setCharacterToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const charactersPerPage = 12;
 
+  // Calculate the total number of pages
+  const filteredCharacters = characters.filter((character) => {
+    return Object.values(character).some((value) =>
+      value
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const totalPages = Math.ceil(filteredCharacters.length / charactersPerPage);
+
+  // Get the characters for the current page
+  const getCurrentPageCharacters = () => {
+    const startIndex = (currentPage - 1) * charactersPerPage;
+    const endIndex = startIndex + charactersPerPage;
+    return filteredCharacters.slice(startIndex, endIndex);
+  };
+
+  // Update the current page when the user clicks a page number button
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  
   const handleImageUpload = async (files) => {
     const filesArray = Array.from(files);
   
@@ -192,19 +218,21 @@ const Characters = () => {
       <div className="w-full h-full grid place-content-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20 mx-auto">
           {characters &&
-            characters
-              .filter((character) => {
-                return Object.values(character).some((value) =>
-                  value
-                    .toString()
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                );
-              })
-              .map((character) => (
-                <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter}/>
+            getCurrentPageCharacters().map((character) => (
+              <CharacterInfoBox key={character.char_id} Character={character} openModal={openModal} delCharacter={delCharacter} selectCharacter={selectCharacter} />
           ))}
         </div>
+      </div>
+      <div className="flex items-center justify-center mt-6 mb-3">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            className={`bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 ${currentPage === index + 1 ? "bg-blue-600 text-selected-text" : "bg-selected-light text-selected"}`}
+            onClick={() => handlePageClick(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
       {showForm && (
         <CharacterForm

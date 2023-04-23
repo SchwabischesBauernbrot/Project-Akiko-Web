@@ -74,6 +74,14 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+let up = 'uploads/';
+
+// Check if the directory exists
+if (!fs.existsSync(up)) {
+  // Create the directory
+  fs.mkdirSync(up);
+}
+
 // Signal handling
 process.on('SIGINT', () => {
   console.log('Closing server...');
