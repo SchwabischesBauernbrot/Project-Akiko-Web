@@ -860,33 +860,43 @@ app.post('/textgen/:endpointType', async (req, res) => {
     }
     switch (endpointType) {
       case 'Kobold':
-        // Update the payload for the Kobold endpoint
-        const koboldPayload = { prompt, ...settings };
-        response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
-        if (response.status === 200) {
-          // Get the results from the response
-          results = response.data;
-          // If the results are an array, join them into a single string
-          if (Array.isArray(results)) {
-            results = results.join(' ');
+        try{
+          // Update the payload for the Kobold endpoint
+          const koboldPayload = { prompt, ...settings };
+          response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
+          if (response.status === 200) {
+            // Get the results from the response
+            results = response.data;
+            // If the results are an array, join them into a single string
+            if (Array.isArray(results)) {
+              results = results.join(' ');
+            }
+            // Send the results back to the client
+            res.json(results);
           }
-          // Send the results back to the client
-          res.json(results);
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: 'An error occurred while generating text.' });
         }
         break;
 
       case 'Ooba':
-        const params = { prompt };
-        const oobaPayload = JSON.stringify([prompt, params]);
+        try{
+          const params = { prompt };
+          const oobaPayload = JSON.stringify([prompt, params]);
 
-        // Send a request to the Ooba endpoint with the payload
-        response = await axios.post(`${endpoint}/run/textgen`, {
-          data: [oobaPayload]
-        });
-        // Extract the raw reply from the response
-        const rawReply = response.data.data[0];
-        const responseHalf = rawReply.split(prompt)[1];
-        res.json(responseHalf);
+          // Send a request to the Ooba endpoint with the payload
+          response = await axios.post(`${endpoint}/run/textgen`, {
+            data: [oobaPayload]
+          });
+          // Extract the raw reply from the response
+          const rawReply = response.data.data[0];
+          const responseHalf = rawReply.split(prompt)[1];
+          res.json(responseHalf);
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: 'An error occurred while generating text.' });
+        }
         break;
       case 'OAI':
         // Create a configuration object with your key
@@ -911,31 +921,36 @@ app.post('/textgen/:endpointType', async (req, res) => {
         break;
   
       case 'Horde':
-        const hordeKey = endpoint ? endpoint : '0000000000';
-        const payload = { prompt, params: settings, models: [hordeModel] };
-        response = await axios.post(
-          `${HORDE_API_URL}v2/generate/text/async`,
-          payload,
-          { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
-        );
-        // Use the received taskId from the API response
-        const taskId = response.data.id;
-      
-        while (true) {
-          await new Promise(resolve => setTimeout(resolve, 5000));
-          const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
-            headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
-          });
-          const { done } = statusCheck.data;
-          if (done) {
-            const getText = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
+        try{
+          const hordeKey = endpoint ? endpoint : '0000000000';
+          const payload = { prompt, params: settings, models: [hordeModel] };
+          response = await axios.post(
+            `${HORDE_API_URL}v2/generate/text/async`,
+            payload,
+            { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
+          );
+          // Use the received taskId from the API response
+          const taskId = response.data.id;
+        
+          while (true) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
               headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
             });
-            const generatedText = getText.data.generations[0];
-            results = { results: [generatedText] };
-            res.json(results);
-            break;
+            const { done } = statusCheck.data;
+            if (done) {
+              const getText = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
+                headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
+              });
+              const generatedText = getText.data.generations[0];
+              results = { results: [generatedText] };
+              res.json(results);
+              break;
+            }
           }
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: 'An error occurred while generating text.' });
         }
         break;
 
@@ -969,10 +984,14 @@ app.post('/text/status', async (req, res) => {
 
     switch (endpointType) {
       case 'Kobold':
-        response = await axios.get(`${endpointUrl}/api/v1/model`);
-        if (response.status === 200) {
-          res.json(response.data.result);
-        } else {
+        try{
+          response = await axios.get(`${endpointUrl}/api/v1/model`);
+          if (response.status === 200) {
+            res.json(response.data.result);
+          } else {
+            res.status(404).json({ error: 'Kobold endpoint is not responding.' });
+          }
+        } catch (error) {
           res.status(404).json({ error: 'Kobold endpoint is not responding.' });
         }
         break;
