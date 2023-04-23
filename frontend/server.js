@@ -608,74 +608,163 @@ app.get('/user-avatar', (req, res) => {
 });
 
 app.post('/textgen/:endpointType', async (req, res) => {
-  let { endpointType } = req.params;
-  const { endpoint, configuredName, prompt, settings, hordeModel } = req.body;
+  try {
+    let { endpointType } = req.params;
+    let { endpoint, configuredName, prompt, settings, hordeModel } = req.body;
 
-  let response;
-  let results;
+    let response;
+    let results;
 
-  if (endpoint.endsWith('/')) {
-    endpoint = endpoint.slice(0, -1);
-  }
-  if (endpoint.endsWith('/api')) {
-    endpoint = endpoint.slice(0, -4);
-  }
-  console.log(settings);
-  switch (endpointType) {
-    case 'Kobold':
-      // Update the payload for the Kobold endpoint
-      const koboldPayload = { prompt, ...settings };
-      response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
-      if (response.status === 200) {
-        // Get the results from the response
-        results = response.data;
-        res.json(results);
-      }
-      break;
+    if (endpoint.endsWith('/')) {
+      endpoint = endpoint.slice(0, -1);
+    }
+    if (endpoint.endsWith('/api')) {
+      endpoint = endpoint.slice(0, -4);
+    }
+    switch (endpointType) {
+      case 'Kobold':
+        // Update the payload for the Kobold endpoint
+        const koboldPayload = { prompt, ...settings };
+        response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
+        if (response.status === 200) {
+          // Get the results from the response
+          results = response.data;
+          // If the results are an array, join them into a single string
+          if (Array.isArray(results)) {
+            results = results.join(' ');
+          }
+          // Send the results back to the client
+          res.json(results);
+        }
+        break;
 
-    case 'Ooba':
-      const params = { prompt };
-      const oobaPayload = JSON.stringify([prompt, params]);
+      case 'Ooba':
+        const params = { prompt };
+        const oobaPayload = JSON.stringify([prompt, params]);
 
-      // Send a request to the Ooba endpoint with the payload
-      response = await axios.post(`${endpoint}/run/textgen`, {
-        data: [oobaPayload]
-      });
-      // Extract the raw reply from the response
-      const rawReply = response.data.data[0];
-      const responseHalf = rawReply.split(prompt)[1];
-      res.json(responseHalf);
-      break;
-    
-    case 'Horde':
-      const hordeKey = endpoint ? endpoint : '0000000000';
-      const taskId = uuidv4();
-      const payload = { prompt, params: settings, models: [hordeModel] };
-      response = await axios.post(
-        `${HORDE_API_URL}v2/generate/text/async`,
-        payload,
-        { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
-      );
-      while (true) {
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
-          headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
+        // Send a request to the Ooba endpoint with the payload
+        response = await axios.post(`${endpoint}/run/textgen`, {
+          data: [oobaPayload]
         });
-        const { done } = statusCheck.data;
-        if (done) {
-          const getText = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
+        // Extract the raw reply from the response
+        const rawReply = response.data.data[0];
+        const responseHalf = rawReply.split(prompt)[1];
+        res.json(responseHalf);
+        break;
+      case 'OAI':
+        // Create a configuration object with your key
+        const configuration = new Configuration({
+          apiKey: endpoint,
+        });
+    
+        // Create an openaiApi object with your configuration and headers
+        const openaiApi = new OpenAIApi(configuration);
+        try{
+          response = await openaiApi.createCompletion({
+            model: 'text-davinci-003',
+            prompt: prompt,
+            temperature: settings.temperature,
+            max_tokens: settings.max_tokens,
+            stop: [`${configuredName}:`],
+          });
+          res.json({ results: [response.data.choices[0].text]})
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+  
+      case 'Horde':
+        const hordeKey = endpoint ? endpoint : '0000000000';
+        const taskId = uuidv4();
+        const payload = { prompt, params: settings, models: [hordeModel] };
+        response = await axios.post(
+          `${HORDE_API_URL}v2/generate/text/async`,
+          payload,
+          { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
+        );
+        while (true) {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
             headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
           });
-          const generatedText = getText.data.generations[0];
-          results = { results: [generatedText] };
-          res.json(results);
-          break;
+          const { done } = statusCheck.data;
+          if (done) {
+            const getText = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
+              headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
+            });
+            const generatedText = getText.data.generations[0];
+            results = { results: [generatedText] };
+            res.json(results);
+            break;
+          }
         }
-      }
-      break;
+        break;
 
       default:
         res.status(404).json({ error: 'Invalid endpoint type or endpoint.' });
         break;
-}
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    if (error.isAxiosError) {
+      if (error.code === 'ECONNRESET') {
+        res.status(500).json({ error: 'Connection reset by the remote server. Please try again later.' });
+      } else {
+        res.status(500).json({ error: `Request error: ${error.message}` });
+      }
+    } else {
+      res.status(500).json({ error: 'An internal server error occurred.' });
+    }
+  }
+});
+
+app.post('/text/status', async (req, res) => {
+  const { endpoint, endpointType } = req.body;
+  let endpointUrl = endpoint;
+  if (endpoint.endsWith('/')) {
+    endpointUrl = endpoint.slice(0, -1);
+  }
+
+  try {
+    let response;
+
+    switch (endpointType) {
+      case 'Kobold':
+        response = await axios.get(`${endpointUrl}/api/v1/model`);
+        if (response.status === 200) {
+          console.log(response.data.result);
+          res.json(response.data.result);
+        } else {
+          res.status(404).json({ error: 'Kobold endpoint is not responding.' });
+        }
+        break;
+
+      case 'Ooba':
+        res.status(500).json({ error: 'Ooba is not yet supported.' });
+        break;
+
+      case 'OAI':
+        res.status(500).json({ error: 'OAI is not yet supported.' });
+        break;
+
+      case 'Horde':
+        response = await axios.get(`${HORDE_API_URL}v2/status/heartbeat`);
+        if (response.status === 200) {
+          res.json({ result: 'Horde heartbeat is steady.' });
+        } else {
+          res.status(500).json({ error: 'Horde heartbeat failed.' });
+        }
+        break;
+
+      case 'AkikoBackend':
+        res.status(500).json({ error: 'AkikoTextgen is not yet supported.' });
+        break;
+
+      default:
+        res.status(404).json({ error: 'Invalid endpoint type.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while processing the request.' });
+  }
 });
