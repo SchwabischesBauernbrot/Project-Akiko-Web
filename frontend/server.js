@@ -13,7 +13,7 @@ import { Configuration, OpenAIApi } from "openai"; // use default import syntax
 import extract from 'png-chunks-extract';
 import PNGtext from 'png-chunk-text';
 import encode from 'png-chunks-encode';
-import { PNG } from 'pngjs';
+import jimp from 'jimp';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -419,7 +419,7 @@ app.post('/tavern-character', upload.single('image'), async (req, res) => {
   res.json(_json);
 });
 
-function export_tavern_character(char_id) {
+async function export_tavern_character(char_id) {
   // Set the file name based on the character id
   let outfile_name = `${char_id}`;
 
@@ -442,46 +442,49 @@ function export_tavern_character(char_id) {
   };
 
   // Load the image in any format and convert to PNG
-  let image;
   try {
-    let png = new PNG();
-    // Pass a regular function to parse the image and bind it to png
-    image = png.parse(fs.readFileSync(path.join(CHARACTER_IMAGES_FOLDER, `${outfile_name}.png`)), function(err) {
-      // Handle any errors
-      if (err) {
-        console.error(err);
-        return;
-      }
-      // Set the exposeChunks option
-      this.exposeChunks = true;
-    }.bind(png));
-    // Listen for the 'parsed' event
-    image.on('parsed', function() {
-      // Now you can access the image data
-      console.log(image);
-      // Convert the object to a JSON string and then encode as base64
-      let json_data = JSON.stringify(reverted_char_data);
-      let base64_encoded_data = Buffer.from(json_data).toString('base64');
+    // Read the image and resize it as a PNG into the buffer
+    const rawImg = await jimp.read(path.join(CHARACTER_IMAGES_FOLDER, `${outfile_name}.png`));
+    const image = await rawImg.getBufferAsync(jimp.MIME_PNG);
 
-      // Create a custom chunk with the encoded data
-      let custom_chunk = {
-        name: 'chara',
-        data: Buffer.from(base64_encoded_data)
-      };
+    // Get the chunks
+    const chunks = extract(image);
+    const tEXtChunks = chunks.filter(chunk => chunk.create_date === 'tEXt');
 
-      // Encode the image chunks with the custom chunk
-      let encoded_chunks = encode(image.chunks.concat(custom_chunk));
+    // Remove all existing tEXt chunks
+    for (let tEXtChunk of tEXtChunks) {
+      chunks.splice(chunks.indexOf(tEXtChunk), 1);
+    }
+    // Add new chunks before the IEND chunk
+    const base64EncodedData = Buffer.from(JSON.stringify(reverted_char_data), 'utf8').toString('base64');
+    chunks.splice(-1, 0, PNGtext.encode('chara', base64EncodedData));
 
-      // Save the modified image to the target location
-      fs.writeFileSync(path.join(CHARACTER_EXPORT_FOLDER, `${outfile_name}.png`), encoded_chunks);
+    // Write the modified chunks into a new PNG file in the CHARACTER_EXPORT_FOLDER
+    fs.writeFileSync(path.join(CHARACTER_EXPORT_FOLDER, `${outfile_name}.png`), new Buffer.from(encode(chunks)));
 
-      return;
-    });
   } catch (err) {
     console.error(err);
     return;
   }
 }
+app.get('/tavern-character/:char_id', async (req, res) => {
+  // Get the character id from the request parameters
+  let char_id = req.params.char_id;
+
+  // Try to export the character
+  try {
+    await export_tavern_character(char_id);
+  } catch (e) {
+    // If there is an error, log it and send a response with status 500
+    console.error(`Error saving character: ${e}`);
+    res.status(500).json({ error: 'Character card failed to export' });
+    return;
+  }
+
+  // If successful, send a response with status 200
+  res.status(200).json({ success: 'Character card exported' });
+});
+
 function exportAsJson(character) {
   // Create an object containing the character information to export
   console.log(character);
@@ -504,23 +507,6 @@ function exportAsJson(character) {
 
   return jsonData;
 }
-app.get('/tavern-character/:char_id', (req, res) => {
-  // Get the character id from the request parameters
-  let char_id = req.params.char_id;
-
-  // Try to export the character
-  try {
-    export_tavern_character(char_id);
-  } catch (e) {
-    // If there is an error, log it and send a response with status 500
-    console.error(`Error saving character: ${e}`);
-    res.status(500).json({ error: 'Character card failed to export' });
-    return;
-  }
-
-  // If successful, send a response with status 200
-  res.status(200).json({ success: 'Character card exported' });
-});
 
 app.post('/tavern-character/json-export/:char_id', (req, res) => {
   // Get the character id from the request parameters
