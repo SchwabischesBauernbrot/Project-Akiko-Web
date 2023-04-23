@@ -717,3 +717,54 @@ app.post('/textgen/:endpointType', async (req, res) => {
     }
   }
 });
+
+app.post('/text/status', async (req, res) => {
+  const { endpoint, endpointType } = req.body;
+  let endpointUrl = endpoint;
+  if (endpoint.endsWith('/')) {
+    endpointUrl = endpoint.slice(0, -1);
+  }
+
+  try {
+    let response;
+
+    switch (endpointType) {
+      case 'Kobold':
+        response = await axios.get(`${endpointUrl}/api/v1/model`);
+        if (response.status === 200) {
+          console.log(response.data.result);
+          res.json(response.data.result);
+        } else {
+          res.status(404).json({ error: 'Kobold endpoint is not responding.' });
+        }
+        break;
+
+      case 'Ooba':
+        res.status(500).json({ error: 'Ooba is not yet supported.' });
+        break;
+
+      case 'OAI':
+        res.status(500).json({ error: 'OAI is not yet supported.' });
+        break;
+
+      case 'Horde':
+        response = await axios.get(`${HORDE_API_URL}v2/status/heartbeat`);
+        if (response.status === 200) {
+          res.json({ result: 'Horde heartbeat is steady.' });
+        } else {
+          res.status(500).json({ error: 'Horde heartbeat failed.' });
+        }
+        break;
+
+      case 'AkikoBackend':
+        res.status(500).json({ error: 'AkikoTextgen is not yet supported.' });
+        break;
+
+      default:
+        res.status(404).json({ error: 'Invalid endpoint type.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while processing the request.' });
+  }
+});

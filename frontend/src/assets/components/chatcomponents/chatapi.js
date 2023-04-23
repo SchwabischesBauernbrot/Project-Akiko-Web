@@ -234,10 +234,15 @@ const akiko_defaults = {
   };
 
   export async function getModelStatus() {
+    let result;
     var endpoint = localStorage.getItem('endpoint');
     var endpointType = localStorage.getItem('endpointType');
-    const response = await axios.post(API_URL + '/textgen/status', { endpoint: endpoint, endpointType: endpointType});
-    return response.data['result'];
+    const requestBody = {
+      endpoint: endpoint,
+      endpointType: endpointType
+    };
+    result = await axios.post(`${JS_API}/text/status`, requestBody);
+    return result.data;
   };
 
   export async function sendSSMLToAPI(ssml, speech_key, service_region) {
