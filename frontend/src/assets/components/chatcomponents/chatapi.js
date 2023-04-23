@@ -305,15 +305,18 @@ const akiko_defaults = {
       const service_region = localStorage.getItem('service_region');
       const ssml = await createSsml(response, emotion, currentCharacter.char_id);
       audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
+      if(audioFile){
+        playAudio(audioFile);
+      }
       return;
     }
     if(localStorage.getItem('ttsType') === 'GoogleTTS'){
       audioFile = await sendGoogleTTS(response);
+      if(audioFile){
+        playAudio(audioFile);
+      }
       return;
     }
-    const audio = new Audio();
-    audio.src = `${AUDIO_LOCATION}/${audioFile}`;
-    audio.play();
   }
 
   export async function generateElevenTTS(response, char_id) {
