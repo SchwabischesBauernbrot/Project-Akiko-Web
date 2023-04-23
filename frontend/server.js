@@ -21,9 +21,20 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 5001;
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.originalname);
+  }
+});
+
 app.use(cors());
 app.use(express.json());
-const upload = multer({ dest: 'uploads/' });
+
+const upload = multer({ storage: storage });
+
 const CHARACTER_FOLDER = './src/shared_data/character_info/';
 const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
 const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
@@ -34,15 +45,18 @@ const HORDE_API_URL = 'https://aihorde.net/api/';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
 const CHARACTER_EXPORT_FOLDER = './src/shared_data/exports/';
+
 function allowed_file(filename) {
-    const allowed_extensions = ['png', 'jpg', 'jpeg', 'gif'];
-    const extension = path.extname(filename).slice(1).toLowerCase();
-    return allowed_extensions.includes(extension);
+  const allowed_extensions = ['.png', '.jpg', '.jpeg', '.gif'];
+  const ext = path.extname(filename).toLowerCase();
+  return allowed_extensions.includes(ext);
 }
+
   
 function secure_filename(filename) {
     return filename.replace(/[^a-zA-Z0-9.\-_]/g, '_');
 }
+
 app.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV === 'production') {
@@ -75,6 +89,10 @@ process.on('SIGTERM', () => {
     console.log('Server closed');
     process.exit(0);
   });
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 /*
@@ -196,11 +214,6 @@ app.put('/characters/:char_id', upload.single('avatar'), (req, res) => {
   
     res.json({ message: 'Character updated successfully', avatar });
 });
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
 
 /*
 ############################################
