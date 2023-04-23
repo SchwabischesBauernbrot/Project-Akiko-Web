@@ -285,19 +285,10 @@ export async function exportNewCharacter(character) {
 }
 
 export async function exportJSON(character) {
-  const formData = new FormData();
-  formData.append('char_id', character.char_id);
-  formData.append('name', character.name);
-  formData.append('personality', character.personality);
-  formData.append('description', character.description);
-  formData.append('scenario', character.scenario);
-  formData.append('first_mes', character.first_mes);
-  formData.append('mes_example', character.mes_example);
-
-  const response = await axios.post(`${JS_API}/tavern-character/json-export`, formData, {
+  const response = await axios.post(`${JS_API}/tavern-character/json-export/${character.char_id}`, {
     responseType: 'blob',
   });
-
+  
   const blob = new Blob([response.data], { type: 'application/json' });
   const fileName = `${character.name}.AkikoJSON.json`;
 
