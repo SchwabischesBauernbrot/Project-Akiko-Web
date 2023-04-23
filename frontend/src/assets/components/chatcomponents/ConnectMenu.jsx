@@ -74,7 +74,6 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
     const options = [
         { value: 'Kobold', label: 'Kobold' },
         { value: 'Ooba', label: 'OobaTextUI' },
-        { value: 'AkikoBackend', label: 'AkikoTextgen' },
         { value: 'Horde', label: 'Horde' },
         { value: 'OAI', label: 'OpenAI' }
     ];
