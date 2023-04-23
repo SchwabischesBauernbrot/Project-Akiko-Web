@@ -51,8 +51,6 @@ After running it should boot you into Akiko.
 
 | NPM Script Name| Description |
 |------------------|-------------|
-| install          |Installs the required components for the base version of Akiko.|
-| install-full     |Installs the full requirements for running the entire Akiko feature list.|
 | base             |Runs the base version of Akiko, with server, frontend, and backend.|
 | base-remote      |Runs the base version of Akiko, with remote access enabled for server and frontend, and backend.|
 | caption          |Runs the caption module of Akiko, with server, frontend, and backend.|
