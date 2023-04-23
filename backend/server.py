@@ -1,14 +1,12 @@
 import datetime
 from functools import wraps
 import io
-import ssl
 from flask import Flask, jsonify, request, render_template_string, abort, send_file, send_from_directory
 from flask_cors import CORS, cross_origin
 import argparse
 import requests
 import unicodedata
 import time
-import sys
 from glob import glob
 import json
 import os
@@ -103,10 +101,6 @@ captioning_model = args.captioning_model if args.captioning_model else DEFAULT_C
 keyphrase_model = args.keyphrase_model if args.keyphrase_model else DEFAULT_KEYPHRASE_MODEL
 text_model = args.text_model if args.text_model else DEFAULT_TEXT_MODEL
 modules = args.enable_modules if args.enable_modules and len(args.enable_modules) > 0 else []
-
-if len(modules) == 0:
-    print(f'{Fore.RED}{Style.BRIGHT}You did not select any modules to run! Choose them by adding an --enable-modules option')
-    print(f'Example: --enable-modules=caption,summarize{Style.RESET_ALL}')
     
 if(len(modules) != 0):
     # Import modules
@@ -147,9 +141,11 @@ if 'text' in modules:
     text_transformer = AutoModelForCausalLM.from_pretrained(text_model, torch_dtype=torch.float16).to(device)
 
 # Flask init
-app = Flask(__name__)
+app = Flask('Akiko Python Backend')
 cors = CORS(app) # allow cross-domain requests
 sslify = SSLify(app) # force https
+app.config['DEBUG'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = False
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
@@ -160,8 +156,6 @@ app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_i
 app.config['USER_IMAGES_FOLDER'] = '../frontend/src/shared_data/user_avatars/'
 app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
-app.config['DEBUG'] = False
-app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
 app.config['GUIDE_FOLDER'] = '../frontend/src/guides/'
@@ -544,11 +538,12 @@ def get_discord_bot_config():
 ##### TEXT GEN API HANDLING #####
 #################################
 
-HORDE_API_URL = 'https://aihorde.net/api/'
+
 
 @app.route('/api/textgen/<endpointType>', methods=['POST'])
 @cross_origin()
 def textgen(endpointType):
+    HORDE_API_URL = 'https://aihorde.net/api/'
     data = request.get_json()
     endpoint = data['endpoint']
     configuredName = data['configuredName']
@@ -582,9 +577,7 @@ def textgen(endpointType):
         response_half = raw_reply.split(data['prompt'])[1]
         print(response_half)
         return jsonify(response_half)
-
-
-
+    
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
@@ -605,6 +598,7 @@ def textgen(endpointType):
             return jsonify(results)
         else:
             print('There was no response.')
+            
     elif(endpointType == 'Horde'):
         if(data['endpoint'] == ''):
             api_key = 0000000000
@@ -673,208 +667,6 @@ def textgen_status():
 ##############################################
 ##### END OF TXT GEN API HANDLING ROUTES #####
 ##############################################
-
-
-##################################
-##### BASIC CHARACTER ROUTES #####
-##################################
-
-
-@app.route('/api/characters', methods=['GET'])
-@cross_origin()
-def get_characters():
-    characters = []
-    # loop through all the character files and load the data
-    for filename in os.listdir(app.config['CHARACTER_FOLDER']):
-        if filename.endswith('.json'):
-            with open(os.path.join(app.config['CHARACTER_FOLDER'], filename)) as f:
-                character_data = json.load(f)
-                characters.append(character_data)
-    # return the list of characters as a JSON response
-    return jsonify(characters)
-
-
-@app.route('/api/characters', methods=['POST'])
-@cross_origin()
-def add_character():
-    # Get the character information from the request
-    fields = {
-        'char_id': 'char_id',
-        'name': 'name',
-        'personality': 'personality',
-        'description': 'description',
-        'scenario': 'scenario',
-        'first_mes': 'first_mes',
-        'mes_example': 'mes_example'
-    }
-    avatar = None
-
-    # Use request.files.get() to avoid KeyError
-    if(request.files.get('avatar') is not None):
-        avatar = request.files['avatar']
-        # Check if a file was uploaded and if it's allowed
-        if avatar and allowed_file(avatar.filename):
-            # Save the file with a secure filename
-            filename = secure_filename(str(request.form.get('char_id')) + '.png')
-            avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
-            # Add the file path to the character information
-            avatar = filename
-
-    # Save the character information to a JSON file
-    character = {field_value: request.form.get(field_key) for field_key, field_value in fields.items()}
-    character['avatar'] = avatar
-    if(avatar is None):
-        character['avatar'] = 'default.png'
-    print(character['avatar'])
-    with open(os.path.join(app.config['CHARACTER_FOLDER'], f"{character['char_id']}.json"), 'a') as f:
-        f.write(json.dumps(character))
-
-    return jsonify(character)
-
-
-@app.route('/api/characters/<char_id>', methods=['GET'])
-@cross_origin()
-def get_character(char_id):
-    character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
-    try:
-        with open(character_path) as f:
-            character_data = json.load(f)
-    except FileNotFoundError:
-        return jsonify({'error': 'Character not found'}), 404
-    return jsonify(character_data)
-
-
-@app.route('/api/characters/<char_id>', methods=['DELETE'])
-@cross_origin()
-def delete_character(char_id):
-    advanced_character_folder = app.config['CHARACTER_ADVANCED_FOLDER'] + str(char_id)
-    character_path = app.config['CHARACTER_FOLDER'] + str(char_id) + '.json'
-    image_path = app.config['CHARACTER_IMAGES_FOLDER'] + str(char_id) + '.png'
-    try:
-        os.remove(character_path)
-        if(os.path.exists(advanced_character_folder)):
-            shutil.rmtree(advanced_character_folder)
-            os.remove(advanced_character_folder)
-        if(os.path.exists(image_path)):
-            os.remove(image_path)
-        else:
-            print('No non-default image found for character ' + str(char_id))
-    except FileNotFoundError:
-        return jsonify({'error': 'Character not found'}), 404
-    return jsonify({'message': 'Character deleted successfully'})
-
-
-@app.route('/api/characters/<char_id>', methods=['PUT'])
-@cross_origin()
-def update_character(char_id):
-    # Get the character information from the request
-    fields = {
-        'name': 'name',
-        'personality': 'personality',
-        'description': 'description',
-        'scenario': 'scenario',
-        'first_mes': 'first_mes',
-        'mes_example': 'mes_example'
-    }
-    
-    avatar = request.files.get('avatar')
-    
-    # Check if a file was uploaded and if it's allowed
-    if avatar and allowed_file(avatar.filename):
-        # Save the file with a secure filename
-        filename = secure_filename(str(char_id) + '.png')
-        avatar.save(os.path.join(app.config['CHARACTER_IMAGES_FOLDER'], filename))
-        # Add the file path to the character information
-        avatar = filename
-
-    # Load the existing character information from the JSON file
-    character_path = os.path.join(app.config['CHARACTER_FOLDER'], f'{char_id}.json')
-
-    try:
-        with open(character_path, 'r') as f:
-            character = json.load(f)
-    except FileNotFoundError:
-        return jsonify({'error': 'Character not found'}), 404
-
-    # Update the character information
-    for field_key, field_value in fields.items():
-        if request.form.get(field_key):
-            character[field_value] = request.form.get(field_key)
-
-    if avatar:
-        character['avatar'] = avatar
-
-    # Save the updated character information to the JSON file
-    with open(character_path, 'w') as f:
-        json.dump(character, f)
-
-    return jsonify({'message': 'Character updated successfully', 'avatar': avatar})
-
-
-#########################################
-##### END OF BASIC CHARACTER ROUTES #####
-#########################################
-
-
-############################
-#### COVERSATION ROUTES ####
-############################
-
-
-@app.route('/api/conversation', methods=['POST'])
-@cross_origin()
-def save_conversation():
-    conversation_data = request.get_json()
-
-    chatName = conversation_data['conversationName']
-    
-    # Create the 'conversations' directory if it doesn't exist
-    if not os.path.exists(app.config['CONVERSATIONS_FOLDER']):
-        os.makedirs(app.config['CONVERSATIONS_FOLDER'])
-    file_path = app.config['CONVERSATIONS_FOLDER'] + str(chatName) + '.json'
-    try:
-        with open(file_path, 'w') as file:
-            json.dump(conversation_data, file)
-        return jsonify({'status': 'success'}), 200
-    except Exception as e:
-        print(f"Error saving conversation: {str(e)}")
-        return jsonify({'status': 'error', 'message': 'An error occurred while saving the conversation.'}), 500
-
-
-@app.route('/api/conversations', methods=['GET'])
-@cross_origin()
-def get_conversation_names():
-    conversations_folder = app.config['CONVERSATIONS_FOLDER']
-    if not os.path.exists(conversations_folder):
-        return jsonify({"conversations": []})
-    conversation_files = os.listdir(conversations_folder)
-    conversation_names = [os.path.splitext(file)[0] for file in conversation_files]
-    return jsonify({"conversations": conversation_names})
-
-
-@app.route('/api/conversation/<conversation_name>', methods=['GET', 'DELETE'])
-@cross_origin()
-def conversation(conversation_name):
-    convo_path = os.path.join(app.config['CONVERSATIONS_FOLDER'], f'{conversation_name}.json')
-
-    if request.method == 'DELETE':
-        try:
-            os.remove(convo_path)
-            return jsonify({'message': 'Conversation deleted successfully'})
-        except FileNotFoundError:
-            return jsonify({'error': 'Conversation not found'}), 404
-
-    try:
-        with open(convo_path) as f:
-            convo_data = json.load(f)
-        return jsonify(convo_data)
-    except FileNotFoundError:
-        return jsonify({'error': 'Conversation not found'}), 404
-    
-
-###################################
-#### END OF COVERSATION ROUTES ####
-###################################
 
 
 ###############################
@@ -988,210 +780,6 @@ def download_tavern_character(char_id):
 #### END OF CHARACTER CARD ROUTES ####
 ######################################
 
-
-###################################
-#### ADVANCED CHARACTER ROUTES ####
-###################################
-
-from flask import request
-import shutil
-
-@app.route('/api/advanced-character/<char_id>/<emotion>', methods=['DELETE'])
-@cross_origin()
-def delete_advanced_emotion(char_id, emotion):
-    emotion_path = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'{emotion}.png')
-    default_path = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'default.png')
-
-    if os.path.exists(emotion_path):
-        os.remove(emotion_path)
-        if emotion == 'default' and os.path.exists(default_path):
-            # If the emotion is 'default', remove the default sprite as well
-            os.remove(default_path)
-        return jsonify({'success': f'Character emotion {emotion} deleted.'})
-    else:
-        return jsonify({'failure': f'Character does not have an image for the {emotion} emotion.'})
-
-@app.route('/api/advanced-character/<char_id>/<emotion>', methods=['GET'])
-@cross_origin()
-def get_advanced_emotion(char_id, emotion):
-    if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'{emotion}.png'))):
-        imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion}.png')
-        return jsonify({'success': 'Character emotion found', 'path': imagePath})
-    elif(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/', f'default.png'))):
-        imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'default.png')
-        return jsonify({'failure': 'Character emotion not found, reverting to default', 'path': imagePath})
-    else:
-        return jsonify({'failure': 'Character does not have an image for this emotion.'})
-
-@app.route('/api/advanced-character/<char_id>/<emotion>', methods=['POST'])
-@cross_origin()
-def save_advanced_emotion(char_id, emotion):
-    # Get the emotion image file from the request object
-    if(request.files.get('emotion') is None):
-        return jsonify({'error': 'No emotion image file found'}), 500
-    if(not os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))):
-        os.mkdir(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))
-
-    emotion_file = request.files['emotion']
-    # Construct the new file name using the emotion name and extension
-    emotion_file_name = f"{emotion}.png"
-    # Save the image file to the character's folder with the new file name
-    emotion_file.save(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id, emotion_file_name))
-    # Return the frontend path to the image file
-    imagePath = os.path.join('/src/shared_data/advanced_characters/', f'{char_id}/', f'{emotion_file_name}')
-    return jsonify({'path': imagePath})
-
-
-@app.route('/api/advanced-character/<char_id>', methods=['GET'])
-@cross_origin()
-def get_advanced_emotions(char_id):
-    if(os.path.exists(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))):
-        emotions_with_ext = os.listdir(os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], f'{char_id}/'))
-        emotions = [os.path.splitext(emotion)[0] for emotion in emotions_with_ext] # Remove the file extension from each emotion
-        return jsonify({'success': 'Character emotions found', 'emotions': emotions})
-    else:
-        return jsonify({'failure': 'Character does not have any emotions.'})
-    
-@app.route('/api/synthesize_speech', methods=['POST'])
-@cross_origin()
-def synthesize_speech_route():
-    data = request.get_json()
-    ssml_string = data.get('ssml', None)
-    speech_key = data.get('speech_key', None)
-    service_region = data.get('service_region', None)
-    if ssml_string and speech_key and service_region:
-        fileName = synthesize_speech(ssml_string, speech_key, service_region)
-        if(fileName == None):
-            print("Speech synthesis failed.")
-            return jsonify({"status": "error", "message": "Speech synthesis failed."}), 500
-        else:
-            print("Speech synthesized successfully.")
-            return jsonify({"status": "success", "message": "Speech synthesized successfully.", 'audio': fileName}), 200
-    else:
-        print("Invalid input.")
-        return jsonify({"status": "error", "message": "Invalid input."}), 500
-    
-@app.route('/api/character-speech/<char_id>', methods=['POST'])
-@cross_origin()
-def save_character_speech(char_id):
-    character_speech = request.get_json()
-    if character_speech is None:
-        return jsonify({'error': 'No character speech data found'}), 500
-    char_folder = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id)
-    if not os.path.exists(char_folder):
-        os.mkdir(char_folder)
-    with open(os.path.join(char_folder, 'character_speech.json'), 'w') as f:
-        json.dump(character_speech, f)
-    return 'Character speech saved successfully!'
-
-@app.route('/api/character-speech/<char_id>', methods=['GET'])
-@cross_origin()
-def get_character_speech(char_id):
-    char_folder = os.path.join(app.config['CHARACTER_ADVANCED_FOLDER'], char_id)
-    if not os.path.exists(char_folder):
-        return jsonify({'error': 'Character folder not found'}), 404
-    speech_file = os.path.join(char_folder, 'character_speech.json')
-    if not os.path.exists(speech_file):
-        return jsonify({'error': 'Speech file not found'}), 404
-    with open(speech_file, 'r') as f:
-        character_speech = json.load(f)
-    return jsonify(character_speech)
-
-
-##########################################
-#### END OF ADVANCED CHARACTER ROUTES ####
-##########################################
-
-
-##############################
-#### LAYOUT/DESIGN ROUTES ####
-##############################
-
-
-@app.route('/api/backgrounds', methods=['POST'])
-@cross_origin()
-def upload_background():
-    if 'background' not in request.files:
-        return {'error': 'No background file uploaded.'}, 400
-    file = request.files['background']
-    if file.filename == '':
-        return {'error': 'No selected file.'}, 400
-    filename = secure_filename(file.filename)
-    if(os.path.exists(app.config['BACKGROUNDS_FOLDER'])):
-        filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
-        file.save(filepath)
-        return {'filename': filename}, 200  # Return only the filename
-    else:
-        os.mkdir(app.config['BACKGROUNDS_FOLDER'])
-        filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
-        file.save(filepath)
-        return {'filename': filename}, 200  # Return only the filename
-    
-
-@app.route('/api/backgrounds', methods=['GET'])
-@cross_origin()
-def get_backgrounds():
-    if os.path.exists(app.config['BACKGROUNDS_FOLDER']):
-        all_files = os.listdir(app.config['BACKGROUNDS_FOLDER'])
-        img_files = [file for file in all_files if os.path.splitext(file)[1].lower() in ['.png', '.jpg']]
-        return {'backgrounds': img_files}, 200
-    else:
-        return {'failure': 'No backgrounds found.'}, 404
-
-@app.route('/api/backgrounds/<string:filename>', methods=['DELETE'])
-@cross_origin()
-def delete_background(filename):
-    if not filename:
-        return {'error': 'No filename provided.'}, 400
-
-    # Check if the file exists
-    filepath = os.path.join(app.config['BACKGROUNDS_FOLDER'], filename)
-    if not os.path.exists(filepath):
-        return {'error': f'File {filename} not found.'}, 404
-
-    # Delete the file
-    try:
-        os.remove(filepath)
-        return {'success': f'File {filename} deleted.'}, 200
-    except Exception as e:
-        return {'error': str(e)}, 500
-    
-#####################################
-#### END OF LAYOUT/DESIGN ROUTES ####
-#####################################
-
-
-##############################
-#### START OF USER ROUTES ####
-##############################
-
-
-@app.route('/api/user-avatar', methods=['POST'])
-@cross_origin()
-def save_user_avatar():
-    if 'avatar' not in request.files:
-        return 'No avatar file provided', 400
-
-    avatar = request.files['avatar']
-
-    if avatar.filename == '':
-        return 'No selected file', 400
-    # Count the number of avatar files in the folder
-    avatar_count = len(os.listdir(app.config['USER_IMAGES_FOLDER']))
-    # Save the avatar file to the user's folder
-    avatar.save(os.path.join(app.config['USER_IMAGES_FOLDER'], f'{avatar_count}.png'))
-    # Return a response to the client
-    return {'avatar': f'{avatar_count}.png'}, 200
-
-@app.route('/api/user-avatar', methods=['GET'])
-@cross_origin()
-def get_user_avatars():
-    if os.path.exists(app.config['USER_IMAGES_FOLDER']):
-        all_files = os.listdir(app.config['USER_IMAGES_FOLDER'])
-        png_files = [file for file in all_files if os.path.splitext(file)[1].lower() == '.png']
-        return jsonify({'success': 'User Avatars found', 'avatars': png_files})
-    else:
-        return jsonify({'failure': 'User Avatars not found.'})
 
 #########################
 #### SETTINGS ROUTES ####

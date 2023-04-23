@@ -53,18 +53,18 @@ export async function fetchCharacter(charId) {
 }
 
 export async function fetchUserAvatars() {
-  const response = await axios.get(`${API_URL}/user-avatar`);
+  const response = await axios.get(`${JS_API}/user-avatar`);
   return response.data.avatars;
 }
 
 export async function fetchBackgrounds() {
-  const response = await axios.get(`${API_URL}/backgrounds`);
+  const response = await axios.get(`${JS_API}/backgrounds`);
   return response.data.backgrounds;
 }
 
 export async function fetchConfig(setBotToken, setChannels) {
   try {
-    const response = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const response = await axios.get(`${API_URL}/discord-bot/config`);
     console.log('Response:', response);
     const data = response.data;
     console.log('Data:', data);
@@ -85,11 +85,11 @@ export async function handleSaveToken(botToken) {
     botToken: botToken,
   };
   try {
-    const response = await axios.post('http://localhost:5100/api/discord-bot/token', config);
+    const response = await axios.post(`${API_URL}/discord-bot/token`, config);
     console.log('Token configuration saved successfully');
 
     // Read the .config file and set the initial value of the bot token input field
-    const fileResponse = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const fileResponse = await axios.get(`${API_URL}/discord-bot/config`);
     const fileData = fileResponse.data;
     const tokenValue = fileData['DISCORD_BOT_TOKEN'];
     if (tokenValue) {
@@ -105,11 +105,11 @@ export async function handleSaveChannel(channels) {
     channels: channels,
   };
   try {
-    const response = await axios.post('http://localhost:5100/api/discord-bot/channel', config);
+    const response = await axios.post(`${API_URL}/discord-bot/channel`, config);
     console.log('Channel configuration saved successfully');
 
     // Read the .config file and set the initial value of the channel input field
-    const fileResponse = await axios.get('http://localhost:5100/api/discord-bot/config');
+    const fileResponse = await axios.get(`${API_URL}/discord-bot/config`);
     const fileData = fileResponse.data;
     const channelValue = fileData['CHANNEL_ID'];
     if (channelValue) {
@@ -123,7 +123,7 @@ export async function handleSaveChannel(channels) {
 export async function saveUserAvatar(image) {
   const formData = new FormData();
   formData.append('avatar', image);
-  const response = await axios.post(`${API_URL}/user-avatar`, formData);
+  const response = await axios.post(`${JS_API}/user-avatar`, formData);
   if(response.data.avatar !== undefined){
     return response.data.avatar;
   }
@@ -133,12 +133,12 @@ export async function saveUserAvatar(image) {
 }
 
 export async function sendCharacterSpeech(characterSpeech, char_id) {
-  const response = await axios.post(`${API_URL}/character-speech/${char_id}`, characterSpeech);
+  const response = await axios.post(`${JS_API}/character-speech/${char_id}`, characterSpeech);
   return response.data;
 }
 
 export async function getCharacterSpeech(charId) {
-  return axios.get(`${API_URL}/character-speech/${charId}`)
+  return axios.get(`${JS_API}/character-speech/${charId}`)
     .then(response => response.data)
     .catch(error => {
       console.error(`Error fetching character speech for ${charId}: ${error}`);
@@ -177,7 +177,7 @@ export const uploadBackground = async (file) => {
   formData.append("background", file);
 
   try {
-    const response = await axios.post(`${API_URL}/backgrounds`, formData, {
+    const response = await axios.post(`${JS_API}/backgrounds`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -191,7 +191,7 @@ export const uploadBackground = async (file) => {
 
 export const deleteBackground = async (filename) => {
   try {
-    const response = await axios.delete(`${API_URL}/backgrounds/${filename}`);
+    const response = await axios.delete(`${JS_API}/backgrounds/${filename}`);
     return response.data.success ? response.data : null;
   } catch (error) {
     console.error(`Error deleting background: ${error}`);
@@ -222,7 +222,7 @@ export async function updateCharacter(updatedCharacter) {
 
 export const saveConversation = async (convo) => {
   try {
-    const response = await axios.post(`${API_URL}/conversation`, convo);
+    const response = await axios.post(`${JS_API}/conversation`, convo);
     if (response.data.status === 'success') {
       console.log('Conversation saved');
     } else {
@@ -234,20 +234,20 @@ export const saveConversation = async (convo) => {
 }
 
 export async function fetchConversations() {
-  const response = await axios.get(`${API_URL}/conversations`);
+  const response = await axios.get(`${JS_API}/conversations`);
   const allConversations = response.data.conversations;
   return allConversations;
 }
 
 
 export async function deleteConversation(conversationName) {
-  const response = await axios.delete(`${API_URL}/conversation/${conversationName}`);
+  const response = await axios.delete(`${JS_API}/conversation/${conversationName}`);
   return response.data;
 }
 
 
 export async function fetchConversation(conversationName) {
-  const response = await axios.get(`${API_URL}/conversation/${conversationName}`);
+  const response = await axios.get(`${JS_API}/conversation/${conversationName}`);
   return response.data;
 }
 
@@ -305,24 +305,24 @@ export async function exportJSON(character) {
 }
 
 export async function fetchAdvancedCharacterEmotion(character, emotion) {
-  const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
+  const response = await axios.get(`${JS_API}/advanced-character/${character.char_id}/${emotion}`);
   return response.data['path'];
 }
 
 export async function fetchAdvancedCharacterEmotions(character) {
-  const response = await axios.get(`${API_URL}/advanced-character/${character.char_id}`);
+  const response = await axios.get(`${JS_API}/advanced-character/${character.char_id}`);
   return response.data['emotions'];
 }
 
 export async function saveAdvancedCharacterEmotion(character, emotionName, emotionFile) {
   const formData = new FormData();
   formData.append('emotion', emotionFile);
-  const response = await axios.post(`${API_URL}/advanced-character/${character.char_id}/${emotionName}`, formData);
+  const response = await axios.post(`${JS_API}/advanced-character/${character.char_id}/${emotionName}`, formData);
   return response.data['path'];
 }
 
 export async function deleteAdvancedCharacterEmotion(character, emotion) {
-  const response = await axios.delete(`${API_URL}/advanced-character/${character.char_id}/${emotion}`);
+  const response = await axios.delete(`${JS_API}/advanced-character/${character.char_id}/${emotion}`);
   return response.data;
 }
 
@@ -331,7 +331,7 @@ export async function updateAdvancedCharacter(advancedCharacter) {
   formData.append('char_id', advancedCharacter.char_id);
   formData.append('name', advancedCharacter.name);
 
-  const response = await axios.put(`${API_URL}/advanced-character/${advancedCharacter.char_id}`, formData);
+  const response = await axios.put(`${JS_API}/advanced-character/${advancedCharacter.char_id}`, formData);
 
   return response.data;
 }
