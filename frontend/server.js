@@ -13,6 +13,8 @@ import { Configuration, OpenAIApi } from "openai"; // use default import syntax
 import extract from 'png-chunks-extract';
 import PNGtext from 'png-chunk-text';
 import encode from 'png-chunks-encode';
+import { PNG } from 'pngjs';
+import base64 from 'base-64';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,7 +34,7 @@ const AUDIO_OUTPUT = './src/audio/';
 const HORDE_API_URL = 'https://aihorde.net/api/';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
-
+const CHARACTER_EXPORT_FOLDER = './src/shared_data/exports/';
 function allowed_file(filename) {
     const allowed_extensions = ['png', 'jpg', 'jpeg', 'gif'];
     const extension = path.extname(filename).slice(1).toLowerCase();
@@ -42,6 +44,8 @@ function allowed_file(filename) {
 function secure_filename(filename) {
     return filename.replace(/[^a-zA-Z0-9.\-_]/g, '_');
 }
+app.use(express.urlencoded({ extended: true }));
+app.use(upload.none());
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.resolve(__dirname, 'dist')));
@@ -415,6 +419,123 @@ app.post('/tavern-character', upload.single('image'), async (req, res) => {
   }
 
   res.json(_json);
+});
+
+function export_tavern_character(char_id) {
+  // Set the file name based on the character id
+  let outfile_name = `${char_id}`;
+
+  // Read the character info from a JSON file
+  let character_info = JSON.parse(fs.readFileSync(path.join(CHARACTER_FOLDER, `${outfile_name}.json`), 'utf8'));
+
+  // Create an object containing the character information to export
+  let reverted_char_data = {
+    name: character_info['name'],
+    description: character_info['description'],
+    personality: character_info['personality'],
+    scenario: character_info["scenario"],
+    first_mes: character_info["first_mes"],
+    mes_example: character_info["mes_example"],
+    metadata: {
+      version: '1.0.0',
+      editor: 'ProjectAkiko',
+      date: new Date().toISOString()
+    }
+  };
+
+  // Load the image in any format and convert to PNG
+  let image;
+  try {
+    let png = new PNG();
+    // Pass a regular function to parse the image and bind it to png
+    image = png.parse(fs.readFileSync(path.join(CHARACTER_IMAGES_FOLDER, `${outfile_name}.png`)), function(err) {
+      // Handle any errors
+      if (err) {
+        console.error(err);
+        return;
+      }
+      // Set the exposeChunks option
+      this.exposeChunks = true;
+    }.bind(png));
+    // Listen for the 'parsed' event
+    image.on('parsed', function() {
+      // Now you can access the image data
+      console.log(image);
+      // Convert the object to a JSON string and then encode as base64
+      let json_data = JSON.stringify(reverted_char_data);
+      let base64_encoded_data = Buffer.from(json_data).toString('base64');
+
+      // Create a custom chunk with the encoded data
+      let custom_chunk = {
+        name: 'chara',
+        data: Buffer.from(base64_encoded_data)
+      };
+
+      // Encode the image chunks with the custom chunk
+      let encoded_chunks = encode(image.chunks.concat(custom_chunk));
+
+      // Save the modified image to the target location
+      fs.writeFileSync(path.join(CHARACTER_EXPORT_FOLDER, `${outfile_name}.png`), encoded_chunks);
+
+      return;
+    });
+  } catch (err) {
+    console.error(err);
+    return;
+  }
+}
+app.get('/tavern-character/:char_id', (req, res) => {
+  // Get the character id from the request parameters
+  let char_id = req.params.char_id;
+
+  // Try to export the character
+  try {
+    export_tavern_character(char_id);
+  } catch (e) {
+    // If there is an error, log it and send a response with status 500
+    console.error(`Error saving character: ${e}`);
+    res.status(500).json({ error: 'Character card failed to export' });
+    return;
+  }
+
+  // If successful, send a response with status 200
+  res.status(200).json({ success: 'Character card exported' });
+});
+
+app.post('/tavern-character/json-export', (req, res) => {
+  // Define the fields to get from the form
+  let fields = {
+    char_id: 'char_id',
+    name: 'name',
+    personality: 'personality',
+    description: 'description',
+    scenario: 'scenario',
+    first_mes: 'first_mes',
+    mes_example: 'mes_example'
+  };
+
+  // Create an object with the character information
+  let character = {};
+  for (let [field_key, field_value] of Object.entries(fields)) {
+    character[field_value] = req.body[field_key];
+  }
+
+  try {
+    // Convert the object to a JSON string
+    let json_data = JSON.stringify(character);
+
+    // Set the file name based on the character name
+    let outfile_name = `${character['name']}.AkikoJSON.json`;
+
+    // Send the JSON data as a file attachment
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename=${outfile_name}`);
+    res.send(json_data);
+  } catch (err) {
+    // Handle any errors
+    console.error(`Error saving character: ${err}`);
+    res.status(500).json({ error: 'Character JSON failed to export' });
+  }
 });
 /*
 ############################################
