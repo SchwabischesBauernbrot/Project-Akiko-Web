@@ -875,9 +875,10 @@ app.post('/textgen/:endpointType', async (req, res) => {
             res.json(results);
           }
         } catch (error) {
-          console.log(error);
+          console.log("Error status code:", error.response ? error.response.status : "Unknown");
+          console.log("Error details:", error.response ? error.response.data : error);
           res.status(500).json({ error: 'An error occurred while generating text.' });
-        }
+        }        
         break;
 
       case 'Ooba':
