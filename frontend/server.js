@@ -14,7 +14,6 @@ import extract from 'png-chunks-extract';
 import PNGtext from 'png-chunk-text';
 import encode from 'png-chunks-encode';
 import { PNG } from 'pngjs';
-import base64 from 'base-64';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,7 +44,6 @@ function secure_filename(filename) {
     return filename.replace(/[^a-zA-Z0-9.\-_]/g, '_');
 }
 app.use(express.urlencoded({ extended: true }));
-app.use(upload.none());
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.resolve(__dirname, 'dist')));
@@ -484,6 +482,28 @@ function export_tavern_character(char_id) {
     return;
   }
 }
+function exportAsJson(character) {
+  // Create an object containing the character information to export
+  console.log(character);
+  let characterData = {
+    name: character['name'],
+    description: character['description'],
+    personality: character['personality'],
+    scenario: character['scenario'],
+    firstMes: character['firstMes'],
+    mesExample: character['mesExample'],
+    metadata: {
+      version: '1.0.0',
+      editor: 'ProjectAkiko',
+      date: new Date().toISOString()
+    }
+  };
+
+  // Convert the object to a JSON string
+  let jsonData = JSON.stringify(characterData);
+
+  return jsonData;
+}
 app.get('/tavern-character/:char_id', (req, res) => {
   // Get the character id from the request parameters
   let char_id = req.params.char_id;
@@ -502,35 +522,27 @@ app.get('/tavern-character/:char_id', (req, res) => {
   res.status(200).json({ success: 'Character card exported' });
 });
 
-app.post('/tavern-character/json-export', (req, res) => {
-  // Define the fields to get from the form
-  let fields = {
-    char_id: 'char_id',
-    name: 'name',
-    personality: 'personality',
-    description: 'description',
-    scenario: 'scenario',
-    first_mes: 'first_mes',
-    mes_example: 'mes_example'
-  };
+app.post('/tavern-character/json-export/:char_id', (req, res) => {
+  // Get the character id from the request parameters
+  const characterPath = path.join(CHARACTER_FOLDER, `${req.params.char_id}.json`);
 
-  // Create an object with the character information
-  let character = {};
-  for (let [field_key, field_value] of Object.entries(fields)) {
-    character[field_value] = req.body[field_key];
+  if (!fs.existsSync(characterPath)) {
+      return res.status(404).json({ error: 'Character not found' });
   }
+
+  const characterData = JSON.parse(fs.readFileSync(characterPath, 'utf-8'));
 
   try {
     // Convert the object to a JSON string
-    let json_data = JSON.stringify(character);
-
+    let json_data = exportAsJson(characterData);
+    console.log(json_data);
     // Set the file name based on the character name
-    let outfile_name = `${character['name']}.AkikoJSON.json`;
+    let outfile_name = `${characterData['name']}.AkikoJSON.json`;
 
     // Send the JSON data as a file attachment
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Content-Disposition', `attachment; filename=${outfile_name}`);
-    res.send(json_data);
+    res.json(json_data);
   } catch (err) {
     // Handle any errors
     console.error(`Error saving character: ${err}`);
