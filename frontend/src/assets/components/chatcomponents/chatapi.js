@@ -240,7 +240,7 @@ const akiko_defaults = {
 
   export async function sendSSMLToAPI(ssml, speech_key, service_region) {
     try {
-      const response = await axios.post(`${API_URL}/synthesize_speech`, {
+      const response = await axios.post(`${JS_API}/synthesize_speech`, {
         ssml: ssml,
         speech_key: speech_key,
         service_region: service_region
@@ -285,6 +285,11 @@ const akiko_defaults = {
     const audio = new Audio();
     audio.src = `${AUDIO_LOCATION}/${audioFile}`;
     audio.play();
+  
+    audio.addEventListener('ended', () => {
+      // Remove the audio file from the cache
+      URL.revokeObjectURL(audio.src);
+    }, { once: true });
   }
 
   export async function generate_Speech(response, emotion, currentCharacter) {

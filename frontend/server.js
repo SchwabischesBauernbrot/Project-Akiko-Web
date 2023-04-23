@@ -7,6 +7,7 @@ import { dirname } from 'path';
 import fs from 'fs';
 import multer from 'multer';
 import axios from 'axios';
+import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,7 +23,7 @@ const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
 const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
 const BACKGROUNDS_FOLDER = './src/shared_data/backgrounds/';
 const USER_IMAGES_FOLDER = './src/shared_data/user_avatars/';
-const AUDIO_LOCATION = './src/audio/';
+const AUDIO_OUTPUT = './src/audio/';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
 function allowed_file(filename) {
@@ -441,6 +442,65 @@ app.get('/character-speech/:char_id', (req, res) => {
       }
   });
 });
+
+app.post('/synthesize_speech', async (req, res) => {
+  const { ssml, speech_key, service_region } = req.body;
+  if (ssml && speech_key && service_region) {
+    try {
+      const fileName = await synthesizeSpeech(ssml, speech_key, service_region);
+      console.log('Speech synthesized successfully.');
+      res.status(200).json({ status: 'success', message: 'Speech synthesized successfully.', audio: fileName });
+    } catch (error) {
+      console.log('Speech synthesis failed.');
+      res.status(500).json({ status: 'error', message: 'Speech synthesis failed.' });
+    }
+  } else {
+    console.log('Invalid input.');
+    res.status(500).json({ status: 'error', message: 'Invalid input.' });
+  }
+});
+
+
+async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
+  var speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, serviceRegion);
+  speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat.Riff48Khz16BitMonoPcm;
+  const files = fs.readdirSync(AUDIO_OUTPUT);
+  files.forEach(file => {
+    fs.unlinkSync(`${AUDIO_OUTPUT}/${file}`);
+    console.log(`File ${file} deleted from ${AUDIO_OUTPUT} directory.`);
+  });
+  var timestamp = new Date().toISOString().replace(/:/g, '-');
+  var fileName = `${AUDIO_OUTPUT}${timestamp}.wav`;
+  var audioConfig = sdk.AudioConfig.fromAudioFileOutput(fileName);
+  var synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+
+  try {
+    await new Promise((resolve, reject) => {
+      synthesizer.speakSsmlAsync(
+        ssmlString,
+        result => {
+          if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
+            console.log("Speech synthesis succeeded.");
+            resolve();
+          } else {
+            console.error("Speech synthesis failed: " + result.errorDetails);
+            reject(new Error(result.errorDetails));
+          }
+          synthesizer.close();
+        },
+        error => {
+          console.error("Speech synthesis failed: " + error);
+          reject(error);
+          synthesizer.close();
+        }
+      );
+    });
+    return `${timestamp}.wav`;
+  } catch (error) {
+    console.log('Speech synthesis failed.');
+    return null;
+  }
+}
 
 /*
 ############################################

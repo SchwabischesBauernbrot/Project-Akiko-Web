@@ -538,11 +538,12 @@ def get_discord_bot_config():
 ##### TEXT GEN API HANDLING #####
 #################################
 
-HORDE_API_URL = 'https://aihorde.net/api/'
+
 
 @app.route('/api/textgen/<endpointType>', methods=['POST'])
 @cross_origin()
 def textgen(endpointType):
+    HORDE_API_URL = 'https://aihorde.net/api/'
     data = request.get_json()
     endpoint = data['endpoint']
     configuredName = data['configuredName']
@@ -576,9 +577,6 @@ def textgen(endpointType):
         response_half = raw_reply.split(data['prompt'])[1]
         print(response_half)
         return jsonify(response_half)
-
-
-
     elif(endpointType == 'OAI'):
         OPENAI_API_KEY = data['endpoint']
         openai.api_key = OPENAI_API_KEY
@@ -779,36 +777,6 @@ def download_tavern_character(char_id):
 ######################################
 #### END OF CHARACTER CARD ROUTES ####
 ######################################
-
-
-###################################
-#### ADVANCED CHARACTER ROUTES ####
-###################################
-    
-@app.route('/api/synthesize_speech', methods=['POST'])
-@cross_origin()
-def synthesize_speech_route():
-    data = request.get_json()
-    ssml_string = data.get('ssml', None)
-    speech_key = data.get('speech_key', None)
-    service_region = data.get('service_region', None)
-    if ssml_string and speech_key and service_region:
-        fileName = synthesize_speech(ssml_string, speech_key, service_region)
-        if(fileName == None):
-            print("Speech synthesis failed.")
-            return jsonify({"status": "error", "message": "Speech synthesis failed."}), 500
-        else:
-            print("Speech synthesized successfully.")
-            return jsonify({"status": "success", "message": "Speech synthesized successfully.", 'audio': fileName}), 200
-    else:
-        print("Invalid input.")
-        return jsonify({"status": "error", "message": "Invalid input."}), 500
-
-
-##########################################
-#### END OF ADVANCED CHARACTER ROUTES ####
-##########################################
-
 
 
 #########################
