@@ -1,14 +1,12 @@
 import datetime
 from functools import wraps
 import io
-import ssl
 from flask import Flask, jsonify, request, render_template_string, abort, send_file, send_from_directory
 from flask_cors import CORS, cross_origin
 import argparse
 import requests
 import unicodedata
 import time
-import sys
 from glob import glob
 import json
 import os
@@ -103,10 +101,6 @@ captioning_model = args.captioning_model if args.captioning_model else DEFAULT_C
 keyphrase_model = args.keyphrase_model if args.keyphrase_model else DEFAULT_KEYPHRASE_MODEL
 text_model = args.text_model if args.text_model else DEFAULT_TEXT_MODEL
 modules = args.enable_modules if args.enable_modules and len(args.enable_modules) > 0 else []
-
-if len(modules) == 0:
-    print(f'{Fore.RED}{Style.BRIGHT}You did not select any modules to run! Choose them by adding an --enable-modules option')
-    print(f'Example: --enable-modules=caption,summarize{Style.RESET_ALL}')
     
 if(len(modules) != 0):
     # Import modules
@@ -147,9 +141,11 @@ if 'text' in modules:
     text_transformer = AutoModelForCausalLM.from_pretrained(text_model, torch_dtype=torch.float16).to(device)
 
 # Flask init
-app = Flask(__name__)
+app = Flask('Akiko Python Backend')
 cors = CORS(app) # allow cross-domain requests
 sslify = SSLify(app) # force https
+app.config['DEBUG'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = False
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 # Folder Locations
@@ -160,8 +156,6 @@ app.config['CHARACTER_IMAGES_FOLDER'] = '../frontend/src/shared_data/character_i
 app.config['USER_IMAGES_FOLDER'] = '../frontend/src/shared_data/user_avatars/'
 app.config['CHARACTER_EXPORT_FOLDER'] = '../frontend/src/shared_data/exports/'
 app.config['CHARACTER_ADVANCED_FOLDER'] = '../frontend/src/shared_data/advanced_characters/'
-app.config['DEBUG'] = False
-app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['BACKGROUNDS_FOLDER'] = '../frontend/src/shared_data/backgrounds/'
 app.config['AUDIO_OUTPUT'] = '../frontend/src/audio/'
 app.config['GUIDE_FOLDER'] = '../frontend/src/guides/'
