@@ -106,22 +106,22 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
             >
               <HiChevronDoubleRight className="w-8 h-8"/>
             </Link>
-            <Link
+            {/* <Link
               title="Discord Bot"
               className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
               style={{ color: 'var(--selected-text-color)' }}
               to="/discordbot"
             >
               <RxDiscordLogo className="w-8 h-8"/>
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               title="Guide"
               className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
               style={{ color: 'var(--selected-text-color)' }}
               to="/guide"
             >
               <GoBook className="w-8 h-8"/>
-            </Link>
+            </Link> */}
             <Link
               title="Settings"
               className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
