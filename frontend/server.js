@@ -20,6 +20,8 @@ const upload = multer({ dest: 'uploads/' });
 const CHARACTER_FOLDER = './src/shared_data/character_info/';
 const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
 const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
+const BACKGROUNDS_FOLDER = './src/shared_data/backgrounds/';
+const USER_IMAGES_FOLDER = './src/shared_data/user_avatars/';
 const AUDIO_LOCATION = './src/audio/';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
@@ -411,6 +413,7 @@ app.post('/character-speech/:char_id', (req, res) => {
       }
   });
 });
+
 /*
 ############################################
 ##                                        ##
@@ -437,4 +440,106 @@ app.get('/character-speech/:char_id', (req, res) => {
           res.json(JSON.parse(data));
       }
   });
+});
+
+/*
+############################################
+##                                        ##
+##           Background ROUTES            ##
+##                                        ##
+############################################
+*/
+app.post('/backgrounds', (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0 || !req.files.background) {
+    res.status(400).json({ error: 'No background file uploaded.' });
+    return;
+  }
+
+  const file = req.files.background;
+  const ext = '.' + file.name.split('.').pop();
+  const filename = uuidv4() + ext;
+  const filepath = join(BACKGROUNDS_FOLDER, filename);
+  const stream = createWriteStream(filepath);
+
+  file.mv(stream.path, err => {
+    if (err) {
+      res.status(500).json({ error: 'An error occurred while uploading the file.' });
+    } else {
+      res.status(200).json({ filename });
+    }
+  });
+});
+
+app.get('/backgrounds', (req, res) => {
+  const backgrounds = [];
+  const files = fs.readdirSync(BACKGROUNDS_FOLDER);
+  files.forEach(file => {
+    const ext = path.extname(file);
+    if (ext === '.jpg' || ext === '.png') {
+      backgrounds.push(file);
+    }
+  });
+  res.json({ backgrounds });
+});
+
+app.delete('/backgrounds/:filename', (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    res.status(400).json({ error: 'No filename provided.' });
+    return;
+  }
+
+  const filepath = join(BACKGROUNDS_FOLDER, filename);
+  if (!fs.existsSync(filepath)) {
+    res.status(404).json({ error: `File ${filename} not found.` });
+    return;
+  }
+
+  fs.unlink(filepath, err => {
+    if (err) {
+      res.status(500).json({ error: 'An error occurred while deleting the file.' });
+    } else {
+      res.status(200).json({ success: `File ${filename} deleted.` });
+    }
+  });
+});
+
+/*
+############################################
+##                                        ##
+##              USER ROUTES               ##
+##                                        ##
+############################################
+*/
+app.post('/user-avatar', (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0 || !req.files.avatar) {
+    res.status(400).send('No avatar file provided');
+    return;
+  }
+
+  const avatar = req.files.avatar;
+  const ext = '.' + avatar.name.split('.').pop();
+  const filename = Date.now() + ext;
+  const filepath = join(USER_IMAGES_FOLDER, filename);
+  const stream = createWriteStream(filepath);
+
+  avatar.mv(stream.path, err => {
+    if (err) {
+      res.status(500).send('An error occurred while uploading the file.');
+    } else {
+      res.status(200).json({ avatar: filename });
+    }
+  });
+});
+
+app.get('/user-avatar', (req, res) => {
+  const avatars = [];
+  const files = fs.readdirSync(USER_IMAGES_FOLDER);
+  files.forEach(file => {
+    const ext = path.extname(file);
+    if (ext === '.png') {
+      avatars.push(file);
+    }
+  });
+  res.json({ avatars });
 });

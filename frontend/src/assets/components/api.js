@@ -53,12 +53,12 @@ export async function fetchCharacter(charId) {
 }
 
 export async function fetchUserAvatars() {
-  const response = await axios.get(`${API_URL}/user-avatar`);
+  const response = await axios.get(`${JS_API}/user-avatar`);
   return response.data.avatars;
 }
 
 export async function fetchBackgrounds() {
-  const response = await axios.get(`${API_URL}/backgrounds`);
+  const response = await axios.get(`${JS_API}/backgrounds`);
   return response.data.backgrounds;
 }
 
@@ -123,7 +123,7 @@ export async function handleSaveChannel(channels) {
 export async function saveUserAvatar(image) {
   const formData = new FormData();
   formData.append('avatar', image);
-  const response = await axios.post(`${API_URL}/user-avatar`, formData);
+  const response = await axios.post(`${JS_API}/user-avatar`, formData);
   if(response.data.avatar !== undefined){
     return response.data.avatar;
   }
@@ -177,7 +177,7 @@ export const uploadBackground = async (file) => {
   formData.append("background", file);
 
   try {
-    const response = await axios.post(`${API_URL}/backgrounds`, formData, {
+    const response = await axios.post(`${JS_API}/backgrounds`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -191,7 +191,7 @@ export const uploadBackground = async (file) => {
 
 export const deleteBackground = async (filename) => {
   try {
-    const response = await axios.delete(`${API_URL}/backgrounds/${filename}`);
+    const response = await axios.delete(`${JS_API}/backgrounds/${filename}`);
     return response.data.success ? response.data : null;
   } catch (error) {
     console.error(`Error deleting background: ${error}`);
