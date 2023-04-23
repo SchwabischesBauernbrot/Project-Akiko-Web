@@ -732,7 +732,6 @@ app.post('/text/status', async (req, res) => {
       case 'Kobold':
         response = await axios.get(`${endpointUrl}/api/v1/model`);
         if (response.status === 200) {
-          console.log(response.data.result);
           res.json(response.data.result);
         } else {
           res.status(404).json({ error: 'Kobold endpoint is not responding.' });
