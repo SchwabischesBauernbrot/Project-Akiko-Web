@@ -5,6 +5,7 @@ import { HiChevronDoubleRight } from 'react-icons/hi2'
 import { Link } from 'react-router-dom';
 import { AiFillUnlock, AiFillLock } from 'react-icons/ai';
 import { GoBook } from 'react-icons/go';
+import { BiWorld } from 'react-icons/bi';
 
 const Navbar = ({showNavBar, setShowNavBar}) => {
   const navbarRef = useRef(null);
@@ -97,6 +98,14 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
               to="/characters"
             >
               <UserGroupIcon className="w-8 h-8"/>
+            </Link>
+            <Link
+              title="Worlds"
+              className="bg-transparent rounded p-2 w-60 flex justify-center cursor-pointer hover:bg-selected-color hover:rounded hover:shadow-md hover:backdrop-blur-sm"
+              style={{ color: 'var(--selected-text-color)' }}
+              to="/worlds"
+            >
+              <BiWorld className="w-8 h-8"/>
             </Link>
             <Link
               title="Advanced Characters"

@@ -36,7 +36,7 @@ function App() {
           <Route path="/discordbot" element={<DiscordBot />} />
           <Route path="/test" element={<test />} />
           <Route path="/advcharacter" element={<AdvancedCharacter />} />
-          <Route path="*" element={<h1>404: Not Found</h1>} />
+          <Route path="*" element={<h1 className='settings-panel-header text-xl font-bold'>404: Not Found</h1>} />
           <Route path="/guide" element={<GuidePage />} />
         </Routes>
       </main>
