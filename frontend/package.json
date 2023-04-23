@@ -4,8 +4,8 @@
   "version": "0.9.3",
   "type": "module",
   "scripts": {
-    "base": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r requirements.txt && python server.py\"",
-    "base-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r requirements.txt && python server.py --listen\"",
+    "base": "concurrently --kill-others-on-fail \"npm run server\" \"vite\"",
+    "base-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\"",
     "caption": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r full_requirements.txt && python server.py --enable-modules=caption\"",
     "caption-remote": "concurrently --kill-others-on-fail \"npm run server\" \"vite --host\" \"cd ../backend && pip install -r full_requirements.txt && python server.py --enable-modules=caption --listen\"",
     "classify": "concurrently --kill-others-on-fail \"npm run server\" \"vite\" \"cd ../backend && pip install -r full_requirements.txt && python server.py --enable-modules=classify\"",

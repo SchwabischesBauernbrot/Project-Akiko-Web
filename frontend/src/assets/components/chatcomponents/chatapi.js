@@ -340,6 +340,7 @@ const akiko_defaults = {
       const speech_key = localStorage.getItem('speech_key');
       const service_region = localStorage.getItem('service_region');
       const ssml = await createSsml(response, emotion, currentCharacter.char_id);
+      if(ssml === null) return;
       audioFile = await sendSSMLToAPI(ssml, speech_key, service_region);
       if(audioFile){
         playAudio(audioFile);
