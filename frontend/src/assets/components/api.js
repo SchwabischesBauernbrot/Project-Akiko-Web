@@ -256,13 +256,13 @@ export async function uploadTavernCharacter(image){
   const formData = new FormData();
   formData.append('char_id', Date.now());
   formData.append('image', image);
-  const response = await axios.post(`${API_URL}/tavern-character`, formData);
+  const response = await axios.post(`${JS_API}/tavern-character`, formData);
   return response.data;
 }
 
 
 export async function exportTavernCharacter(charId, charName) {
-  await axios.get(`${API_URL}/tavern-character/${charId}`);
+  await axios.get(`${JS_API}/tavern-character/${charId}`);
   var link = `/${EXPORTS_FOLDER}/${charId}.png`
   downloadImage(link, `${charName}.AkikoCharaCard.png`);
   return `/${EXPORTS_FOLDER}/${charName}.AkikoCharaCard.png`;
@@ -278,7 +278,7 @@ export async function exportNewCharacter(character) {
   formData.append('first_mes', character.first_mes);
   formData.append('mes_example', character.mes_example);
   formData.append('avatar', character.avatar);
-  await axios.post(`${API_URL}/tavern-character/new-export`, formData);
+  await axios.post(`${JS_API}/tavern-character/new-export`, formData);
   var link = `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`
   downloadImage(link, `${character.name}.AkikoCharaCard.png`);
   return `/${EXPORTS_FOLDER}/${character.name}.AkikoCharaCard.png`;
@@ -294,7 +294,7 @@ export async function exportJSON(character) {
   formData.append('first_mes', character.first_mes);
   formData.append('mes_example', character.mes_example);
 
-  const response = await axios.post(`${API_URL}/tavern-character/json-export`, formData, {
+  const response = await axios.post(`${JS_API}/tavern-character/json-export`, formData, {
     responseType: 'blob',
   });
 
@@ -315,11 +315,21 @@ export async function fetchAdvancedCharacterEmotions(character) {
 }
 
 export async function saveAdvancedCharacterEmotion(character, emotionName, emotionFile) {
+  console.log(typeof emotionFile); // should be 'object'
+  console.log(emotionFile); // should be a file object
   const formData = new FormData();
   formData.append('emotion', emotionFile);
-  const response = await axios.post(`${JS_API}/advanced-character/${character.char_id}/${emotionName}`, formData);
+  // create a config object for axios
+  const config = {
+    // remove the Content-Type header
+    headers: { 'Content-Type': undefined }
+    // or set it to multipart/form-data
+    // headers: { 'Content-Type': 'multipart/form-data' }
+  };
+  const response = await axios.post(`${JS_API}/advanced-character/${character.char_id}/${emotionName}`, formData, config);
   return response.data['path'];
 }
+
 
 export async function deleteAdvancedCharacterEmotion(character, emotion) {
   const response = await axios.delete(`${JS_API}/advanced-character/${character.char_id}/${emotion}`);
