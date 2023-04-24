@@ -24,19 +24,19 @@
 
 For Windows users:
 ```
-start cmd /k "cd frontend && npm run install && npm run base"
+start cmd /k "cd frontend && npm install && npm run base"
 ```
 to this
 ```
-start cmd /k "cd frontend && npm run install-full && npm run full"
+start cmd /k "cd frontend && npm install && npm run full"
 ```
 For Linux users change this:
 ```
-cd frontend && npm run install && npm run base &
+cd frontend && npm install && npm run base &
 ```
 to this
 ```
-cd frontend && npm run install-full && npm run full &
+cd frontend && npm install && npm run full &
 ```
 After running it should boot you into Akiko.
  
