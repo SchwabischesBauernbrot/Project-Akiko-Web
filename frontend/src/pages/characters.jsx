@@ -224,15 +224,17 @@ const Characters = () => {
         </div>
       </div>
       <div className="flex items-center justify-center mt-6 mb-3">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            className={`bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 ${currentPage === index + 1 ? "bg-blue-600 text-selected-text" : "bg-selected-light text-selected"}`}
-            onClick={() => handlePageClick(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {characters && 
+          Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              className={`bg-selected aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 ${currentPage === index + 1 ? "bg-blue-600 text-selected-text" : "bg-selected-light text-selected"}`}
+              onClick={() => handlePageClick(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))
+          }
       </div>
       {showForm && (
         <CharacterForm
