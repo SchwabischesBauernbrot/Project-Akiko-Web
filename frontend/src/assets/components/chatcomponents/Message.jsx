@@ -50,7 +50,8 @@ function Message({ message, index, editedMessageIndex, handleEditMessage, handle
                 </div>
               </>
             ) : (
-              <ReactMarkdown className="message-text" 
+              <ReactMarkdown 
+              className='message-text m-0 font-sans text-base h-auto py-1 box-border resize-none overflow-y-auto min-w-full'
               components={{
                 em: ({ node, ...props }) => <i style={{ color: "var(--selected-italic-color)" }} {...props} />,
               }}
