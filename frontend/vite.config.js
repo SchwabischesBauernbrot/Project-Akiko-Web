@@ -1,33 +1,34 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import mkcert from 'vite-plugin-mkcert' // Import the plugin
-import fs from 'fs'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import mkcert from 'vite-plugin-mkcert';
+import fs from 'fs';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    mkcert({ // Add the plugin with configuration options
-      host: 'localhost', // The hostname for the development server
-      port: 443, // The port for the HTTPS server, 443 is the default HTTPS port
-      open: true // Open the browser automatically when the server starts
-    })
+    mkcert({
+      host: 'localhost',
+      port: 443,
+      open: true,
+    }),
   ],
   server: {
     proxy: {
       '/api': {
         target: 'http://localhost:5001',
         changeOrigin: true,
-        secure: false, // Allow self-signed certificates
+        secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
-        timeout: 10000
+        timeout: 0,
       },
       '/v1': {
-        target: 'https://127.0.0.1:5100/api', // Use HTTPS
+        target: 'https://127.0.0.1:5100/api',
         changeOrigin: true,
-        secure: false, // Allow self-signed certificates
-        rewrite: (path) => path.replace(/^\/v1/, '')
-      }
-    }
-  }  
-})
+        secure: false,
+        rewrite: (path) => path.replace(/^\/v1/, ''),
+        timeout: 0,
+      },
+    },
+  },
+});
