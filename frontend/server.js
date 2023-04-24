@@ -714,6 +714,15 @@ async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
   var audioConfig = sdk.AudioConfig.fromAudioFileOutput(fileName);
   var synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
 
+  function handleError(error) {
+    if (error instanceof sdk.SynthesisError) {
+      console.error(`Speech synthesis failed due to a synthesis error: ${error.message}`);
+    } else if (error instanceof sdk.NetworkError) {
+      console.error(`Speech synthesis failed due to a network error: ${error.message}`);
+    } else {
+      console.error(`Speech synthesis failed due to an unknown error: ${error.message}`);
+    }
+  }
   try {
     await new Promise((resolve, reject) => {
       synthesizer.speakSsmlAsync(
@@ -723,13 +732,14 @@ async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
             console.log("Speech synthesis succeeded.");
             resolve();
           } else {
-            console.error("Speech synthesis failed: " + result.errorDetails);
-            reject(new Error(result.errorDetails));
+            const error = new Error(result.errorDetails);
+            handleError(error);
+            reject(error);
           }
           synthesizer.close();
         },
         error => {
-          console.error("Speech synthesis failed: " + error);
+          handleError(error);
           reject(error);
           synthesizer.close();
         }
@@ -737,7 +747,7 @@ async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
     });
     return `${timestamp}.wav`;
   } catch (error) {
-    console.log('Speech synthesis failed.');
+    console.log(`Speech synthesis failed with error: ${error.message}`);
     return null;
   }
 }
