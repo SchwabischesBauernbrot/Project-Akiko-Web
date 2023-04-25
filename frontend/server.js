@@ -42,7 +42,6 @@ const BACKGROUNDS_FOLDER = './src/shared_data/backgrounds/';
 const USER_IMAGES_FOLDER = './src/shared_data/user_avatars/';
 const AUDIO_OUTPUT = './src/audio/';
 const HORDE_API_URL = 'https://aihorde.net/api/';
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
 const CHARACTER_EXPORT_FOLDER = './src/shared_data/exports/';
 
@@ -256,6 +255,7 @@ app.post('/tts/generate/:voice_id', async (req, res) => {
     const prompt = req.params.prompt;
     const stability = req.params.stability;
     const similarity_boost = req.params.similarity_boost;
+    const key = req.params.key;
 
     const payload = {
       text: prompt,
@@ -271,7 +271,7 @@ app.post('/tts/generate/:voice_id', async (req, res) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': ELEVENLABS_API_KEY,
+          'x-api-key': key,
         },
         responseType: 'arraybuffer',
       }
@@ -287,6 +287,7 @@ app.post('/tts/generate/:voice_id', async (req, res) => {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
+  
 });
 
 /*
@@ -714,6 +715,15 @@ async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
   var audioConfig = sdk.AudioConfig.fromAudioFileOutput(fileName);
   var synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
 
+  function handleError(error) {
+    if (error instanceof sdk.SynthesisError) {
+      console.error(`Speech synthesis failed due to a synthesis error: ${error.message}`);
+    } else if (error instanceof sdk.NetworkError) {
+      console.error(`Speech synthesis failed due to a network error: ${error.message}`);
+    } else {
+      console.error(`Speech synthesis failed due to an unknown error: ${error.message}`);
+    }
+  }
   try {
     await new Promise((resolve, reject) => {
       synthesizer.speakSsmlAsync(
@@ -723,13 +733,14 @@ async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
             console.log("Speech synthesis succeeded.");
             resolve();
           } else {
-            console.error("Speech synthesis failed: " + result.errorDetails);
-            reject(new Error(result.errorDetails));
+            const error = new Error(result.errorDetails);
+            handleError(error);
+            reject(error);
           }
           synthesizer.close();
         },
         error => {
-          console.error("Speech synthesis failed: " + error);
+          handleError(error);
           reject(error);
           synthesizer.close();
         }
@@ -737,7 +748,7 @@ async function synthesizeSpeech(ssmlString, speechKey, serviceRegion) {
     });
     return `${timestamp}.wav`;
   } catch (error) {
-    console.log('Speech synthesis failed.');
+    console.log(`Speech synthesis failed with error: ${error.message}`);
     return null;
   }
 }
