@@ -97,6 +97,8 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
             placeholder={selectedOption}
             />
             {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
+              <div className='relative flex flex-col text-center'>
+                <label htmlFor="inputValue" className='text-xl text-selected-text'>Endpoint URL or API Key:</label>
                 <input
                 id="inputValue"
                 type="text"
@@ -105,6 +107,7 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
                 onChange={(event) => setInputValue(event.target.value)}
                 placeholder={getDefaultInputValue(selectedOption.value)}
                 />
+              </div>
             )}
             {selectedOption && (
                 <button className="connect-button" type="submit">Connect</button>

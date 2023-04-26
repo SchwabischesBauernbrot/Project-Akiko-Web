@@ -184,7 +184,6 @@ const akiko_defaults = {
     }
     else if(endpointType === 'OAI'){
       customSettings = oai_defaults;
-      console.log('Custom Settings failed. Using Kobold defaults.')
     }
   let imgText = null;
     if(image !== null){
