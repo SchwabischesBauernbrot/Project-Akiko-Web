@@ -284,6 +284,8 @@ body {
 #inputValue {
 	color: var(--selected-text-color);
 	background-color: var(--selected-color);
+	border-radius: 2px;
+	border: solid 1px white;
 }
 .connected {
 	margin: 0;
