@@ -70,35 +70,37 @@ const EndpointSelector = () => {
   
     return (
         <div className="centered settings-box">
-        <h2>Text Generation Endpoint</h2>
+          <div className='mb-4'>
+            <h1 className='text-xl font-bold'>Text Generation Endpoint</h1>
+          </div>
         <div id='endpoint-container'>
-        <form onSubmit={handleConnectClick}>
-        <Select
-        id="options"
-        options={options}
-        value={selectedOption}
-        onChange={handleOptionChange}
-        placeholder={selectedOption}
-        />
-        {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
-            <input
-            id="inputValue"
-            type="text"
-            label="If using the Kobold or Ooba endpoint, enter the URL here. If using the OpenAI endpoint, enter your API key here. If using Horde, enter your API key or leave empty for anonymous mode."
-            value={inputValue}
-            onChange={(event) => setInputValue(event.target.value)}
-            placeholder={getDefaultInputValue(selectedOption.value)}
-            />
-        )}
-        {selectedOption && (
-            <button className="connect-button" type="submit">Connect</button>
-        )}
-        </form>
-        <Connect/>
-        {selectedOption && selectedOption.value === 'Horde' && (
-          <HordeModelSelector/>
+          <form onSubmit={handleConnectClick}>
+          <Select
+          id="options"
+          options={options}
+          value={selectedOption}
+          onChange={handleOptionChange}
+          placeholder={selectedOption}
+          />
+          {selectedOption && selectedOption.value !== 'AkikoBackend' &&(
+              <input
+              id="inputValue"
+              type="text"
+              label="If using the Kobold or Ooba endpoint, enter the URL here. If using the OpenAI endpoint, enter your API key here. If using Horde, enter your API key or leave empty for anonymous mode."
+              value={inputValue}
+              onChange={(event) => setInputValue(event.target.value)}
+              placeholder={getDefaultInputValue(selectedOption.value)}
+              />
           )}
-        </div >
+          {selectedOption && (
+              <button className="connect-button" type="submit">Connect</button>
+          )}
+          </form>
+          <Connect/>
+          {selectedOption && selectedOption.value === 'Horde' && (
+            <HordeModelSelector/>
+            )}
+        </div>
         </div>
     );
   };

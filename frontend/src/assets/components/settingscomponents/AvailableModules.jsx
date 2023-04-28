@@ -14,7 +14,9 @@ function AvailableModules() {
 
   return (
     <div className="centered settings-box">
-      <h2>Available Modules</h2>
+      <div className='mb-4'>
+        <h1 className='text-xl font-bold'>Available Modules</h1>
+      </div>
         {modules.map((module) => (
           <p key={module}>{module}</p>
         ))}

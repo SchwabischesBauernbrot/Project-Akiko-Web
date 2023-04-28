@@ -86,23 +86,27 @@ function ColorPicker() {
   // ... return statement and other code remain unchanged
   return (
     <div className="centered settings-box">
-      <h2>Custom UI Options</h2>
-      <h3>Element to Change:</h3>
-      <select value={selectedElement} onChange={handleElementChange} className="character-field">
-        <option value="backdrop">Central UI Backdrop</option>
-        <option value="buttonBox">Buttons/Boxes</option>
-        <option value="textIcon">Normal Text/Icons</option>
-        <option value="textItalic">Italic Text</option>
-      </select>
-      <h3>Selected Color:</h3>
-      <ChromePicker
-        color={colors[selectedElement]}
-        onChange={handleColorChange}
-      />
-      <button className="connect-button" onClick={clearBackgroundColor}>
-        Clear Background Color
-      </button>
-      <BackgroundSelector/>
+      <div className="mb-4">
+        <h1 className='text-xl font-bold mb-2'>Custom UI Options</h1>
+      </div>
+      <div className="flex flex-col items-center text-center">
+        <h3>Element to Change:</h3>
+        <select value={selectedElement} onChange={handleElementChange} className="character-field">
+          <option value="backdrop">Central UI Backdrop</option>
+          <option value="buttonBox">Buttons/Boxes</option>
+          <option value="textIcon">Normal Text/Icons</option>
+          <option value="textItalic">Italic Text</option>
+        </select>
+        <h3>Selected Color:</h3>
+        <ChromePicker
+          color={colors[selectedElement]}
+          onChange={handleColorChange}
+        />
+        <button className="connect-button" onClick={clearBackgroundColor}>
+          Clear Background Color
+        </button>
+        <BackgroundSelector/>
+      </div>
     </div>
   );
   
