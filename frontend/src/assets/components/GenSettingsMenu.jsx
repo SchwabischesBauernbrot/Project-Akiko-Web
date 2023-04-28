@@ -137,7 +137,7 @@ const GenSettingsMenu = ({onClose}) => {
     return (
         <div className="modal-overlay flex items-center justify-center">
           {invalidEndpoint ? (
-            <div className="relative inset-0 flex flex-col items-center justify-center p-8 bg-selected text-black rounded shadow-lg z-50 w-3/4 md:w-1/2">
+            <div className="relative inset-0 flex flex-col items-center justify-center p-8 bg-selected text-black rounded shadow-lg z-50 w-3/4 md:w-1/2 border-1 border-solid border-gray-500">
               <span
                 className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600"
                 onClick={onClose}
@@ -149,14 +149,14 @@ const GenSettingsMenu = ({onClose}) => {
                 Please check your TextGen Endpoint and try again.
               </p>
               <button
-                className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none"
+                className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none border-1 border-solid border-gray-500"
                 onClick={() => onCloseInvalid()}
               >
                 Close
               </button>
             </div>
           ) : (
-            <div className="relative flex flex-col items-center justify-center p-8 bg-selected text-white rounded shadow-lg z-50 w-3/4 md:w-1/2">
+            <div className="relative flex flex-col items-center justify-center p-8 bg-selected text-white rounded shadow-lg z-50 w-3/4 md:w-1/2 border-1 border-solid border-gray-500">
               <span
                 className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600"
                 onClick={onClose}

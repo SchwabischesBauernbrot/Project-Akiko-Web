@@ -69,7 +69,7 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
     {GenSettingsMenuIsOpen && (
       <GenSettingsMenu onClose={() => setGenSettingsMenuIsOpen(false)}/>
     )}
-    <div className="input-box relative overflow-x-auto max-w-[750px] flex flex-col justify-start p-2 selected-bb-color rounded-b-lg px-1 mt-1 h-18 send-input-container">
+    <div className="input-box relative overflow-x-auto max-w-[750px] flex flex-col justify-start p-2 selected-bb-color rounded-b-lg px-1 mt-1 h-18 send-input-container border-1 border-solid border-gray-500">
       <div className="send-input flex justify-between items-center">
         <div id="FiMenu" onClick={() => setUserMenuOpen(true)} title={'Change User Profile Settings'}>
           <CgProfile />
@@ -103,7 +103,7 @@ function ChatboxInput({ onSend, impersonate, userEdit }) {
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
           ref={textAreaRef}
-          className="min-h-[1rem] bg-transparent backdrop-blur border-none outline-none text-selected-text-color flex-grow ml-2 h-auto overflow-y-scroll resize-none noto-sans-font"
+          className="min-h-[1rem] bg-transparent backdrop-blur border-none outline-none text-selected-text-color flex-grow ml-2 h-auto overflow-y-scroll resize-none noto-sans-font "
         />
         <div onClick={handleSendClick} id="FiSend" title={'Send message'}>
           <HiOutlinePaperAirplane />

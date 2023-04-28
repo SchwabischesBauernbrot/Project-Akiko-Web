@@ -156,7 +156,7 @@ return (
             <form onSubmit={handleCreateConversationSubmit}>
                 <div className='mb-4'>
                     <label className='block text-white font-medium mb-2'>Conversation Name:</label>
-                    <input className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" value={conversationName} onChange={handleConversationNameChange}/>
+                    <input className='shadow appearance-none border-2 border-solid border-gray-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" value={conversationName} onChange={handleConversationNameChange}/>
                 </div>
                 <div className='mb-4'>
                     <label className='block text-white font-medium mb-2'>Participants:</label>
@@ -170,11 +170,11 @@ return (
                     />
                 </div>
                 <div className="form-bottom-buttons flex justify-end space-x-2">
-                    <button className='text-selected-text bg-selected hover:bg-red-600 py-2 px-4 rounded' type="button" id='cancel' onClick={handleCancelCreateConversation}>
+                    <button className='text-selected-text bg-selected border-2 border-solid border-gray-500 hover:bg-red-600 py-2 px-4 rounded' type="button" id='cancel' onClick={handleCancelCreateConversation}>
                         <ImCancelCircle className='w-6 h-6'/>
                         <span className='sr-only'>Cancel</span>
                     </button>
-                    <button className='text-selected-text bg-selected hover:bg-blue-600 py-2 px-4 rounded' id='submit' type="submit">
+                    <button className='text-selected-text bg-selected border-2 border-solid border-gray-500 hover:bg-blue-600 py-2 px-4 rounded' id='submit' type="submit">
                         <FiSave className='w-6 h-6'/>
                         <span className='sr-only'>Save</span>
                     </button>

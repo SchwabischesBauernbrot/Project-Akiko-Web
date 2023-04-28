@@ -514,7 +514,7 @@ function Chatbox({ endpoint, endpointType }) {
       <div className="min-h-screen flex justify-center">
         <div className="flex flex-col">
           <div className="mx-auto max-w-full sm:min-w-full">
-            <div className="connect-chat-box relative mt-1 flex flex-row items-center rounded-t-lg px-1 selected-bb-color backdrop-blur-md mb-1 h-auto overflow-hidden md:max-w-[750px] md:min-w-[750px]">
+            <div className="connect-chat-box relative mt-1 flex flex-row items-center rounded-t-lg px-1 selected-bb-color backdrop-blur-md mb-1 h-auto overflow-hidden md:max-w-[750px] md:min-w-[750px] border-1 border-solid border-gray-500">
               <div id="connect-button">
                 <button className={'chat-button'} id={'submit'} title={'Connect to Chat'} onClick={() => setToggleConnectMenu(true)}> <VscDebugDisconnect className="react-icon"/></button>
               </div>
@@ -550,7 +550,7 @@ function Chatbox({ endpoint, endpointType }) {
                 <button className={'chat-button'} id={'submit'} title={'Create Group Chat'} onClick={() => setCreateMenuOn(true)}><FiUsers className='react-icon'/></button>
               </div>
             </div>
-            <div className="h-[calc(75vh-7rem)] overflow-x-hidden relative flex flex-col justify-start p-2 selected-bb-color shadow-sm backdrop-blur-md md:max-w-[750px] md:min-w-[750px] md:h-[75vh]">
+            <div className="h-[calc(75vh-7rem)] overflow-x-hidden relative flex flex-col justify-start p-2 selected-bb-color shadow-sm backdrop-blur-md md:max-w-[750px] md:min-w-[750px] md:h-[75vh] border-1 border-solid border-gray-500">
               {messages.map((message, index) => (
               <Message
                 key={index}

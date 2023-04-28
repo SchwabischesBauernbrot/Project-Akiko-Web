@@ -231,13 +231,13 @@ export const UpdateCharacterForm = ({ character, onUpdateCharacter, onClose, dow
             </div>
           </div>
           <div className="flex justify-center mt-4 mt-0 gap-6"> 
-            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" type="submit">
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" type="submit">
               <FiSave className="react-icon"/>
             </button>
-            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as PNG" onClick={() => handleDownload()}>
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as PNG" onClick={() => handleDownload()}>
               <BsFiletypePng className="react-icon"/>
             </button>
-            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-none outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as JSON" onClick={() => handleJSONDownload()}>
+            <button className="text-selected-text aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600" alt="Download Character as JSON" onClick={() => handleJSONDownload()}>
               <BsFiletypeJson className="react-icon"/>
             </button>
           </div>

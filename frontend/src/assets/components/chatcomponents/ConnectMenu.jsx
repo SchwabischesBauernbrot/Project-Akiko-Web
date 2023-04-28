@@ -84,7 +84,7 @@ const ConnectMenu = ({setToggleConnectMenu}) => {
 
     return (
       <div className="modal-overlay">
-        <div className="relative flex flex-col items-center justify-center p-10 bg-selected text-selected-text rounded shadow-lg">
+        <div className="relative flex flex-col items-center justify-center p-10 bg-selected text-selected-text rounded shadow-lg border-1 border-solid border-gray-500">
           <span className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600" onClick={handleClose}>&times;</span>
             <h2 className="mb-4 text-2xl">Text Generation Endpoint</h2>
             <div id='endpoint-container'>
