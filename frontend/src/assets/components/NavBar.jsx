@@ -70,7 +70,7 @@ const Navbar = ({showNavBar, setShowNavBar}) => {
         {showNavBar && (
         <div 
         ref={navbarRef}
-        className={'relative z-50 md:w-1/2 lg:w-1/2 rounded-br-[4rem] rounded-bl-[4rem] shadow-md backdrop-blur-md left-1/2 transform -translate-x-1/2 top-0 border-2 border-solid border-gray-500'}
+        className={'relative z-50 md:w-1/2 lg:w-1/2 rounded-br-[4rem] rounded-bl-[4rem] shadow-md backdrop-blur-md left-1/2 transform -translate-x-1/2 top-0 border-1 border-solid border-gray-500'}
         style={{
           backgroundColor: 'var(--selected-color)',
         }}>

@@ -100,7 +100,7 @@ const EmotionSprites = ({ character }) => {
     };
     
     return (
-        <div className="relative flex flex-col items-center bg-selected p-4 mt-4 rounded-lg border-2 border-solid border-gray-500" id="emotion-sprites">
+        <div className="relative flex flex-col items-center bg-selected p-4 mt-4 rounded-lg border-1 border-solid border-gray-500" id="emotion-sprites">
             <h1 className="text-xl font-bold">Emotion Sprites</h1>
             <br />
             <br />
@@ -119,9 +119,9 @@ const EmotionSprites = ({ character }) => {
                 Upload All Emotions
                 </label>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 max-h-[600px] overflow-y-auto border-2 border-solid border-gray-500">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 max-h-[600px] overflow-y-auto border-1 border-solid border-gray-500">
                 {possibleEmotions.map(emotion => (
-                    <div key={emotion} className="bg-selected p-4 rounded-lg shadow-md flex-row justify-center border-2 border-solid border-gray-500">
+                    <div key={emotion} className="bg-selected p-4 rounded-lg shadow-md flex-row justify-center border-1 border-solid border-gray-500">
                         <div className="flex flex-col items-center">
                             <div className="text-base font-bold mb-2 text-center w-auto">{capitalizeFirstLetter(emotion)}</div>
                             <div className="h-42 w-32 bg-selected-bb-color mb-4 flex items-center justify-center rounded-lg overflow-hidden">
