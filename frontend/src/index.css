@@ -210,7 +210,7 @@ body {
 	backdrop-filter: blur(10px);
 	padding: 15px;
 	width: auto;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -285,7 +285,7 @@ body {
 	color: var(--selected-text-color);
 	background-color: var(--selected-color);
 	border-radius: 2px;
-	border: solid 1px white;
+	border: 2px solid gray;
 }
 .connected {
 	margin: 0;
@@ -294,8 +294,7 @@ body {
 	background-color: rgba(0, 255, 0, 0.158);
 	border-radius: .25rem;
 	padding: 3px;
-	border-style: ridge;
-	border-color: #00ff0007;
+	border: 2px solid gray;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	width: min-content;
 	height: min-content;
@@ -308,8 +307,7 @@ body {
 	background-color: rgba(255, 0, 0, 0.185);
 	border-radius: .25rem;
 	padding: 3px;
-	border-style: ridge;
-	border-color: #ff330007;
+	border: 2px solid gray;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	width: min-content;
 	height: min-content;
@@ -349,7 +347,7 @@ pre {
 	backdrop-filter: blur(10px);
 	padding: .7em;
 	width: 4rem;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -367,7 +365,7 @@ pre {
 	backdrop-filter: blur(10px);
 	padding: .7em;
 	width: 2.5rem;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -441,9 +439,11 @@ Settings Pages CSS
 	justify-content: center;
 	gap: 20rem;
 	background-color: var(--selected-color);
-	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+	border-radius: 1rem;
+	padding: 3px;
 	backdrop-filter: blur(10px);
+	border: 2px solid gray;
 	padding: 1%;
 	color: var(--selected-text-color);
 	margin-left: 5%;
@@ -462,6 +462,7 @@ Settings Pages CSS
 .settings-panel-header {
 	width: fit-content;
 	margin: 2% auto;
+	border: 2px solid gray;
 	background-color: var(--selected-bb-color);
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
@@ -486,6 +487,7 @@ Settings Pages CSS
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 	padding: 2rem;
+	border: 2px solid gray;
 	color: var(--selected-text-color);
 	justify-content: center;
 	height: max-content;
@@ -509,6 +511,7 @@ Settings Pages CSS
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 	padding: 2rem;
+	border: 2px solid gray;
 	color: var(--selected-text-color);
 	justify-content: center;
 	width: 50rem;
@@ -531,6 +534,7 @@ Settings Pages CSS
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 10px;
+	border: 2px solid gray;
 	background-color: var(--selected-bb-color);
 	color: var(--selected-text-color);
 	border-radius: 10px;
@@ -545,8 +549,8 @@ Settings Pages CSS
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 10px;
+	border: 2px solid gray;
 	width: min-content;
-	border: none;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -616,7 +620,7 @@ Characters Page CSS
 	flex-direction: column;
 	justify-content: flex-start;
 	padding: 15px;
-	border-color: none;
+	border: 2px solid gray;
 	background-color: var(--selected-bb-color);
 	color: var(--selected-text-color);
 	border-radius: 10px;
@@ -629,7 +633,7 @@ Characters Page CSS
 	border-radius: 10px;
 	padding: 10px;
 	margin-bottom: 15px;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -643,7 +647,7 @@ Characters Page CSS
 	height: fit-content;
 	min-height: 50px;
 	overflow-y: auto;
-	border: none;
+	border: 2px solid gray;
 	color: var(--selected-text-color);
 	outline: none;
 	margin-top: 10px;
@@ -761,7 +765,7 @@ Characters Page CSS
 	margin: auto;
 	width: 50%;
 	background-color: var(--selected-color);
-	border-radius: 10px;
+	border: 2px solid gray;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 15px;
@@ -780,7 +784,7 @@ Characters Page CSS
 	border-radius: 10px;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -807,7 +811,7 @@ Characters Page CSS
 .create-conversation-menu {
 	width: max-content;
 	background-color: var(--selected-color);
-	border-radius: 10px;
+	border: 2px solid gray;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(10px);
 	padding: 15px;
@@ -854,7 +858,7 @@ Characters Page CSS
 	backdrop-filter: blur(10px);
 	border-radius: 10px;
 	padding: 15px;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -1000,7 +1004,7 @@ Characters Page CSS
 	backdrop-filter: blur(10px);
 	padding: 1em;
 	width: 6rem;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	color: var(--selected-text-color);
 	word-wrap: normal;
@@ -1015,8 +1019,7 @@ Characters Page CSS
 	background-color: green;
 	margin-top: 1rem;
 	padding: 0.5rem;
-	border-radius: 5px;
-	border: none;
+	border: 2px solid gray;
 	margin-bottom: 2rem;
 	outline: none;
 	width: auto;
@@ -1072,8 +1075,7 @@ Characters Page CSS
   .settings-box input[type="text"] {
 	margin-top: 1rem;
 	padding: 0.5rem;
-	border-radius: 5px;
-	border: none;
+	border: 2px solid gray;
 	margin-bottom: 2rem;
 	outline: none;
 	background-color: rgba(255, 255, 255, 0.2);
@@ -1098,7 +1100,7 @@ Characters Page CSS
 	padding: 0.5rem;
 	border-radius: 5px;
 	margin-bottom: 2rem;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	background-color: rgba(255, 255, 255, 0.2);
 	color: white;
@@ -1127,7 +1129,7 @@ Characters Page CSS
 	margin-top: 1rem;
 	padding: 0.5rem;
 	border-radius: 5px;
-	border: none;
+	border: 2px solid gray;
 	outline: none;
 	background-color: rgba(255, 255, 255, 0.2);
 	color: white;
@@ -1169,7 +1171,7 @@ Characters Page CSS
   
   .save-button {
 	background-color: transparent;
-	border: none;
+	border: 2px solid gray;
 	color: white;
 	font-size: 1.2rem;
 	cursor: pointer;
@@ -1191,8 +1193,6 @@ Characters Page CSS
 	  font-size: 4rem;
 	}
   }
-  
-  
   
   .input-group button {
 	margin-left: 1rem;

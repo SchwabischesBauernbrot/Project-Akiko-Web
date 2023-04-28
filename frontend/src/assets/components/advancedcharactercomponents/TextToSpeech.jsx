@@ -45,7 +45,7 @@ const TextToSpeech = ({ character }) => {
     return (
         <>
             {character && (
-                <div className='relative bg-selected p-4 mt-4 rounded-lg'>
+                <div className='relative bg-selected p-4 mt-4 rounded-lg border-2 border-solid border-gray-500'>
                     <h1 className='text-xl font-bold mb-2'>Text to Speech Settings</h1>
                     <br />
                     <br />

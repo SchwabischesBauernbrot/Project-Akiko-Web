@@ -22,7 +22,7 @@ const Conversation = ({ conversation }) => {
   }
 
   return (
-  <div className="conversation-info">
+  <div className="conversation-info border-2 border-solid border-gray-500">
       <b>{convertToReadableDateTime(convo.conversationName)}</b>
       <p><b>Participants:</b></p>
       <div className="participant-list">

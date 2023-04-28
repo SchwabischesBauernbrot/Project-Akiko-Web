@@ -35,7 +35,8 @@ export const customStyles = {
         width: 'fit-content',
         backgroundColor: 'rgba(11, 11, 11, 0.636)',
         backdropFilter: 'blur(10px)',
-        color: 'white'
+        color: 'white',
+        border: '2px solid gray',
     }),
     dropdownIndicator: (provided) => ({
         ...provided,
@@ -53,6 +54,7 @@ export const customStyles = {
         backdropFilter: 'blur(11px)',
         scrollbehavior: 'smooth',
         color: 'black',
+        border: '2px solid gray',
     }),
     option: (provided, state) => ({
         ...provided,
@@ -75,6 +77,7 @@ export const customUserStyles = {
         width: 'fit-content',
         backgroundColor: 'rgba(11, 11, 11, 0.636)',
         backdropFilter: 'blur(10px)',
+        border: '2px solid gray',
         color: 'white'
     }),
     dropdownIndicator: (provided) => ({

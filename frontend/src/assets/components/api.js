@@ -338,22 +338,30 @@ export async function updateAdvancedCharacter(advancedCharacter) {
 }
 
 export async function getAvailableModules() {
-  const response = await axios.get(`${API_URL}/modules`);
-  const modules = response.data['modules'];
+  let modules = [];
 
-  // Set localStorage values for caption and classify
-  for (let i = 0; i < modules.length; i++) {
-    switch (modules[i]) {
-      case 'caption':
-        localStorage.setItem('imageCaptioning', true);
-        break;
-      case 'classify':
-        localStorage.setItem('useEmotionClassifier', 1);
-        console.log('Emotion classifier found');
-        break;
-      default:
-        break;
+  try {
+    const response = await axios.get(`${API_URL}/modules`);
+    modules = response.data['modules'];
+
+    // Set localStorage values for caption and classify
+    for (let i = 0; i < modules.length; i++) {
+      switch (modules[i]) {
+        case 'caption':
+          localStorage.setItem('imageCaptioning', true);
+          break;
+        case 'classify':
+          localStorage.setItem('useEmotionClassifier', 1);
+          console.log('Emotion classifier found');
+          break;
+        default:
+          break;
+      }
     }
+  } catch (error) {
+    console.error('Error fetching modules:', error);
+    localStorage.setItem('useEmotionClassifier', 0);
+    localStorage.setItem('imageCaptioning', false);
   }
 
   // Check if both caption and classify are present, otherwise set to false
@@ -362,7 +370,7 @@ export async function getAvailableModules() {
   if (!hasCaption) {
     localStorage.setItem('imageCaptioning', false);
   }
-  if(!hasClassify) {
+  if (!hasClassify) {
     localStorage.setItem('useEmotionClassifier', 0);
   }
 
