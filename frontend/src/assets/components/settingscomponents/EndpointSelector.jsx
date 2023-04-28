@@ -65,7 +65,7 @@ const EndpointSelector = () => {
         { value: 'Kobold', label: 'Kobold' },
         { value: 'Ooba', label: 'OobaTextUI' },
         { value: 'Horde', label: 'Horde' },
-        { value: 'OpenAI', label: 'OpenAI' }
+        { value: 'OAI', label: 'OpenAI' }
     ];
   
     return (
