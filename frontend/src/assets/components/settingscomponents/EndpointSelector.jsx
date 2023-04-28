@@ -54,7 +54,7 @@ const EndpointSelector = () => {
             return '';
           case 'Horde':
             return '0000000000';
-          case 'OpenAI':
+          case 'OAI':
             return '';
           default:
             return '';
@@ -65,7 +65,7 @@ const EndpointSelector = () => {
         { value: 'Kobold', label: 'Kobold' },
         { value: 'Ooba', label: 'OobaTextUI' },
         { value: 'Horde', label: 'Horde' },
-        { value: 'OAI', label: 'OpenAI' }
+        { value: 'OAI', label: 'OAI' }
     ];
   
     return (
