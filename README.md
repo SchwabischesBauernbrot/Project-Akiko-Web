@@ -9,8 +9,6 @@
 
 ## Quick Links:
 - Suggestions Form: https://forms.gle/pahKwy73D6DzCaJV8
-- Trello Board (Check here for what's being worked on): https://trello.com/b/muwhUyM9/main-app
-- Discord Server: https://discord.gg/Pdhd7dEqHp
 # Basic Usage Guide (no image gen or emotion classification):
 1. Clone the repo to your local machine.
 2. Click the 'setup.bat' file and wait for the batch file to complete setting up your enviornment. After you run this once, just use Start.bat for startup.
