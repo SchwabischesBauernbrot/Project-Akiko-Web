@@ -95,7 +95,6 @@ npm run custom --port --cpu --listen
 # Planned Features:
 ## Highlighted Features:
 - Horde Support. **(Done)**
-- Fully Color Custom UI. **(Done)**
 - Good Character Creation Page. **(Done)**
 - Azure TTS with multiple voices for group chats. **(Done)**
 - Multi-sprites/emotion detection for group chats. **(Done)**
@@ -106,7 +105,7 @@ npm run custom --port --cpu --listen
 - Image captioning. **(Done)**
 - Stable Diffusion (probably).
 ## Full Guide to Language Model Config, Character Creation, and more:
-- Character Creation 
+- Character Creation
 - Character Card Import/Export
 - Guide Page full of info for creating characters in every available style, AliChat, W++, and more.
 ## Chat with Characters:
@@ -123,15 +122,6 @@ npm run custom --port --cpu --listen
 - Configure 'time since' to show your bot how long it has been since you last messaged them.
 - Configure your relationship to the bot (Friend, Lover, Wife/Husband, Sibling, Custom Value, etc).
 - Configure 'consent' for certain actions for more 'realism'.
-## Multi-user Support:
-This feature and it's components will be optional.
-- User sign-on/sign-up.
-- Allow authorized users to access application settings.
-- Have a user profile custom to you and your other users.
-- Be able to invite users to chat with you and your AI with user recognition.
-- See other user's stats (how many messages they've sent, what their favorite Character is, etc.)
-- See a Character's creator.
-- Character sharing (or not).
 ## Twitch integration: 
 - Create your own AI VTuber like Neurosama!
 - See and manage Twitch Stats and Chats from inside Project Akiko UI.
