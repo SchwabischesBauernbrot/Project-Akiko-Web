@@ -113,7 +113,7 @@ npm run custom --port --cpu --listen
 - Chat with your favorite Character through a polished UI. **(Done)**
 - Chat with multiple characters in character groups. **(Done)**
 - Chat regeneration (swipes), Editable Messages, Impersonation, Branching Chats. **(75% Done)**
-- Emotion detection with corresponding emotional display for set-characters (configuration required). **(Done)
+- Emotion detection with corresponding emotional display for set-characters (configuration required). **(Done)**
 - Send images to your character and have them recognize what the image is. **(Done)**
 - Live2D models with emotion display. **(50% Done)**
 - Text-to-speech with AzureTTS or (maybe) other alternatives. (this will also allow you to see lips moving on Live2D models.) **(75% Done, Azure TTS with multi chara support is finished.)**
