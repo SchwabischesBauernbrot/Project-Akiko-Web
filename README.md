@@ -1,5 +1,5 @@
-# Project Akiko
- Making an Open Source Twitch VTuber with TTS and Language Model processing, and creating a universal Chat Platform for LLMs like Pygmalion, LLaMA and others.
+# Project Akiko Web
+Creating an Open Source Web Chat Platform for LLMs.
 # Credit to other repos/creators:
 - SillyLossy (Cohee) and his gracious sharing of his code for https://github.com/SillyLossy/TavernAI-extras and also his Misaka Chara Card and sprites.
 - henk717 and his creation of the start runtime for Project Akiko.
