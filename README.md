@@ -141,18 +141,3 @@ This feature and it's components will be optional.
 - Send images to the bot.
 Ask for images from the bot (spicy or not).
 - Custom Chat Settings are also available on the discord bot.
-# Current State of the UI (Obviously WIP submit suggestions to the form above):
-## Character Page:
-![CharaPage](https://user-images.githubusercontent.com/26259870/233136083-3ca970d4-9f30-45cc-8ced-31ceba307a64.png)
-![EditChara](https://user-images.githubusercontent.com/26259870/233136129-0e290bc0-1064-4812-9861-8b67d6b191d2.png)
-## Adv. Character Page:
-![AdvancedCharaPage](https://user-images.githubusercontent.com/26259870/233136320-246b45e2-3d2c-4da1-a3fc-dbccda9face4.png)
-## Chat Page:
-![Chat](https://user-images.githubusercontent.com/26259870/233136157-236bbc67-10c2-416e-82ec-9e9f7534cb10.png)
-![Group](https://user-images.githubusercontent.com/26259870/233136167-03ee376f-5b26-4ed0-96c5-c07a6c1fc4ef.png)
-## Settings Page:
-![Settings](https://user-images.githubusercontent.com/26259870/233136194-8674e5ed-1173-4b9e-9147-87bc32727dc0.png)
-![DiscordBotPage](https://user-images.githubusercontent.com/26259870/233136206-c61acba2-53aa-47d7-9ee2-9c419c41f55e.png)
-Custom Color Example:
-![image](https://user-images.githubusercontent.com/26259870/229264937-d08567ff-c231-48b8-b5bb-45820112c30c.png)
-
