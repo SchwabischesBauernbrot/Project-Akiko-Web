@@ -1,5 +1,5 @@
 # Project Akiko Web
-Creating an Open Source Web Chat Platform for LLMs.
+Creating an Open Source Web Chat Platform for LLMs, make Twitch AI like Neurosama!
 # Credit to other repos/creators:
 - SillyLossy (Cohee) and his gracious sharing of his code for https://github.com/SillyLossy/TavernAI-extras and also his Misaka Chara Card and sprites.
 - henk717 and his creation of the start runtime for Project Akiko.
