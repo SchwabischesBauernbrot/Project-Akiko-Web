@@ -1,12 +1,12 @@
 import axios from 'axios';
-
-const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
-const API_URL = `${CURRENT_URL}/v1`;
-const JS_API = `${CURRENT_URL}/api`;
-const AVATARS_FOLDER = 'src/shared_data/character_images';
-const EXPORTS_FOLDER = 'src/shared_data/exports';
-const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
-const BACKGROUNDS_FOLDER = 'src/shared_data/backgrounds';
+export const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+export const API_URL = `${CURRENT_URL}/v1`;
+export const JS_API = `${CURRENT_URL}/api`;
+export const AVATARS_FOLDER = 'src/shared_data/character_images';
+export const EXPORTS_FOLDER = 'src/shared_data/exports';
+export const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
+export const BACKGROUNDS_FOLDER = 'src/shared_data/backgrounds';
+export const AUDIO_LOCATION = 'src/audio'
 
 export function downloadImage(imageUrl, fileName) {
   const link = document.createElement('a');
@@ -61,64 +61,6 @@ export async function fetchBackgrounds() {
   const response = await axios.get(`${JS_API}/backgrounds`);
   return response.data.backgrounds;
 }
-
-export async function fetchConfig(setBotToken, setChannels) {
-  try {
-    const response = await axios.get(`${API_URL}/discord-bot/config`);
-    console.log('Response:', response);
-    const data = response.data;
-    console.log('Data:', data);
-
-    // set the state with the retrieved data
-    setBotToken(data.botToken || '');
-    console.log('Bot Token set:', data.botToken);
-    setChannels(data.channels || '');
-    console.log('Channels set:', data.channels);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-
-export async function handleSaveToken(botToken) {
-  const config = {
-    botToken: botToken,
-  };
-  try {
-    const response = await axios.post(`${API_URL}/discord-bot/token`, config);
-    console.log('Token configuration saved successfully');
-
-    // Read the .config file and set the initial value of the bot token input field
-    const fileResponse = await axios.get(`${API_URL}/discord-bot/config`);
-    const fileData = fileResponse.data;
-    const tokenValue = fileData['DISCORD_BOT_TOKEN'];
-    if (tokenValue) {
-      document.getElementById('bot-token-input').value = tokenValue.slice(1, -1);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export async function handleSaveChannel(channels) {
-  const config = {
-    channels: channels,
-  };
-  try {
-    const response = await axios.post(`${API_URL}/discord-bot/channel`, config);
-    console.log('Channel configuration saved successfully');
-
-    // Read the .config file and set the initial value of the channel input field
-    const fileResponse = await axios.get(`${API_URL}/discord-bot/config`);
-    const fileData = fileResponse.data;
-    const channelValue = fileData['CHANNEL_ID'];
-    if (channelValue) {
-      document.getElementById('channel-input').value = channelValue;
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 export async function saveUserAvatar(image) {
   const formData = new FormData();

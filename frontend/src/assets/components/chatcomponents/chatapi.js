@@ -1,12 +1,7 @@
 import axios from 'axios';
 import { createSsml } from '../miscfunctions';
-import { getCharacterSpeech } from '../api';
-import { Configuration, OpenAIApi } from "openai"; // use default import syntax
+import { AUDIO_LOCATION, CURRENT_URL, API_URL, JS_API, getCharacterSpeech } from '../api';
 
-const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
-const API_URL = `${CURRENT_URL}/v1`;
-const JS_API = `${CURRENT_URL}/api`;
-const AUDIO_LOCATION = 'src/audio'
 const kobold_defaults = {
   "max_context_length": 2048,
   "max_length": 180,

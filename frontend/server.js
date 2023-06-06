@@ -14,6 +14,11 @@ import extract from 'png-chunks-extract';
 import PNGtext from 'png-chunk-text';
 import encode from 'png-chunks-encode';
 import jimp from 'jimp';
+import { Client, Intents } from 'discord.js';
+
+// Create a new client instance
+const disClient = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.MESSAGE_CONTENT] });
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -931,7 +936,6 @@ app.post('/textgen/:endpointType', async (req, res) => {
           console.log(error);
         }
         break;
-  
       case 'Horde':
         try{
           const hordeKey = endpoint ? endpoint : '0000000000';
@@ -1036,4 +1040,62 @@ app.post('/text/status', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while processing the request.' });
   }
+});
+
+/*
+############################################
+##                                        ##
+##             Discord ROUTES             ##
+##                                        ##
+############################################
+*/
+let botReady = false;
+let botSettings;
+try {
+  botSettings = JSON.parse(fs.readFileSync(`${CHARACTER_ADVANCED_FOLDER}discordBot.json`, 'utf-8'));
+} catch (error) {
+  console.error('Failed to load config file:', error);
+}
+
+disClient.once('ready', () => {
+  console.log('Bot ready!');
+  botReady = true;
+});
+
+app.get('/discord-bot/start', (req, res) => {
+  if (!botReady) {
+    try{
+      disClient.login(botSettings.token);
+      res.send('Bot started');
+    }catch{
+      console.log('Failed to start bot. Token invalid.')
+    }
+  } else {
+      res.send('Bot already started');
+  }
+});
+
+app.get('/discord-bot/stop', (req, res) => {
+  if (botReady) {
+      disClient.destroy();
+      botReady = false;
+      res.send('Bot stopped');
+  } else {
+      res.send('Bot already stopped');
+  }
+});
+
+app.get('/discord-bot/config', (req, res) => {
+  res.send(botSettings);
+});
+
+app.post('/discord-bot/config', (req, res) => {
+  botSettings = req.body;
+  fs.writeFile(`${CHARACTER_ADVANCED_FOLDER}discordBot.json`, JSON.stringify(botSettings), (err) => {
+      if (err) {
+          res.send('Failed to write to file');
+      } else {
+          res.send('Successfully wrote to file');
+      }
+  });
 });
