@@ -166,7 +166,7 @@ const DiscordBot = () => {
                   )}
                 </div>
               ))}
-            <button className="aspect-w-1 aspect-h-1 mt-4 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" onClick={() => refreshChannels}>
+            <button className="aspect-w-1 aspect-h-1 mt-4 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" onClick={() => refreshChannels()}>
               <FiRefreshCcw className="react-icon"/>
             </button>
           </div>
