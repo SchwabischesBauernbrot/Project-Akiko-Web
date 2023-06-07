@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
-import 'tailwindcss/tailwind.css';
 import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot, saveDiscordConfig } from '../assets/components/discordbot/dbotapi';
 import { FiSave } from 'react-icons/fi';
 
 
 const DiscordBot = () => {
   const [botToken, setBotToken] = useState('');
-  const [channels, setChannels] = useState('');
   const [channelList, setChannelList] = useState([]);
   const [isOn, setIsOn] = useState(false);
+  
+  const channels = channelList.join(', ');
 
   const handleToggle = async () => {
     if (isOn) {
@@ -21,6 +21,10 @@ const DiscordBot = () => {
     }
   };
 
+  const handleChannelsChange = (event) => {
+    const newChannels = event.target.value.split(',').map(channel => channel.trim());
+    setChannelList(newChannels);
+  };
 
   const settingsPanelRef = useRef(null);
 
@@ -38,7 +42,7 @@ const DiscordBot = () => {
     };
     fetchData();
   }, []);
-
+  
   const saveData = async () => {
     let data = {
       "token" : botToken,
@@ -54,21 +58,21 @@ const DiscordBot = () => {
         <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
           <div className="settings-box" id='on-switch'>
             <RxDiscordLogo className="discord-logo" />
-            <h2>On/Off Switch</h2>
+            <h2 className='text-selected-text font-bold'>On/Off Switch</h2>
             <button className={`discord-button ${isOn ? 'discord-button-on' : ''}`} onClick={handleToggle}>
               {isOn ? 'ON' : 'OFF'}
             </button>
           </div>
           <div className="settings-box" id='bot-token'>
-            <h2>Discord Bot Token</h2>
+            <h2 className='text-selected-text font-bold'>Discord Bot Token</h2>
             <div className="input-group">
               <input type="text" value={botToken} onChange={(event) => setBotToken(event.target.value)} />
             </div>
           </div>
           <div className="settings-box" id='channel'>
-            <h2>Visible Channels</h2>
+            <h2 className='text-selected-text font-bold'>Visible Channels</h2>
             <div className="input-group">
-              <input type="text" value={channels} onChange={(event) => setChannels(event.target.value)} />
+              <input type="text" value={channels} onChange={handleChannelsChange} />
             </div>
           </div>
         </div>
