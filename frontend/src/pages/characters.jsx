@@ -29,8 +29,6 @@ const Characters = () => {
     );
   }) : [];
 
-
-
   const totalPages = Math.ceil(filteredCharacters.length / charactersPerPage);
 
   // Get the characters for the current page

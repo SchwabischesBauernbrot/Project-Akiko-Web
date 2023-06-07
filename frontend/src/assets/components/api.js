@@ -2,11 +2,11 @@ import axios from 'axios';
 export const CURRENT_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 export const API_URL = `${CURRENT_URL}/v1`;
 export const JS_API = `${CURRENT_URL}/api`;
-export const AVATARS_FOLDER = 'src/shared_data/character_images';
-export const EXPORTS_FOLDER = 'src/shared_data/exports';
-export const USER_AVATAR_FOLDER = 'src/shared_data/user_avatars';
-export const BACKGROUNDS_FOLDER = 'src/shared_data/backgrounds';
-export const AUDIO_LOCATION = 'src/audio'
+export const AVATARS_FOLDER = 'character_images';
+export const EXPORTS_FOLDER = 'exports';
+export const USER_AVATAR_FOLDER = 'user_avatars';
+export const BACKGROUNDS_FOLDER = 'backgrounds';
+export const AUDIO_LOCATION = 'audio'
 
 export function downloadImage(imageUrl, fileName) {
   const link = document.createElement('a');

@@ -36,15 +36,15 @@ app.use(express.json());
 
 const upload = multer({ storage: storage });
 
-const CHARACTER_FOLDER = './src/shared_data/character_info/';
-const CHARACTER_IMAGES_FOLDER = './src/shared_data/character_images/';
-const CHARACTER_ADVANCED_FOLDER = './src/shared_data/advanced_characters/';
-const BACKGROUNDS_FOLDER = './src/shared_data/backgrounds/';
-const USER_IMAGES_FOLDER = './src/shared_data/user_avatars/';
-const AUDIO_OUTPUT = './src/audio/';
+const CHARACTER_FOLDER = './public/character_info/';
+const CHARACTER_IMAGES_FOLDER = './public/character_images/';
+const CHARACTER_ADVANCED_FOLDER = './public/advanced_characters/';
+const BACKGROUNDS_FOLDER = './public/backgrounds/';
+const USER_IMAGES_FOLDER = './public/user_avatars/';
+const AUDIO_OUTPUT = './public/audio/';
 const HORDE_API_URL = 'https://aihorde.net/api/';
-const CONVERSATIONS_FOLDER = './src/shared_data/conversations/';
-const CHARACTER_EXPORT_FOLDER = './src/shared_data/exports/';
+const CONVERSATIONS_FOLDER = './public/conversations/';
+const CHARACTER_EXPORT_FOLDER = './public/exports/';
 
 function allowed_file(filename) {
   const allowed_extensions = ['.png', '.jpg', '.jpeg', '.gif'];
@@ -1054,7 +1054,7 @@ let botReady = false;
 let botSettings;
 
 try {
-  botSettings = JSON.parse(fs.readFileSync(`${CHARACTER_ADVANCED_FOLDER}discordBot.json`, 'utf-8'));
+  botSettings = JSON.parse(fs.readFileSync(`./public/discord/discordBot.json`, 'utf-8'));
 } catch (error) {
   console.error('Failed to load config file:', error);
 }
@@ -1120,7 +1120,7 @@ app.get('/discord-bot/config', (req, res) => {
 
 app.post('/discord-bot/config', (req, res) => {
   botSettings = req.body;
-  fs.writeFile(`${CHARACTER_ADVANCED_FOLDER}discordBot.json`, JSON.stringify(botSettings), (err) => {
+  fs.writeFile(`./public/discord/discordBot.json`, JSON.stringify(botSettings), (err) => {
       if (err) {
           res.send('Failed to write to file');
       } else {
