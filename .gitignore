@@ -7,3 +7,5 @@ frontend/src/shared_data/exports
 backend/.config
 frontend/src/shared_data/advanced_characters/
 frontend/uploads/
+frontend/public/discord/discordBot.json
+frontend/public/discord/discordBot.json
