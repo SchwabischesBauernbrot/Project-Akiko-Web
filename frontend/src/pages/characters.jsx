@@ -18,14 +18,18 @@ const Characters = () => {
   const charactersPerPage = 12;
 
   // Calculate the total number of pages
-  const filteredCharacters = characters.filter((character) => {
+  
+  const filteredCharacters = characters ? characters.filter((character) => {
     return Object.values(character).some((value) =>
+      value && 
       value
         .toString()
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     );
-  });
+  }) : [];
+
+
 
   const totalPages = Math.ceil(filteredCharacters.length / charactersPerPage);
 
@@ -205,6 +209,7 @@ const Characters = () => {
             style={{ display: 'none' }}
             multiple={true}
           />
+          {characters && 
           <div className="chara-search-bar col-span-2">
             <input
               type="text"
@@ -213,6 +218,7 @@ const Characters = () => {
               onChange={(event) => setSearchTerm(event.target.value)}
             />
           </div>
+          }
         </div>
       </div>
       <div className="w-full h-full grid place-content-center">

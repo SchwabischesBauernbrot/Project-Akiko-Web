@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
 import 'tailwindcss/tailwind.css';
-import { getBotStatus, startDisBot, stopDisBot } from '../assets/components/discordbot/dbotapi';
+import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot } from '../assets/components/discordbot/dbotapi';
 
 
 const DiscordBot = () => {
@@ -31,6 +31,9 @@ const DiscordBot = () => {
     const fetchData = async () => {
       const response = await getBotStatus();
       setIsOn(response);
+      const data = await getDiscordSettings();
+      setBotToken(data.data.token);
+      setChannelList(data.data.channels);
     };
     fetchData();
   }, []);
@@ -50,11 +53,11 @@ const DiscordBot = () => {
           <div className="settings-box" id='bot-token'>
             <h2>Discord Bot Token</h2>
             <div className="input-group">
-              <input type="password" value={botToken} onChange={(event) => setBotToken(event.target.value)} />
+              <input type="text" value={botToken} onChange={(event) => setBotToken(event.target.value)} />
             </div>
           </div>
           <div className="settings-box" id='channel'>
-            <h2>Channel</h2>
+            <h2>Visible Channels</h2>
             <div className="input-group">
               <input type="text" value={channels} onChange={(event) => setChannels(event.target.value)} />
             </div>
@@ -64,8 +67,5 @@ const DiscordBot = () => {
     </>
   );
 };
-
-
-
 
 export default DiscordBot;

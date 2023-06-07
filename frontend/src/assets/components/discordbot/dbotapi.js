@@ -13,3 +13,7 @@ export async function stopDisBot(){
     const response = axios.get(`${JS_API}/discord-bot/stop`);
     return response;
 }
+export async function getDiscordSettings(){
+    const response = axios.get(`${JS_API}/discord-bot/config`);
+    return response;
+}
