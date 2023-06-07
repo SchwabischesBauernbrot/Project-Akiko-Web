@@ -1195,8 +1195,8 @@ disClient.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
   // If the message does not start with the command prefix and it's channel id is in botSettings.channels, return.
-  if (!message.content.startsWith(prefix) && !botSettings.channels.includes(message.channel.id) && message.content.startsWith('.')) return;
-
+  if (!message.content.startsWith(prefix) && !botSettings.channels.includes(message.channel.id)) return;
+  if (message.content.startsWith('.')) return;
   if (botSettings.channels.includes(message.channel.id)){
     await doCharacterChat(message);
   }
