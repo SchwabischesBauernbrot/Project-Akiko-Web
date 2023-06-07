@@ -14,11 +14,7 @@ import extract from 'png-chunks-extract';
 import PNGtext from 'png-chunk-text';
 import encode from 'png-chunks-encode';
 import jimp from 'jimp';
-import { Client, Intents } from 'discord.js';
-
-// Create a new client instance
-const disClient = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.MESSAGE_CONTENT] });
-
+import { Client, GatewayIntentBits, Collection } from 'discord.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -1049,8 +1045,14 @@ app.post('/text/status', async (req, res) => {
 ##                                        ##
 ############################################
 */
+// Create a new client instance
+const disClient = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+
+disClient.commands = new Collection();
+
 let botReady = false;
 let botSettings;
+
 try {
   botSettings = JSON.parse(fs.readFileSync(`${CHARACTER_ADVANCED_FOLDER}discordBot.json`, 'utf-8'));
 } catch (error) {
@@ -1062,27 +1064,54 @@ disClient.once('ready', () => {
   botReady = true;
 });
 
+const foldersPath = path.join('./src/discord/', 'commands');
+const commandFolders = fs.readdirSync(foldersPath)
+
 app.get('/discord-bot/start', (req, res) => {
   if (!botReady) {
     try{
+      for (const folder of commandFolders) {
+        const commandsPath = path.join(foldersPath, folder);
+        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+        for (const file of commandFiles) {
+          const filePath = path.join(commandsPath, file);
+          const command = require(filePath);
+          // Set a new item in the Collection with the key as the command name and the value as the exported module
+          if ('data' in command && 'execute' in command) {
+            disClient.commands.set(command.data.name, command);
+          } else {
+            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+          }
+        }
+      }
       disClient.login(botSettings.token);
       res.send('Bot started');
-    }catch{
-      console.log('Failed to start bot. Token invalid.')
+      botReady = true;
+    } catch (error) {
+      console.error('Failed to start bot.', error);
+      res.status(500).send({ 
+        message: 'Failed to start bot. Token might be invalid.',
+        error: error.toString() 
+      });
     }
   } else {
       res.send('Bot already started');
+      botReady = true;
   }
 });
 
 app.get('/discord-bot/stop', (req, res) => {
   if (botReady) {
-      disClient.destroy();
+      disClient.ws.destroy();
       botReady = false;
       res.send('Bot stopped');
   } else {
       res.send('Bot already stopped');
   }
+});
+
+app.get('/discord-bot/status', (req, res) => {
+    res.send(botReady)
 });
 
 app.get('/discord-bot/config', (req, res) => {

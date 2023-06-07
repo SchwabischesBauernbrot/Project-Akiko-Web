@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
 import 'tailwindcss/tailwind.css';
+import { getBotStatus, startDisBot, stopDisBot } from '../assets/components/discordbot/dbotapi';
 
 
 const DiscordBot = () => {
@@ -9,9 +10,16 @@ const DiscordBot = () => {
   const [channelList, setChannelList] = useState([]);
   const [isOn, setIsOn] = useState(false);
 
-  const handleToggle = () => {
-    setIsOn(!isOn);
+  const handleToggle = async () => {
+    if (isOn) {
+      await stopDisBot();
+      setIsOn(false);
+    } else {
+      await startDisBot();
+      setIsOn(true);
+    }
   };
+
 
   const settingsPanelRef = useRef(null);
 
@@ -20,8 +28,13 @@ const DiscordBot = () => {
     const settingsBoxHeights = Array.from(settingsBoxes).map(box => box.getBoundingClientRect().height);
     const tallestBoxHeight = Math.max(...settingsBoxHeights);
     settingsBoxes.forEach(box => (box.style.height = `${tallestBoxHeight}px`));
+    const fetchData = async () => {
+      const response = await getBotStatus();
+      setIsOn(response);
+    };
+    fetchData();
   }, []);
-  
+
   return (
     <>
       <h1 className='settings-panel-header text-xl font-bold'>Discord Bot Configuration</h1>
@@ -38,25 +51,18 @@ const DiscordBot = () => {
             <h2>Discord Bot Token</h2>
             <div className="input-group">
               <input type="password" value={botToken} onChange={(event) => setBotToken(event.target.value)} />
-              {/* <button className="discord-button discord-button-confirm" onClick={saveSettings}>
-                Confirm
-              </button> */}
             </div>
           </div>
           <div className="settings-box" id='channel'>
             <h2>Channel</h2>
             <div className="input-group">
               <input type="text" value={channels} onChange={(event) => setChannels(event.target.value)} />
-              {/* <button className="discord-button discord-button-confirm" onClick={saveSettings}>
-                Confirm
-              </button> */}
             </div>
-
           </div>
         </div>
       </div>
     </>
-  );  
+  );
 };
 
 
