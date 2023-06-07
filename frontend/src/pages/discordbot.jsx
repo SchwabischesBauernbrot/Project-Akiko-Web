@@ -9,6 +9,10 @@ const DiscordBot = () => {
   const [channelList, setChannelList] = useState([]);
   const [isOn, setIsOn] = useState(false);
   const [availableChannels, setAvailableChannels] = useState([]);
+  const [selectedCharacter, setSelectedCharacter] = useState('');
+  const [endpoint, setEndpoint] = useState('');
+  const [endpointType, setEndpointType] = useState('');
+  const [settings, setSettings] = useState({});
   const [activeServerId, setActiveServerId] = useState(null);
   const [selectedChannels, setSelectedChannels] = useState(new Set());
 
@@ -54,7 +58,11 @@ const DiscordBot = () => {
   const saveData = async () => {
     let data = {
       "token" : botToken,
-      "channels" : [...selectedChannels]
+      "channels" : [...selectedChannels],
+      "charId" : selectedCharacter,
+      "endpoint" : endpoint,
+      "endpointType" : endpointType,
+      "settings" : settings
     }
     saveDiscordConfig(data);
   };  

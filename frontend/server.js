@@ -15,6 +15,8 @@ import PNGtext from 'png-chunk-text';
 import encode from 'png-chunks-encode';
 import jimp from 'jimp';
 import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import readline from 'readline';
+import stream from 'stream';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -154,15 +156,20 @@ app.post('/characters', upload.single('avatar'), (req, res) => {
 
 // GET /api/characters/:char_id
 app.get('/characters/:char_id', (req, res) => {
-    const characterPath = path.join(CHARACTER_FOLDER, `${req.params.char_id}.json`);
-
-    if (!fs.existsSync(characterPath)) {
-        return res.status(404).json({ error: 'Character not found' });
-    }
-
-    const characterData = JSON.parse(fs.readFileSync(characterPath, 'utf-8'));
-    res.json(characterData);
+  let charId = req.params.char_id;
+  const characterData = getCharacter(charId);
+  res.json(characterData);
 });
+
+async function getCharacter(charId){
+  const characterPath = path.join(CHARACTER_FOLDER, `${charId}.json`);
+
+  if (!fs.existsSync(characterPath)) {
+      return res.status(404).json({ error: 'Character not found' });
+  }
+
+  return JSON.parse(fs.readFileSync(characterPath, 'utf-8'));
+}
 
 // DELETE /api/characters/:char_id
 app.delete('/characters/:char_id', (req, res) => {
@@ -861,115 +868,15 @@ app.post('/textgen/:endpointType', async (req, res) => {
     let { endpointType } = req.params;
     let { endpoint, configuredName, prompt, settings, hordeModel } = req.body;
 
-    let response;
     let results;
-
-    if (endpoint.endsWith('/')) {
-      endpoint = endpoint.slice(0, -1);
+    try {
+      results = await generateText(endpointType, { endpoint, configuredName, prompt, settings, hordeModel });
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).json({ error: error.message });
     }
-    if (endpoint.endsWith('/api')) {
-      endpoint = endpoint.slice(0, -4);
-    }
-    switch (endpointType) {
-      case 'Kobold':
-        try{
-          // Update the payload for the Kobold endpoint
-          const koboldPayload = { prompt, ...settings };
-          response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
-          if (response.status === 200) {
-            // Get the results from the response
-            results = response.data;
-            // If the results are an array, join them into a single string
-            if (Array.isArray(results)) {
-              results = results.join(' ');
-            }
-            // Send the results back to the client
-            res.json(results);
-          }
-        } catch (error) {
-          console.log("Error status code:", error.response ? error.response.status : "Unknown");
-          console.log("Error details:", error.response ? error.response.data : error);
-          res.status(500).json({ error: 'An error occurred while generating text.' });
-        }        
-        break;
 
-      case 'Ooba':
-        try{
-          const params = { prompt };
-          const oobaPayload = JSON.stringify([prompt, params]);
-
-          // Send a request to the Ooba endpoint with the payload
-          response = await axios.post(`${endpoint}/run/textgen`, {
-            data: [oobaPayload]
-          });
-          // Extract the raw reply from the response
-          const rawReply = response.data.data[0];
-          const responseHalf = rawReply.split(prompt)[1];
-          res.json(responseHalf);
-        } catch (error) {
-          console.log(error);
-          res.status(500).json({ error: 'An error occurred while generating text.' });
-        }
-        break;
-      case 'OAI':
-        // Create a configuration object with your key
-        const configuration = new Configuration({
-          apiKey: endpoint,
-        });
-    
-        // Create an openaiApi object with your configuration and headers
-        const openaiApi = new OpenAIApi(configuration);
-        try{
-          response = await openaiApi.createCompletion({
-            model: 'text-davinci-003',
-            prompt: prompt,
-            temperature: settings.temperature,
-            max_tokens: settings.max_tokens,
-            stop: [`${configuredName}:`],
-          });
-          res.json({ results: [response.data.choices[0].text]})
-        } catch (error) {
-          console.log(error);
-        }
-        break;
-      case 'Horde':
-        try{
-          const hordeKey = endpoint ? endpoint : '0000000000';
-          const payload = { prompt, params: settings, models: [hordeModel] };
-          response = await axios.post(
-            `${HORDE_API_URL}v2/generate/text/async`,
-            payload,
-            { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
-          );
-          // Use the received taskId from the API response
-          const taskId = response.data.id;
-        
-          while (true) {
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
-              headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
-            });
-            const { done } = statusCheck.data;
-            if (done) {
-              const getText = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
-                headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
-              });
-              const generatedText = getText.data.generations[0];
-              results = { results: [generatedText] };
-              res.json(results);
-              break;
-            }
-          }
-        } catch (error) {
-          console.log(error);
-          res.status(500).json({ error: 'An error occurred while generating text.' });
-        }
-        break;
-
-      default:
-        res.status(404).json({ error: 'Invalid endpoint type or endpoint.' });
-        break;
-    }
+    res.json(results);
   } catch (error) {
     console.error('Error:', error);
     if (error.isAxiosError) {
@@ -984,13 +891,114 @@ app.post('/textgen/:endpointType', async (req, res) => {
   }
 });
 
+
+const generateText = async (endpointType, { endpoint, configuredName, prompt, settings, hordeModel }) => {
+  // Rest of the code remains the same
+  let response;
+  let results;
+  console.log("endpoint: ", endpoint, "endpointType: ", endpointType, "configuredName: ", configuredName, "prompt: ", prompt, "settings: ", settings, "hordeModel: ", hordeModel);
+  if (endpoint.endsWith('/')) {
+    endpoint = endpoint.slice(0, -1);
+  }
+  if (endpoint.endsWith('/api')) {
+    endpoint = endpoint.slice(0, -4);
+  }
+  switch (endpointType) {
+    case 'Kobold':
+      try{
+        const koboldPayload = { prompt, ...settings };
+        response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
+        if (response.status === 200) {
+          results = response.data;
+          if (Array.isArray(results)) {
+            results = results.join(' ');
+          }
+        }
+      } catch (error) {
+        throw new Error('An error occurred while generating text.');
+      }        
+      break;
+
+    case 'Ooba':
+      try{
+        const params = { prompt };
+        const oobaPayload = JSON.stringify([prompt, params]);
+
+        response = await axios.post(`${endpoint}/run/textgen`, {
+          data: [oobaPayload]
+        });
+        const rawReply = response.data.data[0];
+        results = rawReply.split(prompt)[1];
+      } catch (error) {
+        throw new Error('An error occurred while generating text.');
+      }
+      break;
+
+    case 'OAI':
+      const configuration = new Configuration({
+        apiKey: endpoint,
+      });
+
+      const openaiApi = new OpenAIApi(configuration);
+      try{
+        response = await openaiApi.createCompletion({
+          model: 'text-davinci-003',
+          prompt: prompt,
+          temperature: settings.temperature,
+          max_tokens: settings.max_tokens,
+          stop: [`${configuredName}:`],
+        });
+        results = { results: [response.data.choices[0].text]};
+      } catch (error) {
+        throw new Error('An error occurred while generating text.');
+      }
+      break;
+
+    case 'Horde':
+      try{
+        const hordeKey = endpoint ? endpoint : '0000000000';
+        const payload = { prompt, params: settings, models: [hordeModel] };
+        response = await axios.post(
+          `${HORDE_API_URL}v2/generate/text/async`,
+          payload,
+          { headers: { 'Content-Type': 'application/json', 'apikey': hordeKey } }
+        );
+        const taskId = response.data.id;
+      
+        while (true) {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          const statusCheck = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
+            headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
+          });
+          const { done } = statusCheck.data;
+          if (done) {
+            const getText = await axios.get(`${HORDE_API_URL}v2/generate/text/status/${taskId}`, {
+              headers: { 'Content-Type': 'application/json', 'apikey': hordeKey }
+            });
+            const generatedText = getText.data.generations[0];
+            results = { results: [generatedText] };
+            break;
+          }
+        }
+      } catch (error) {
+        throw new Error('An error occurred while generating text.');
+      }
+      break;
+
+      default:
+        throw new Error('Invalid endpoint type or endpoint.');
+    }
+    return results;
+};
+  
+
+
 app.post('/text/status', async (req, res) => {
   const { endpoint, endpointType } = req.body;
   let endpointUrl = endpoint;
   if (endpoint.endsWith('/')) {
     endpointUrl = endpoint.slice(0, -1);
   }
-
   try {
     let response;
 
@@ -1066,6 +1074,7 @@ try {
 disClient.once('ready', () => {
   console.log('Bot ready!');
   botReady = true;
+  setDiscordBotInfo();
 });
 
 const foldersPath = path.join('./src/discord/', 'commands');
@@ -1073,6 +1082,13 @@ const commandFolders = fs.readdirSync(foldersPath)
 
 app.get('/discord-bot/start', (req, res) => {
   if (!botReady) {
+    if(!botSettings.token || !botSettings.channels || !botSettings.charId || !botSettings.endpoint || !botSettings.endpointType || !botSettings.settings) {
+      res.status(500).send({
+        message: 'Bot not started. Missing required settings.',
+        error: 'Missing required settings.'
+      });
+      return;
+    }
     try{
       for (const folder of commandFolders) {
         const commandsPath = path.join(foldersPath, folder);
@@ -1155,3 +1171,96 @@ app.get('/discord-bot/guilds', (req, res) => {
 
   res.send(guilds);
 });
+
+// Listen for the 'messageCreate' event
+disClient.on('messageCreate', async (message) => {
+  const prefix = '!'; // Define your command prefix
+
+  // Do not handle bot messages (to avoid possible infinite loops)
+  if (message.author.bot) return;
+
+  // If the message does not start with the command prefix and it's channel id is in botSettings.channels, return.
+  if (!message.content.startsWith(prefix) && !botSettings.channels.includes(message.channel.id)) return;
+
+  if (botSettings.channels.includes(message.channel.id)){
+    await doCharacterChat(message);
+  }
+  // Extract command name and arguments from the message
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const commandName = args.shift().toLowerCase();
+
+  // Get the command object from the Collection
+  const command = disClient.commands.get(commandName);
+
+  // If the command does not exist, return
+  if (!command) return;
+
+  // Execute the command
+  try {
+    await command.execute(message, args);
+  } catch (error) {
+    console.error(`Failed to execute command "${commandName}":`, error);
+    await message.reply('There was an error trying to execute that command!');
+  }
+});
+
+async function doCharacterChat(message){
+  let charId = botSettings.charId;
+  let endpoint = botSettings.endpoint;
+  let endpointType = botSettings.endpointType;
+  let settings = botSettings.settings;
+  let prompt = await getPrompt(charId, message);
+  const generatedText = await generateText(endpointType, { endpoint: endpoint, configuredName: message.author.username, prompt: prompt, settings: settings, hordeModel: null });
+  console.log(generatedText);
+  const response = generatedText.results[0];
+  message.channel.send(response);
+};
+
+async function getPrompt(charId, message){
+  let channelID = message.channel.id;
+  let history = await getHistory(charId, channelID);
+  let character = await getCharacter(charId);
+  let currentMessage = `${message.author.username}: ${message.content}`;
+  const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
+  const convo = 'Current Conversation:\n' + history + `\n`+ currentMessage + '\n';
+  const createdPrompt = basePrompt + convo + character.name + ':';
+  return createdPrompt;
+};
+
+async function getHistory(charId, channel, lines){
+  let logName = `${channel}-${charId}.log`;
+  let pathName = path.join('./public/discord/logs/', logName);
+
+  if (fs.existsSync(pathName)) {
+    const fileStream = fs.createReadStream(pathName);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity
+    });
+
+    let history = [];
+    for await (const line of rl) {
+      history.unshift(line);
+      if (history.length > lines) {
+        history.pop();
+      }
+    }
+    return history.join('\n');
+  } else {
+    return '<START>';
+  }
+};
+
+async function setDiscordBotInfo(){
+  // Change bot's username
+  let character = await getCharacter(botSettings.charId);
+  disClient.user.setUsername(character.name).then(user => {
+    console.log(`My new username is ${user.username}`);
+  }).catch(console.error);
+
+  // Change bot's avatar
+  const buffer = fs.readFileSync(`${CHARACTER_IMAGES_FOLDER}${character.avatar}`);
+  disClient.user.setAvatar(buffer).then(user => {
+    console.log('New avatar set!');
+  }).catch(console.error);
+}
