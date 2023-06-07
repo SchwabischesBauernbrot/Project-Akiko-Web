@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
 import 'tailwindcss/tailwind.css';
-import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot } from '../assets/components/discordbot/dbotapi';
+import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot, saveDiscordConfig } from '../assets/components/discordbot/dbotapi';
+import { FiSave } from 'react-icons/fi';
 
 
 const DiscordBot = () => {
@@ -38,10 +39,18 @@ const DiscordBot = () => {
     fetchData();
   }, []);
 
+  const saveData = async () => {
+    let data = {
+      "token" : botToken,
+      "channels" : channelList
+    }
+    saveDiscordConfig(data);
+  };
+
   return (
     <>
       <h1 className='settings-panel-header text-xl font-bold'>Discord Bot Configuration</h1>
-      <div className='settings-panel' ref={settingsPanelRef}>
+      <div className='settings-panel flex flex-col' ref={settingsPanelRef}>
         <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
           <div className="settings-box" id='on-switch'>
             <RxDiscordLogo className="discord-logo" />
@@ -63,6 +72,9 @@ const DiscordBot = () => {
             </div>
           </div>
         </div>
+        <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" onClick={(event) => saveData()}>
+          <FiSave className="react-icon"/>
+        </button>
       </div>
     </>
   );

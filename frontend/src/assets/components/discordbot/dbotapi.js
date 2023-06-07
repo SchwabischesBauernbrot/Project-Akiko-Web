@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AUDIO_LOCATION, CURRENT_URL, API_URL, JS_API, getCharacterSpeech } from '../api';
+import { AUDIO_LOCATION, CURRENT_URL, API_URL, JS_API } from '../api';
 
 export async function getBotStatus(){
     const response = await axios.get(`${JS_API}/discord-bot/status`);
@@ -15,5 +15,9 @@ export async function stopDisBot(){
 }
 export async function getDiscordSettings(){
     const response = axios.get(`${JS_API}/discord-bot/config`);
+    return response;
+}
+export async function saveDiscordConfig(data){
+    const response = axios.post(`${JS_API}/discord-bot/config`, data);
     return response;
 }
