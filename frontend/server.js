@@ -1249,7 +1249,7 @@ async function doCharacterChat(message){
 
 async function getPrompt(charId, message){
   let channelID = message.channel.id;
-  let history = await getHistory(charId, channelID);
+  let history = await getHistory(charId, channelID, 20);
   let character = await getCharacter(charId);
   let currentMessage = `${message.author.username}: ${message.content}`;
   const basePrompt = character.name + "'s Persona:\n" + character.description + '\nScenario:' + character.scenario + '\nExample Dialogue:\n' + character.mes_example.replace('{{CHAR}}', character.name) + '\n';
