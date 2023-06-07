@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
 import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot, saveDiscordConfig, getAvailableChannels } from '../assets/components/discordbot/dbotapi';
-import { FiSave } from 'react-icons/fi';
+import { FiRefreshCcw, FiSave } from 'react-icons/fi';
 import EndpointSelector from '../assets/components/settingscomponents/EndpointSelector';
 import { getSettings } from '../assets/components/chatcomponents/chatapi';
 
@@ -27,8 +27,6 @@ const DiscordBot = () => {
     } else {
       await startDisBot();
       setIsOn(true);
-      const channelsData = await getAvailableChannels();
-      setAvailableChannels(channelsData);
     }
   };
 
@@ -70,6 +68,11 @@ const DiscordBot = () => {
     fetchData();
   }, []);
   
+  const refreshChannels = async () => {
+    const channelsData = await getAvailableChannels();
+    setAvailableChannels(channelsData.data);
+  }
+
   const saveData = async () => {
     var localOption = localStorage.getItem('endpointType');
     if (localOption != null){
@@ -163,6 +166,9 @@ const DiscordBot = () => {
                   )}
                 </div>
               ))}
+            <button className="aspect-w-1 aspect-h-1 mt-4 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" onClick={() => refreshChannels}>
+              <FiRefreshCcw className="react-icon"/>
+            </button>
           </div>
         </div>
         <div className="items-center flex flex-col mt-4">
