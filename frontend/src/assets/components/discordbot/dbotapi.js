@@ -21,3 +21,7 @@ export async function saveDiscordConfig(data){
     const response = axios.post(`${JS_API}/discord-bot/config`, data);
     return response;
 }
+export async function getAvailableChannels(){
+    const response = axios.get(`${JS_API}/discord-bot/guilds`);
+    return response;
+}

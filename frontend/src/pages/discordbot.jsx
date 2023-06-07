@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
-import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot, saveDiscordConfig } from '../assets/components/discordbot/dbotapi';
+import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot, saveDiscordConfig, getAvailableChannels } from '../assets/components/discordbot/dbotapi';
 import { FiSave } from 'react-icons/fi';
 
 
@@ -8,7 +8,10 @@ const DiscordBot = () => {
   const [botToken, setBotToken] = useState('');
   const [channelList, setChannelList] = useState([]);
   const [isOn, setIsOn] = useState(false);
-  
+  const [availableChannels, setAvailableChannels] = useState([]);
+  const [activeServerId, setActiveServerId] = useState(null);
+  const [selectedChannels, setSelectedChannels] = useState(new Set());
+
   const channels = channelList.join(', ');
 
   const handleToggle = async () => {
@@ -18,27 +21,32 @@ const DiscordBot = () => {
     } else {
       await startDisBot();
       setIsOn(true);
+      const channelsData = await getAvailableChannels();
+      setAvailableChannels(channelsData);
     }
-  };
-
-  const handleChannelsChange = (event) => {
-    const newChannels = event.target.value.split(',').map(channel => channel.trim());
-    setChannelList(newChannels);
   };
 
   const settingsPanelRef = useRef(null);
 
+  const handleChannelsChange = (event) => {
+    const newChannels = event.target.value.split(',').map(channel => channel.trim());
+    setChannelList(newChannels);
+    setSelectedChannels(new Set(newChannels));
+  };  
+  
   useEffect(() => {
-    const settingsBoxes = document.querySelectorAll('.settings-box');
-    const settingsBoxHeights = Array.from(settingsBoxes).map(box => box.getBoundingClientRect().height);
-    const tallestBoxHeight = Math.max(...settingsBoxHeights);
-    settingsBoxes.forEach(box => (box.style.height = `${tallestBoxHeight}px`));
     const fetchData = async () => {
       const response = await getBotStatus();
       setIsOn(response);
       const data = await getDiscordSettings();
       setBotToken(data.data.token);
       setChannelList(data.data.channels);
+      setSelectedChannels(new Set(data.data.channels));
+      if (response) {
+        const channelsData = await getAvailableChannels();
+        setAvailableChannels(channelsData.data);
+        console.log(channelsData)
+      }
     };
     fetchData();
   }, []);
@@ -46,9 +54,28 @@ const DiscordBot = () => {
   const saveData = async () => {
     let data = {
       "token" : botToken,
-      "channels" : channelList
+      "channels" : [...selectedChannels]
     }
     saveDiscordConfig(data);
+  };  
+
+  const handleChannelClick = (channelId) => {
+    setSelectedChannels(prevSelectedChannels => {
+      // We make a new copy of the set to avoid mutating state directly
+      const updatedChannels = new Set(prevSelectedChannels);
+  
+      if (prevSelectedChannels.has(channelId)) {
+        // Remove channel from selected channels
+        updatedChannels.delete(channelId);
+      } else {
+        // Add channel to selected channels
+        updatedChannels.add(channelId);
+      }
+  
+      // Update the channelList state to reflect the selected channels
+      setChannelList([...updatedChannels]);
+      return updatedChannels;
+    });
   };
 
   return (
@@ -74,6 +101,38 @@ const DiscordBot = () => {
             <div className="input-group">
               <input type="text" value={channels} onChange={handleChannelsChange} />
             </div>
+          </div>
+          <div className="settings-box" id='available-channels'>
+            <h2 className='text-selected-text font-bold'>Available Channels</h2>
+            {availableChannels &&
+              availableChannels.map(server => (
+                <div key={server.id} className='bg-selected-bb-color p-4 rounded-lg shadow-md border-2 border-solid border-gray-500'>
+                  <h3 className='text-selected-text font-bold' onClick={() => setActiveServerId(server.id !== activeServerId ? server.id : null)}>
+                    {server.name} ({server.id}) {activeServerId === server.id ? "-" : "+"}
+                  </h3>
+                  {activeServerId === server.id && (
+                    <div style={{ maxHeight: '20rem', overflowY: 'scroll' }}>
+                      <ul>
+                        {server.channels.map(channel => (
+                          <li 
+                            key={channel.id} 
+                            className={`p-4 rounded-lg shadow-md border-2 border-solid ${selectedChannels.has(channel.id) ? 'border-green-500' : 'border-gray-500'} `}
+                            onClick={() => handleChannelClick(channel.id)}
+                          >
+                            {channel.name} ({channel.id})
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+          </div>
+          <div className="settings-box" id='greetings'>
+            <h2 className='text-selected-text font-bold'>DM Greetings</h2>
+          </div>
+          <div className="settings-box" id='relationships'>
+            <h2 className='text-selected-text font-bold'>User Relationships</h2>
           </div>
         </div>
         <div className="items-center flex flex-col mt-4">

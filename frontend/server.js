@@ -1141,12 +1141,11 @@ app.get('/discord-bot/guilds', (req, res) => {
 
   const guilds = disClient.guilds.cache.map(guild => {
     const channels = guild.channels.cache
-      .filter(channel => channel.type === 'GUILD_TEXT')
+      .filter(channel => channel.type === 0)
       .map(channel => ({
         id: channel.id,
         name: channel.name,
       }));
-
     return {
       id: guild.id,
       name: guild.name,
