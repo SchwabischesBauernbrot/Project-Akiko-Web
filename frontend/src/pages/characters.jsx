@@ -6,6 +6,7 @@ import { InformationCircleIcon, TrashIcon, PlusCircleIcon, ArrowPathIcon, ArrowU
 import CharacterInfoBox from "../assets/components/charactercomponents/CharacterInfoBox";
 import { FiShuffle } from "react-icons/fi";
 import 'tailwindcss/tailwind.css';
+import { getBotStatus, getDiscordSettings, updateDiscordBot, saveDiscordConfig } from "../assets/components/discordbot/dbotapi";
 
 const Characters = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,6 +110,12 @@ const Characters = () => {
     // Save char_id to localStorage
     localStorage.setItem("selectedCharacter", charId);
     const item = localStorage.getItem("selectedCharacter");
+    let data = await getDiscordSettings();
+    data.data.charId = charId;
+    await saveDiscordConfig(data.data);
+    if(await getBotStatus() === true){
+      await updateDiscordBot();
+    }
     if (item === null) {
       console.log("Character selection failed.");
     } else {

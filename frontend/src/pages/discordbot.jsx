@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { RxDiscordLogo } from 'react-icons/rx';
 import { getBotStatus, getDiscordSettings, startDisBot, stopDisBot, saveDiscordConfig, getAvailableChannels } from '../assets/components/discordbot/dbotapi';
 import { FiSave } from 'react-icons/fi';
+import EndpointSelector from '../assets/components/settingscomponents/EndpointSelector';
+import { getSettings } from '../assets/components/chatcomponents/chatapi';
 
 
 const DiscordBot = () => {
@@ -51,11 +53,37 @@ const DiscordBot = () => {
         setAvailableChannels(channelsData.data);
         console.log(channelsData)
       }
+      var localOption = localStorage.getItem('endpointType');
+      if (localOption != null){
+        setEndpointType(localOption);
+        setEndpoint(localStorage.getItem('endpoint'));
+      }
+      var localChar = localStorage.getItem('selectedCharacter');
+      if (localChar != null){
+        setSelectedCharacter(localChar);
+      }
+      var settings = getSettings(localOption);
+      if (settings != null){
+        setSettings(settings);
+      }
     };
     fetchData();
   }, []);
   
   const saveData = async () => {
+    var localOption = localStorage.getItem('endpointType');
+    if (localOption != null){
+      setEndpointType(localOption);
+      setEndpoint(localStorage.getItem('endpoint'));
+    }
+    var localChar = localStorage.getItem('selectedCharacter');
+    if (localChar != null){
+      setSelectedCharacter(localChar);
+    }
+    var settings = getSettings(localOption);
+    if (settings != null){
+      setSettings(settings);
+    }
     let data = {
       "token" : botToken,
       "channels" : [...selectedChannels],
@@ -135,12 +163,6 @@ const DiscordBot = () => {
                   )}
                 </div>
               ))}
-          </div>
-          <div className="settings-box" id='greetings'>
-            <h2 className='text-selected-text font-bold'>DM Greetings</h2>
-          </div>
-          <div className="settings-box" id='relationships'>
-            <h2 className='text-selected-text font-bold'>User Relationships</h2>
           </div>
         </div>
         <div className="items-center flex flex-col mt-4">

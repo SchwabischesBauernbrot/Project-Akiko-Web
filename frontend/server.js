@@ -154,10 +154,12 @@ app.post('/characters', upload.single('avatar'), (req, res) => {
     res.json(character);
 });
 
-// GET /api/characters/:char_id
 app.get('/characters/:char_id', (req, res) => {
-  let charId = req.params.char_id;
-  const characterData = getCharacter(charId);
+  const characterPath = path.join(CHARACTER_FOLDER, `${req.params.char_id}.json`);
+  if (!fs.existsSync(characterPath)) {
+      return res.status(404).json({ error: 'Character not found' });
+  }
+  const characterData = JSON.parse(fs.readFileSync(characterPath, 'utf-8'));
   res.json(characterData);
 });
 
@@ -165,7 +167,7 @@ async function getCharacter(charId){
   const characterPath = path.join(CHARACTER_FOLDER, `${charId}.json`);
 
   if (!fs.existsSync(characterPath)) {
-      return res.status(404).json({ error: 'Character not found' });
+      throw new Error('Character not found');
   }
 
   return JSON.parse(fs.readFileSync(characterPath, 'utf-8'));
@@ -896,7 +898,7 @@ const generateText = async (endpointType, { endpoint, configuredName, prompt, se
   // Rest of the code remains the same
   let response;
   let results;
-  console.log("endpoint: ", endpoint, "endpointType: ", endpointType, "configuredName: ", configuredName, "prompt: ", prompt, "settings: ", settings, "hordeModel: ", hordeModel);
+  //console.log("endpoint: ", endpoint, "endpointType: ", endpointType, "configuredName: ", configuredName, "prompt: ", prompt, "settings: ", settings, "hordeModel: ", hordeModel);
   if (endpoint.endsWith('/')) {
     endpoint = endpoint.slice(0, -1);
   }
@@ -1065,6 +1067,10 @@ disClient.commands = new Collection();
 let botReady = false;
 let botSettings;
 
+if (!fs.existsSync('./public/discord/logs')){
+  fs.mkdirSync('./public/discord/logs', { recursive: true });
+}
+
 try {
   botSettings = JSON.parse(fs.readFileSync(`./public/discord/discordBot.json`, 'utf-8'));
 } catch (error) {
@@ -1172,6 +1178,15 @@ app.get('/discord-bot/guilds', (req, res) => {
   res.send(guilds);
 });
 
+app.get('/discord-bot/update', (req, res) => {
+  if (!botReady) {
+    res.status(500).send('Bot not ready');
+    return;
+  }
+  setDiscordBotInfo();
+  res.send('Bot updated');
+});
+
 // Listen for the 'messageCreate' event
 disClient.on('messageCreate', async (message) => {
   const prefix = '!'; // Define your command prefix
@@ -1210,9 +1225,25 @@ async function doCharacterChat(message){
   let endpointType = botSettings.endpointType;
   let settings = botSettings.settings;
   let prompt = await getPrompt(charId, message);
-  const generatedText = await generateText(endpointType, { endpoint: endpoint, configuredName: message.author.username, prompt: prompt, settings: settings, hordeModel: null });
-  console.log(generatedText);
+  let character = await getCharacter(charId);
+  let generatedText;
+  try{
+    generatedText = await generateText(endpointType, { endpoint: endpoint, configuredName: message.author.username, prompt: prompt, settings: settings, hordeModel: null });
+  } catch (error) {
+    console.error('Error:', error);
+    return;
+  }
+  //console.log(generatedText);
   const response = generatedText.results[0];
+  const logName = `${message.channel.id}-${charId}.log`;
+  const pathName = path.join('./public/discord/logs/', logName);
+
+  // Check if the file exists, and if it doesn't, create it
+  if (!fs.existsSync(pathName)) {
+    fs.writeFileSync(pathName, '', { flag: 'wx' });
+  }
+
+  fs.appendFileSync(pathName, `${message.author.username}:${message.content}\n${character.name}:${response}\n`);
   message.channel.send(response);
 };
 

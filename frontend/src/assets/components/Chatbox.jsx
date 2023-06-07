@@ -43,6 +43,7 @@ function Chatbox({ endpoint, endpointType }) {
   const [toggleBranch, setToggleBranch] = useState(true);
   
   const createNewConversation = async () => {
+    console.log(selectedCharacter);
     const defaultMessage = {
       sender: selectedCharacter.name,
       text: selectedCharacter.first_mes.replace('<USER>', configuredName).replace('{{char}}', selectedCharacter.name).replace('{{user}}', configuredName).replace('{{CHAR}}', selectedCharacter.name).replace('{{USER}}', configuredName),

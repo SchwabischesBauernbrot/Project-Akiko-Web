@@ -62,7 +62,7 @@ const akiko_defaults = {
   'early_stopping': false,
 }
 
-  function getSettings(endpointType) {
+  export function getSettings(endpointType) {
     const settings = localStorage.getItem('generationSettings');
     if (endpointType === 'Kobold' || endpointType === 'Horde') {
       if (settings) {
@@ -92,6 +92,8 @@ const akiko_defaults = {
         ],
         }
         return customSettings;
+      }else{
+        return kobold_defaults;
       }
     }else if(endpointType === 'OAI'){
       if(settings){
@@ -101,6 +103,8 @@ const akiko_defaults = {
           'temperature': parsedSettings.temperature,
         }
         return customSettings;
+      }else{
+        return oai_defaults;
       }
     }else if(endpointType === 'AkikoBackend'){
       if(settings){
@@ -120,6 +124,8 @@ const akiko_defaults = {
           'early_stopping': parsedSettings.singleline,
         }
         return customSettings;
+      }else{
+        return akiko_defaults;
       }
     }else if(endpointType === 'Ooba'){
       if(settings){
@@ -141,6 +147,8 @@ const akiko_defaults = {
           'early_stopping': parsedSettings.singleline,
         }
         return customSettings;
+      }else{
+        return ooba_defaults;
       }
     }
     return;

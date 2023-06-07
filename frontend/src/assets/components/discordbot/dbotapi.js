@@ -25,3 +25,6 @@ export async function getAvailableChannels(){
     const response = axios.get(`${JS_API}/discord-bot/guilds`);
     return response;
 }
+export async function updateDiscordBot(){
+    axios.get(`${JS_API}/discord-bot/update`);
+}
