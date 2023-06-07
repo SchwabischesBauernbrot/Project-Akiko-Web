@@ -127,7 +127,7 @@ npm run custom --port --cpu --listen
 - See and manage Twitch Stats and Chats from inside Project Akiko UI.
 - Manage AI output so it is Twitch filtered (no more holocaust jokes!).
 ## Discord Bot Integration:
-- Chat with your bot through discord.
+- Chat with your bot through discord. **(Done.)**
 - Send images to the bot.
 Ask for images from the bot (spicy or not).
 - Custom Chat Settings are also available on the discord bot.
