@@ -1046,7 +1046,11 @@ app.post('/text/status', async (req, res) => {
 ############################################
 */
 // Create a new client instance
-const disClient = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const disClient = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
+  GatewayIntentBits.MessageContent, GatewayIntentBits.GuildEmojisAndStickers, 
+  GatewayIntentBits.DirectMessages, GatewayIntentBits.DirectMessageReactions,
+  GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildModeration
+] });
 
 disClient.commands = new Collection();
 
@@ -1127,4 +1131,28 @@ app.post('/discord-bot/config', (req, res) => {
           res.send('Successfully wrote to file');
       }
   });
+});
+
+app.get('/discord-bot/guilds', (req, res) => {
+  if (!botReady) {
+    res.status(500).send('Bot not ready');
+    return;
+  }
+
+  const guilds = disClient.guilds.cache.map(guild => {
+    const channels = guild.channels.cache
+      .filter(channel => channel.type === 'GUILD_TEXT')
+      .map(channel => ({
+        id: channel.id,
+        name: channel.name,
+      }));
+
+    return {
+      id: guild.id,
+      name: guild.name,
+      channels,
+    };
+  });
+
+  res.send(guilds);
 });
