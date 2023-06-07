@@ -50,7 +50,7 @@ const DiscordBot = () => {
   return (
     <>
       <h1 className='settings-panel-header text-xl font-bold'>Discord Bot Configuration</h1>
-      <div className='settings-panel flex flex-col' ref={settingsPanelRef}>
+      <div className='settings-panel' ref={settingsPanelRef}>
         <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
           <div className="settings-box" id='on-switch'>
             <RxDiscordLogo className="discord-logo" />
@@ -72,9 +72,11 @@ const DiscordBot = () => {
             </div>
           </div>
         </div>
-        <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" onClick={(event) => saveData()}>
-          <FiSave className="react-icon"/>
-        </button>
+        <div className="items-center flex flex-col mt-4">
+          <button className="aspect-w-1 aspect-h-1 rounded-lg shadow-md backdrop-blur-md p-2 w-16 border-2 border-solid border-gray-500 outline-none justify-center cursor-pointer transition-colors hover:bg-blue-600 text-selected-text" onClick={(event) => saveData()}>
+            <FiSave className="react-icon"/>
+          </button>
+        </div>
       </div>
     </>
   );
