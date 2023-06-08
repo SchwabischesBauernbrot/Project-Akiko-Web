@@ -17,6 +17,7 @@ import jimp from 'jimp';
 import { Client, GatewayIntentBits, Collection } from 'discord.js';
 import readline from 'readline';
 import stream from 'stream';
+import e from 'express';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -1197,9 +1198,6 @@ disClient.on('messageCreate', async (message) => {
   // If the message does not start with the command prefix and it's channel id is in botSettings.channels, return.
   if (!message.content.startsWith(prefix) && !botSettings.channels.includes(message.channel.id)) return;
   if (message.content.startsWith('.')) return;
-  if (botSettings.channels.includes(message.channel.id)){
-    await doCharacterChat(message);
-  }
   // Extract command name and arguments from the message
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
@@ -1208,7 +1206,12 @@ disClient.on('messageCreate', async (message) => {
   const command = disClient.commands.get(commandName);
 
   // If the command does not exist, return
-  if (!command) return;
+  if (!command){
+    if (botSettings.channels.includes(message.channel.id)){
+      await doCharacterChat(message);
+    }
+    return;
+  }
 
   // Execute the command
   try {
@@ -1217,6 +1220,7 @@ disClient.on('messageCreate', async (message) => {
     console.error(`Failed to execute command "${commandName}":`, error);
     await message.reply('There was an error trying to execute that command!');
   }
+  
 });
 
 async function doCharacterChat(message){
@@ -1224,17 +1228,24 @@ async function doCharacterChat(message){
   let endpoint = botSettings.endpoint;
   let endpointType = botSettings.endpointType;
   let settings = botSettings.settings;
+  let hordeModel = botSettings.hordeModel;
   let prompt = await getPrompt(charId, message);
   let character = await getCharacter(charId);
-  let generatedText;
+  let results;
+  console.log("Generating text...")
   try{
-    generatedText = await generateText(endpointType, { endpoint: endpoint, configuredName: message.author.username, prompt: prompt, settings: settings, hordeModel: null });
+    results = await generateText(endpointType, { endpoint: endpoint, configuredName: message.author.username, prompt: prompt, settings: settings, hordeModel: hordeModel });
   } catch (error) {
     console.error('Error:', error);
     return;
   }
-  //console.log(generatedText);
-  const response = generatedText.results[0];
+  results = results.results[0];
+  let generatedText;
+  if(endpointType === 'Kobold' || endpointType === 'Horde'){
+    generatedText = results['text'];
+  }
+  let response = parseTextEnd(generatedText)
+  console.log("Response: ", response);
   const logName = `${message.channel.id}-${charId}.log`;
   const pathName = path.join('./public/discord/logs/', logName);
 
@@ -1244,7 +1255,7 @@ async function doCharacterChat(message){
   }
 
   fs.appendFileSync(pathName, `${message.author.username}:${message.content}\n${character.name}:${response}\n`);
-  message.channel.send(response);
+  message.channel.send(response[0]);
 };
 
 async function getPrompt(charId, message){
@@ -1258,6 +1269,9 @@ async function getPrompt(charId, message){
   return createdPrompt;
 };
 
+function parseTextEnd(text) {
+  return text.split("\n").map(line => line.trim());
+}
 async function getHistory(charId, channel, lines){
   let logName = `${channel}-${charId}.log`;
   let pathName = path.join('./public/discord/logs/', logName);
