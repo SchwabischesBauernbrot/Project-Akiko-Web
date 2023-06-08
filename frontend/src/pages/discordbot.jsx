@@ -87,12 +87,14 @@ const DiscordBot = () => {
     if (settings != null){
       setSettings(settings);
     }
+    var hordeModel = localStorage.getItem('hordeModel');
     let data = {
       "token" : botToken,
       "channels" : [...selectedChannels],
       "charId" : selectedCharacter,
       "endpoint" : endpoint,
       "endpointType" : endpointType,
+      "hordeModel" : hordeModel,
       "settings" : settings
     }
     saveDiscordConfig(data);
