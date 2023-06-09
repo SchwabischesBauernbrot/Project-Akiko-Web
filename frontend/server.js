@@ -909,7 +909,7 @@ const generateText = async (endpointType, { endpoint, configuredName, prompt, se
   switch (endpointType) {
     case 'Kobold':
       try{
-        const koboldPayload = { prompt, ...settings };
+        const koboldPayload = { prompt, stop_sequence: [`${configuredName}:`, 'You:'],  ...settings };
         response = await axios.post(`${endpoint}/api/v1/generate`, koboldPayload);
         if (response.status === 200) {
           results = response.data;
@@ -1254,7 +1254,7 @@ async function doCharacterChat(message){
     fs.writeFileSync(pathName, '', { flag: 'wx' });
   }
 
-  fs.appendFileSync(pathName, `${message.author.username}:${message.content}\n${character.name}:${response}\n`);
+  fs.appendFileSync(pathName, `${message.author.username}:${message.content}\n${character.name}:${response[0]}\n`);
   message.channel.send(response[0]);
 };
 
