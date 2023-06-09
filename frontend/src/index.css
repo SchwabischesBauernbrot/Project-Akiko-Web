@@ -38,7 +38,7 @@ Broadly used CSS
 }
 
 :root {
-	--selected-background: url('src/shared_data/backgrounds/dark_cherryblossoms.jpg');
+	--selected-background: url('public/backgrounds/dark_cherryblossoms.jpg');
 	--selected-italic-color: rgba(255, 255, 255, 0.636);
 	--selected-color: rgba(11, 11, 11, 0.636);
 	--selected-text-color: white;

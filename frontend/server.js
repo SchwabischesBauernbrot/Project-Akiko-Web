@@ -1188,6 +1188,13 @@ app.get('/discord-bot/update', (req, res) => {
   res.send('Bot updated');
 });
 
+app.get('/discord-bot/id', (req, res) => {
+  if (!botReady) {
+    res.status(500).send('Bot not ready');
+    return;
+  }
+});
+
 // Listen for the 'messageCreate' event
 disClient.on('messageCreate', async (message) => {
   const prefix = '!'; // Define your command prefix
@@ -1273,6 +1280,7 @@ async function getPrompt(charId, message){
 function parseTextEnd(text) {
   return text.split("\n").map(line => line.trim());
 }
+
 async function getHistory(charId, channel, lines){
   let logName = `${channel}-${charId}.log`;
   let pathName = path.join('./public/discord/logs/', logName);
@@ -1309,4 +1317,15 @@ async function setDiscordBotInfo(){
   disClient.user.setAvatar(buffer).then(user => {
     console.log('New avatar set!');
   }).catch(console.error);
+}
+
+async function getBotAppId(){
+  let appId;
+  try{
+    appId = disClient.user.id
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+  return appId;
 }
