@@ -1207,7 +1207,7 @@ disClient.on('messageCreate', async (message) => {
 
   // If the command does not exist, return
   if (!command){
-    if (botSettings.channels.includes(message.channel.id)){
+    if (botSettings.channels.includes(message.channel.id) || message.channel.type === 'DM'){
       message.channel.sendTyping();
       await doCharacterChat(message);
     }
