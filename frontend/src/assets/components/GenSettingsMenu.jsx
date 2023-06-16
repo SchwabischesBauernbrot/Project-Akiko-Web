@@ -17,6 +17,15 @@ const GenSettingsMenu = ({onClose}) => {
     const [topP, setTopP] = useState(0.9);
     const [typical, setTypical] = useState(1);
     const [minLength, setMinLength] = useState(10);
+    const [samplerOrder, setSamplerOrder] = useState([
+        2,
+        0,
+        3,
+        5,
+        1,
+        4,
+        6
+      ],);
     
     useEffect(() => {
         const closeOnEscapeKey = e => e.key === "Escape" ? onClose() : null;
@@ -63,6 +72,7 @@ const GenSettingsMenu = ({onClose}) => {
                 const parsedSettings = JSON.parse(settings);
                 setMaxContextLength(parsedSettings.max_context_length);
                 setMaxLength(parsedSettings.max_length);
+                setMinLength(parsedSettings.min_length);
                 setRepPen(parsedSettings.rep_pen);
                 setRepPenRange(parsedSettings.rep_pen_range);
                 setRepPenSlope(parsedSettings.rep_pen_slope);
@@ -100,6 +110,7 @@ const GenSettingsMenu = ({onClose}) => {
                 setTopK(parsedSettings.top_k);
                 setTopP(parsedSettings.top_p);
                 setTypical(parsedSettings.typical);
+                setSamplerOrder(parsedSettings.samplerOrder);
             }
         
         }else{
@@ -108,7 +119,12 @@ const GenSettingsMenu = ({onClose}) => {
         }
     }, []);
 
-    const saveSettings = () => {
+    const onCloseInvalid = () => {
+        saveSettings();
+        setInvalidEndpoint(false);
+        onClose();
+    }
+    const saveSettings = async () => {
         const settings = {
             max_context_length: parseInt(maxContextLength),
             max_length: parseInt(maxLength),
@@ -122,17 +138,11 @@ const GenSettingsMenu = ({onClose}) => {
             top_a: parseFloat(topA),
             top_k: parseInt(topK),
             top_p: parseFloat(topP),
-            typical: parseFloat(typical)
+            typical: parseFloat(typical),
+            sampler_order: samplerOrder,
         };
         localStorage.setItem('generationSettings', JSON.stringify(settings));
     };
-
-    const onCloseInvalid = () => {
-        saveSettings();
-        setInvalidEndpoint(false);
-        onClose();
-    }
-
 
     return (
         <div className="modal-overlay flex items-center justify-center">
@@ -157,16 +167,15 @@ const GenSettingsMenu = ({onClose}) => {
             </div>
           ) : (
             <div className="relative flex flex-col items-center justify-center p-8 bg-selected text-white rounded shadow-lg z-50 w-3/4 md:w-1/2 border-1 border-solid border-gray-500">
-              <span
-                className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600"
-                onClick={onClose}
-              >
-                &times;
-              </span>
-              <h1 className="mb-4 text-2xl">Generation Settings</h1>
+            <span
+              className="absolute top-0 right-0 p-2 cursor-pointer hover:text-red-600"
+              onClick={onClose}
+            >
+              &times;
+            </span>
+            <h1 className="mb-4 text-2xl">Generation Settings</h1>
               <div className="w-full">
-                {endpointType === "OAI" ? (
-
+            {endpointType === "OAI" ? (
                     <>
                         <div className="grid grid-cols-3 gap-4">
                             <span className="col-span-1 font-bold">Max Generation Length</span>
@@ -205,29 +214,27 @@ const GenSettingsMenu = ({onClose}) => {
 
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Repitition Pen Range</span>
-                        <input className="col-span-1" type="range" min='0' max='512' value={repPenRange} onChange={(e) => {setRepetitionPenaltyRange(e.target.value); saveSettings();}} />
-                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='512' value={repPenRange} onChange={(e) => {setRepetitionPenaltyRange(e.target.value); saveSettings();}} />
+                        <input className="col-span-1" type="range" min='0' max='4096' value={repPenRange} onChange={(e) => {setRepPenRange(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='4096' value={repPenRange} onChange={(e) => {setRepPenRange(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Repitition Pen Slope</span>
-                        <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={repPenSlope} onChange={(e) => {setRepetitionPenaltySlope(e.target.value); saveSettings();}} />
-                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={repPenSlope} onChange={(e) => {setRepetitionPenaltySlope(e.target.value); saveSettings();}} />
+                        <input className="col-span-1" type="range" min='0' step='0.01' value={repPenSlope} onChange={(e) => {setRepPenSlope(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' step='0.01' value={repPenSlope} onChange={(e) => {setRepPenSlope(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Sampler Full Det.</span>
                         <input className="col-span-1" type="checkbox" checked={samplerFullDeterminism} onChange={(e) => {setSamplerFullDeterminism(e.target.checked); saveSettings();}} />
-                        <input className="col-span-1 character-field" id='input-container' type="text" value={samplerFullDeterminism} disabled />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Single Line Output</span>
                         <input className="col-span-1" type="checkbox" checked={singleline} onChange={(e) => {setSingleline(e.target.checked); saveSettings();}} />
-                        <input className="col-span-1 character-field" id='input-container' type="text" value={singleline} disabled />
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Temperature</span>
-                        <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
-                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
+                        <input className="col-span-1" type="range" min='0' max='10' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='10' step='0.01' value={temperature} onChange={(e) => {setTemperature(e.target.value); saveSettings();}} />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         <span className="col-span-1 font-bold">Top A</span>
@@ -249,6 +256,18 @@ const GenSettingsMenu = ({onClose}) => {
                         <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
                         <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={typical} onChange={(e) => {setTypical(e.target.value); saveSettings();}} />
                     </div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <span className="col-span-1 font-bold">TFS</span>
+                        <input className="col-span-1" type="range" min='0' max='1' step='0.01' value={tfs} onChange={(e) => {setTfs(e.target.value); saveSettings();}} />
+                        <input className="col-span-1 character-field" id='input-container' type="number" min='0' max='1' step='0.01' value={tfs} onChange={(e) => {setTfs(e.target.value); saveSettings();}} />
+                    </div>
+                    <div>
+                        <span><i>The order by which all 7 samplers are applied, separated by commas. 0=top_k, 1=top_a, 2=top_p, 3=tfs, 4=typ, 5=temp, 6=rep_pen</i></span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <span className="col-span-1 font-bold">Sampler Order</span>
+                        <input className="col-span-2" type="text" value={samplerOrder.join(',')} onChange={(e) => {setSamplerOrder(e.target.value.split(',').map(Number)); saveSettings();}} />
+                    </div>
                     </>
           )}
         </div>
@@ -256,11 +275,5 @@ const GenSettingsMenu = ({onClose}) => {
     )}
   </div>
 );
-                        
-
-
-
-
-
-}
+};
 export default GenSettingsMenu;

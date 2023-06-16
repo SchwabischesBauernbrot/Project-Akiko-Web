@@ -1,6 +1,5 @@
-import GPT3Tokenizer from 'gpt3-tokenizer';
 import { getCharacterSpeech } from './api';
-
+import GPT3Tokenizer from 'gpt3-tokenizer';
 const tokenizer = new GPT3Tokenizer({ type: 'gpt3' });
 
 export function getBase64(file) {
